@@ -7,9 +7,9 @@
   <version>0.1-SNAPSHOT</version>
   <name>intrabundle</name>
   <properties>
-    <forge.version>1.4.3.Final</forge.version>
+    <forge.version>1.4.4.Final</forge.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <forge.api.version>1.4.3.Final</forge.api.version>
+    <forge.api.version>1.4.4.Final</forge.api.version>
   </properties>
   <dependencies>
     <dependency>

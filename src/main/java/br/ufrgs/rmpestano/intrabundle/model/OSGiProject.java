@@ -30,7 +30,7 @@ public class OSGiProject extends BaseProject {
     @Override
     public <F extends Facet> F getFacet(final Class<F> type) {
         try {
-             return super.getFacet(type);
+            return super.getFacet(type);
         } catch (FacetNotFoundException e) {
             factory.registerSingleFacet(this, type);
             return super.getFacet(type);
@@ -38,7 +38,7 @@ public class OSGiProject extends BaseProject {
     }
 
     public List<OSGiModule> getModules() {
-        if(modules == null){
+        if (modules == null) {
             modules = initalizeModules();
         }
         return modules;
@@ -46,9 +46,9 @@ public class OSGiProject extends BaseProject {
 
     private List<OSGiModule> initalizeModules() {
         List<OSGiModule> modulesFound = new ArrayList<OSGiModule>();
-         OSGiFacet osgi = getFacet(OSGiFacet.class);
-         List<Resource<?>> metaInfList = new ArrayList<Resource<?>>();
-         osgi.getMetaInfDirectories(this.getProjectRoot(),metaInfList,0);
+        OSGiFacet osgi = getFacet(OSGiFacet.class);
+        List<Resource<?>> metaInfList = new ArrayList<Resource<?>>();
+        osgi.getMetaInfDirectories(this.getProjectRoot(), metaInfList, 0);
         for (Resource<?> resource : metaInfList) {
             OSGiModule osGiModule = new OSGiModule(factory, (DirectoryResource) resource.getParent());
             modulesFound.add(osGiModule);
