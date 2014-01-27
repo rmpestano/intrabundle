@@ -4,11 +4,14 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
+import org.junit.Before;
 
 /**
  * Created by rmpestano on 1/24/14.
  */
 public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
+
+
 
     public Project initializeOSGiProject() throws Exception
     {
@@ -21,7 +24,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
-    private void addBundle(DirectoryResource dir, String module) {
+
+    protected void addBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMetaInf(bundle);
     }
@@ -32,6 +36,16 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         if(!fileResource.exists()){
             fileResource.createNewFile();
             fileResource.setContents("Bundle");
+        }
+    }
+
+
+    @Before
+    public void initProject(){
+        try {
+            initializeOSGiProject();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

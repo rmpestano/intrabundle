@@ -1,13 +1,14 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import br.ufrgs.rmpestano.intrabundle.annotation.OSGi;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
-import org.jboss.forge.shell.Shell;
 
-import javax.inject.Inject;
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -18,14 +19,11 @@ import java.util.List;
  * Created by rmpestano on 1/22/14.
  */
 
+@Singleton
 public class OSGiFacet extends BaseFacet {
 
-    private static final int META_INF_SEARCH_LEVEL = 2;//go down two directory levels looking for OSGi metadata(manifest file)
+    private int metaInfSearchLevel = 2;//defines how much directory levels to go down looking for OSGi metadata(manifest file)
 
-    @Inject
-    Shell shell;
-
-    private List<OSGiModule> modules;
 
     @Override
     public boolean install() {
@@ -40,7 +38,6 @@ public class OSGiFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-        shell.println("verifying OSGi Facet!");
         return isOSGiProject(project.getProjectRoot());
 
     }
@@ -48,6 +45,7 @@ public class OSGiFacet extends BaseFacet {
     /**
      * search OSGi metadata looking for META-INF directory with manisfest.mf file
      * containing the 'bundle' word
+     *
      * @param directoryResource
      * @return
      */
@@ -70,24 +68,25 @@ public class OSGiFacet extends BaseFacet {
     /**
      * gather META-INF directories by looking
      * for each @parent directory get its meta-inf directory
-     * until META_INF_SEARCH_LEVEL is reached
+     * until metaInfSearchLevel is reached
+     *
      * @param parent
      * @param resourcesFound
      * @param currentLevel
      */
-    private void getMetaInfDirectories(DirectoryResource parent,List<Resource<?>> resourcesFound, int currentLevel) {
-        if(currentLevel >= META_INF_SEARCH_LEVEL){
+    public void getMetaInfDirectories(DirectoryResource parent, List<Resource<?>> resourcesFound, int currentLevel) {
+        if (currentLevel >= metaInfSearchLevel) {
             return;
         }
-        for(Resource<?> r :parent.listResources()){
-            if(r instanceof DirectoryResource){
+        for (Resource<?> r : parent.listResources()) {
+            if (r instanceof DirectoryResource) {
                 resourcesFound.addAll(r.listResources(new ResourceFilter() {
                     @Override
                     public boolean accept(Resource<?> resource) {
                         return resource.getName().equalsIgnoreCase("meta-inf");
                     }
                 }));
-                getMetaInfDirectories((DirectoryResource)r,resourcesFound,++currentLevel);
+                getMetaInfDirectories((DirectoryResource) r, resourcesFound, ++currentLevel);
             }
         }
 
@@ -95,7 +94,7 @@ public class OSGiFacet extends BaseFacet {
 
     private boolean isOSGiModule(Resource<?> metaInf) {
         Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
-        if(!manifest.exists()){
+        if (!manifest.exists()) {
             return false;
         }
         RandomAccessFile randomAccessFile;
@@ -119,15 +118,18 @@ public class OSGiFacet extends BaseFacet {
         return false;
     }
 
-    public void initializeBundles(){
-        //TODO
+    @Produces
+    @OSGi
+    public OSGiProject getCurrentOSGiProject(){
+            return (OSGiProject)getProject();
     }
 
-    public List<OSGiModule> getModules() {
-        return modules;
+
+    public int getMetaInfSearchLevel() {
+        return metaInfSearchLevel;
     }
 
-    public void setModules(List<OSGiModule> modules) {
-        this.modules = modules;
+    public void setMetaInfSearchLevel(int metaInfSearchLevel) {
+        this.metaInfSearchLevel = metaInfSearchLevel;
     }
 }

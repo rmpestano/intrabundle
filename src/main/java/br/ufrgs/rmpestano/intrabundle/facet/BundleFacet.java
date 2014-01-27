@@ -2,9 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.facet;
 
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.Resource;
-import org.jboss.forge.shell.Shell;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -15,9 +13,6 @@ import java.io.RandomAccessFile;
 
 public class BundleFacet extends BaseFacet {
 
-    @Inject
-    Shell shell;
-
     @Override
     public boolean install() {
 
@@ -26,8 +21,6 @@ public class BundleFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-        System.out.println("CALL INSTALLED");
-        shell.println("verifying bundle Facet!");
         Resource<?> metaInf = project.getProjectRoot().getChild("META-INF");
         if(!metaInf.exists()){
             return false;
