@@ -4,6 +4,7 @@ import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectImpl;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.locator.ProjectLocator;
 import org.jboss.forge.project.services.ProjectFactory;
@@ -44,7 +45,7 @@ public class OSGiProjectLocator implements ProjectLocator {
     @Override
     public Project createProject(DirectoryResource directoryResource) {
         OSGiFacet osgi = osgiFacetInstance.get();
-        OSGiProject result = new OSGiProject(factory, directoryResource);
+        OSGiProject result = new OSGiProjectImpl(factory, directoryResource);
         osgi.setProject(result);
         if(!directoryResource.getChild("pom.xml").exists()){
             directoryResource.createNewFile();

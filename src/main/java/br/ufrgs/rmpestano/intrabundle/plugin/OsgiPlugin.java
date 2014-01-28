@@ -1,6 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.*;
+import br.ufrgs.rmpestano.intrabundle.annotation.OSGi;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
