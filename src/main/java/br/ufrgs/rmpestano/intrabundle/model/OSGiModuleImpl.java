@@ -50,7 +50,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
 
     @Override
     public String toString() {
-        return "OSGiModuleImpl [" + getProjectRoot() + "]";
+        return getProjectRoot().toString();
     }
 
 

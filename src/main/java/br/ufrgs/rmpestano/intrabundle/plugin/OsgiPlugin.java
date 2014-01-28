@@ -60,6 +60,16 @@ public class OsgiPlugin implements Plugin {
         out.println("Total lines of code:" + total);
     }
 
+    @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
+    public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
+        out.println(resourceBundle.get().getString("osgi.declarativeServices"));
+        for (OSGiModule module: getModules()) {
+            if(module.getUsesDeclarativeServices()){
+                out.println(module.toString());
+            }
+        }
+    }
+
     public List<OSGiModule> getModules() {
         return project.get().getModules();
     }
