@@ -1,11 +1,16 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.annotation.Current;
+import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
+
+import javax.inject.Inject;
 
 public class OsgiPluginTest extends BaseOSGiTest {
 
@@ -24,20 +29,31 @@ public class OsgiPluginTest extends BaseOSGiTest {
         return jar;
     }
 
+    @Inject
+    @Current
+    ResourceBundle resourceBundle;
+
     @Test
     public void testDefaultCommand() throws Exception {
+        resetOutput();
         getShell().execute("osgi");
+        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.welcome")));
     }
 
     @Test
     public void testCount() throws Exception {
+        resetOutput();
         getShell().execute("osgi countBundles");
+        Assert.assertTrue(getOutput().contains("Total number of bundles:3"));
+
     }
 
     @Test
     public void testCountDifferentProject() throws Exception {
         initializeOSGiProject2();
+        resetOutput();
         getShell().execute("osgi countBundles");
+        Assert.assertTrue(getOutput().contains("Total number of bundles:4"));
     }
 
     public Project initializeOSGiProject2() throws Exception
