@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.OSGi;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
@@ -25,8 +24,7 @@ public class OsgiPlugin implements Plugin {
     private ShellPrompt prompt;
 
     @Inject
-    @OSGi
-    Instance<OSGiProject> project;
+    OSGiProject project;
 
     @Inject
     @br.ufrgs.rmpestano.intrabundle.annotation.Current
@@ -80,7 +78,7 @@ public class OsgiPlugin implements Plugin {
     }
 
     public List<OSGiModule> getModules() {
-        return project.get().getModules();
+        return project.getModules();
     }
 
 }

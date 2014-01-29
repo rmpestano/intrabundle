@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.OSGi;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
@@ -22,7 +21,7 @@ import java.util.List;
 @Singleton
 public class OSGiFacet extends BaseFacet {
 
-    private int metaInfSearchLevel = 2;//defines how much directory levels to go down looking for OSGi metadata(manifest file)
+    private int metaInfSearchLevel = 1;//defines how much directory levels to go down looking for OSGi metadata(manifest file)
 
 
     @Override
@@ -120,11 +119,9 @@ public class OSGiFacet extends BaseFacet {
     }
 
     @Produces
-    @OSGi
     public OSGiProject getCurrentOSGiProject() {
         return (OSGiProject) getProject();
     }
-
 
     public int getMetaInfSearchLevel() {
         return metaInfSearchLevel;
