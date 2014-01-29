@@ -68,6 +68,13 @@ public class OsgiPluginTest extends BaseOSGiTest {
         return getProject();
     }
 
+    @Test
+    public void testDeclarativeServices() throws Exception {
+        resetOutput();
+        getShell().execute("osgi usesDeclarativeServices");
+        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices")+"\nmodule3"));
+    }
+
     //@Test
     public void testPrompt() throws Exception {
         //queueInputLines("y");

@@ -1,6 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
 import org.jboss.forge.project.Project;
+import org.jboss.forge.resources.FileResource;
 
 import java.io.Serializable;
 
@@ -12,4 +13,8 @@ public interface OSGiModule extends Serializable,Project {
     Long getLinesOfCode();
 
     Boolean getUsesDeclarativeServices();
+
+    FileResource<?> getManifest();
+
+    FileResource<?> getActivator();
 }

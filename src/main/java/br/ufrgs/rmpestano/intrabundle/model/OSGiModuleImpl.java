@@ -22,6 +22,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     private final ProjectFactory factory;
     private Long totalLoc;
     private Boolean usesDeclarativeServices;
+    private FileResource<?> activator;
+    private FileResource<?> manifest;
+
+
+    public OSGiModuleImpl() {
+        factory = null;
+    }
 
     public OSGiModuleImpl(final ProjectFactory factory, final DirectoryResource dir) {
         this.factory = factory;
@@ -53,6 +60,30 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
         return getProjectRoot().toString();
     }
 
+    private FileResource<?> findActivator() throws IOException {
+        RandomAccessFile randomAccessFile;
+        File f = new File(getManifest().getFullyQualifiedName());
+        randomAccessFile = new RandomAccessFile(f, "r");
+
+        String line = "";
+        while((line = randomAccessFile.readLine()) != null){
+            if (line.contains("Bundle-Activator:")) {
+               break;
+            }
+        }
+        String actvatorPath = line.trim().substring(line.indexOf("Bundle-Activator:") + 1);
+        actvatorPath.replaceAll(".", "/");
+        if(!actvatorPath.startsWith("/")){
+            actvatorPath.concat("/");
+        }
+        Resource<?> activator = getProjectRoot().getChild(actvatorPath);
+        if(activator == null || !activator.exists()){
+            throw new RuntimeException("Could not find activator class at "+getProjectRoot() + actvatorPath);
+        }
+
+        return (FileResource<?>) activator;
+
+    }
 
     private Long countModuleLines(DirectoryResource projectRoot) {
         for (Resource<?> resource : projectRoot.listResources()) {
@@ -91,6 +122,38 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
             usesDeclarativeServices = usesDeclarativeServices();
         }
         return usesDeclarativeServices;
+    }
+
+    @Override
+    public FileResource<?> getActivator() {
+        if (activator == null) {
+            try {
+                activator = findActivator();
+            } catch (IOException e) {
+                throw new RuntimeException("Could not find activator class");
+            }
+        }
+        return activator;
+    }
+
+    @Override
+    public FileResource<?> getManifest() {
+        if (manifest == null) {
+            manifest = findManifest();
+        }
+        return manifest;
+    }
+
+    private FileResource<?> findManifest() {
+        Resource<?> metaInf = getProjectRoot().getChild("META-INF");
+        if (metaInf == null || !metaInf.exists()) {
+            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
+        }
+        Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
+        if (manifest == null || !manifest.exists()) {
+            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
+        }
+        return (FileResource<?>) manifest;
     }
 
     public Long getLinesOfCode() {

@@ -22,6 +22,10 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     private List<OSGiModule> modules;
 
 
+    public OSGiProjectImpl() {
+        factory = null;
+    }
+
     public OSGiProjectImpl(final ProjectFactory factory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;

@@ -3,6 +3,7 @@
 <forge>
 <analytics>
 <enabled>true</enabled>
+<lastrun>20140128</lastrun>
 </analytics>
 </forge>
 </configuration>

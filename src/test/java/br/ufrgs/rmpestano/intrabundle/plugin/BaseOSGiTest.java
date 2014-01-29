@@ -28,15 +28,35 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     protected void addBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMetaInf(bundle);
+        addActivator(bundle);
+        if(module.equals("module3")){
+            addDeclarativeServices(bundle);
+        }
+    }
+
+    private void addDeclarativeServices(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
+        resource.createNewFile();
+        FileResource<?> services = (FileResource<?>) resource.getChild("service.xml");
+        services.setContents("services content");
     }
 
     private void addMetaInf(DirectoryResource root) {
         DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
         FileResource<?> fileResource = (FileResource<?>) metaInf.getChild("MANIFEST.MF");
         if(!fileResource.exists()){
-            fileResource.createNewFile();
-            fileResource.setContents("Bundle");
+            fileResource.setContents("Bundle-Activator:br.ufrgs.rmpestano.activator");
         }
+    }
+
+    private void addActivator(DirectoryResource root){
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").
+                getOrCreateChildDirectory("activator");
+        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
+        activator.setContents("activator content");
     }
 
 

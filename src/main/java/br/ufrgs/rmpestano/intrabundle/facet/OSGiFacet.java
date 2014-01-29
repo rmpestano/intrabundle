@@ -109,19 +109,20 @@ public class OSGiFacet extends BaseFacet {
     }
 
     private boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
-        for (int i = 0; i < aFile.getChannel().size(); i++) {
-            String line = aFile.readLine();
+        String line = "";
+        while ((line = aFile.readLine()) != null) {
             if (line.contains("Bundle")) {
                 return true;
             }
         }
         return false;
+
     }
 
     @Produces
     @OSGi
-    public OSGiProject getCurrentOSGiProject(){
-            return (OSGiProject)getProject();
+    public OSGiProject getCurrentOSGiProject() {
+        return (OSGiProject) getProject();
     }
 
 
