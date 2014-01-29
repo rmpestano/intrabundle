@@ -74,7 +74,11 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void testDeclarativeServices() throws Exception {
         resetOutput();
         getShell().execute("osgi usesDeclarativeServices");
-        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices")+"\nmodule3"));
+        String assertion = "\nmodule3";
+        if(OSUtils.isWindows()){
+            assertion = "\r"+assertion;
+        }
+        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices")+assertion));
     }
 
     @Test
