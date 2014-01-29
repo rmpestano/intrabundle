@@ -6,11 +6,13 @@ import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
+import org.jboss.forge.shell.util.OSUtils;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 
 import javax.inject.Inject;
+import java.io.File;
 
 public class OsgiPluginTest extends BaseOSGiTest {
 
@@ -79,7 +81,11 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void activatorTest() throws Exception {
         resetOutput();
         getShell().execute("osgi listActivators");
-        Assert.assertTrue(getOutput().contains("/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java"));
+        String activatorPath = "/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
+        if(OSUtils.isWindows()){
+           activatorPath = activatorPath.replaceAll("/", File.separator + File.separator);
+        }
+        Assert.assertTrue(getOutput().contains(activatorPath));
     }
 
     //@Test

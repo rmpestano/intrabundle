@@ -65,18 +65,18 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
         File f = new File(getManifest().getFullyQualifiedName());
         randomAccessFile = new RandomAccessFile(f, "r");
 
-        String line = "";
+        String line;
         while((line = randomAccessFile.readLine()) != null){
             if (line.contains("Bundle-Activator:")) {
                break;
             }
         }
         String actvatorPath = line.trim().substring(line.indexOf("Bundle-Activator:") + 17);
+        actvatorPath = actvatorPath.replaceAll("\\.","/");
         if(!actvatorPath.startsWith("/")){
-            actvatorPath = "/"+actvatorPath;
+            actvatorPath = "/" +actvatorPath;
         }
         actvatorPath = "/src"+actvatorPath;
-        actvatorPath = actvatorPath.replaceAll("\\.",File.separator);
         Resource<?> activator = getProjectRoot().getChild(actvatorPath.concat(".java"));
         if(activator == null || !activator.exists()){
             throw new RuntimeException("Could not find activator class at "+getProjectRoot() + actvatorPath);
