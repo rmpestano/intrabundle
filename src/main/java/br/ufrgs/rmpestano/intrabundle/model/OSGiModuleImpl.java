@@ -71,8 +71,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
                break;
             }
         }
+        if(line == null){
+            return null;//no activator
+        }
         String actvatorPath = line.trim().substring(line.indexOf("Bundle-Activator:") + 17);
-        actvatorPath = actvatorPath.replaceAll("\\.","/");
+        actvatorPath = actvatorPath.trim().replaceAll("\\.","/");
         if(!actvatorPath.startsWith("/")){
             actvatorPath = "/" +actvatorPath;
         }

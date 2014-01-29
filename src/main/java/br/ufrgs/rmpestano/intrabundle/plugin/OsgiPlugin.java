@@ -13,6 +13,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.List;
 
+
 /**
  *
  */
@@ -74,7 +75,7 @@ public class OsgiPlugin implements Plugin {
     public void listActivators(@PipeIn String in, PipeOut out) {
         out.println(resourceBundle.get().getString("osgi.listActivators"));
         for (OSGiModule module: getModules()) {
-             out.println(module.toString()+":"+module.getActivator().getFullyQualifiedName());
+             out.println(module.toString()+":"+(module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : resourceBundle.get().getString("osgi.no-activator")));
         }
     }
 

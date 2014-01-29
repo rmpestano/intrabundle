@@ -109,7 +109,7 @@ public class OSGiFacet extends BaseFacet {
     }
 
     private boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
-        String line = "";
+        String line;
         while ((line = aFile.readLine()) != null) {
             if (line.contains("Bundle")) {
                 return true;
