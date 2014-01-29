@@ -47,11 +47,6 @@ public class OSGiProjectLocator implements ProjectLocator {
         OSGiFacet osgi = osgiFacetInstance.get();
         OSGiProject result = new OSGiProjectImpl(factory, directoryResource);
         osgi.setProject(result);
-        if(!directoryResource.getChild("pom.xml").exists()){
-            directoryResource.createNewFile();
-            FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
-            pom.setContents(getClass().getResourceAsStream("/pom.xml"));
-        }
         /* we are not going to install OSGi projects, only inspect existing ones
         if (!osgi.isInstalled()) {
             result.installFacet(osgi);
@@ -59,7 +54,11 @@ public class OSGiProjectLocator implements ProjectLocator {
         result.registerFacet(osgi);
 
         if (!result.hasFacet(OSGiFacet.class)) {
-            throw new IllegalStateException("Could not create OSGi project [OSGi facet could not be installed.]");
+            return null;
+        }
+        if(!directoryResource.getChild("pom.xml").exists()){
+            FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
+            pom.setContents(getClass().getResourceAsStream("/pom.xml"));
         }
         shell.println(ShellColor.YELLOW,resourceBundle.get().getString("osgi.welcome"));
         return result;
