@@ -34,7 +34,7 @@ public class OsgiPlugin implements Plugin {
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
-        out.println(ShellColor.YELLOW, resourceBundle.get().getString("osgi.welcome"));
+        out.println(ShellColor.YELLOW, resourceBundle.get().getString("osgi.defaultCommand"));
     }
 
     @Command(value = "countBundles")
@@ -67,6 +67,14 @@ public class OsgiPlugin implements Plugin {
             if(module.getUsesDeclarativeServices()){
                 out.println(module.toString());
             }
+        }
+    }
+
+    @Command(value = "listActivators", help = "list modules activator classes")
+    public void listActivators(@PipeIn String in, PipeOut out) {
+        out.println(resourceBundle.get().getString("osgi.listActivators"));
+        for (OSGiModule module: getModules()) {
+             out.println(module.toString()+":"+module.getActivator().getFullyQualifiedName());
         }
     }
 

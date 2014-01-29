@@ -37,7 +37,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void testDefaultCommand() throws Exception {
         resetOutput();
         getShell().execute("osgi");
-        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.welcome")));
+        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.defaultCommand")));
     }
 
     @Test
@@ -73,6 +73,13 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi usesDeclarativeServices");
         Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices")+"\nmodule3"));
+    }
+
+    @Test
+    public void activatorTest() throws Exception {
+        resetOutput();
+        getShell().execute("osgi listActivators");
+        Assert.assertTrue(getOutput().contains("/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java"));
     }
 
     //@Test
