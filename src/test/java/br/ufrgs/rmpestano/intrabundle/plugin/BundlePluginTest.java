@@ -6,7 +6,7 @@ public class BundlePluginTest //extends BaseOSGiTest
    public static JavaArchive getDeployment()
    {
       JavaArchive archive = SingletonAbstractShellTest.getDeployment()
-            .addPackages(true, BundlePlugin.class.getPackage()).addAsResource("MANIFEST.MF");
+            .addPackages(true, BundlePlugin.class.getPackage()).addAsResource("MANIFEST-module2.MF");
 
        System.out.println(archive.toString(true));
        return archive;

@@ -27,7 +27,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     protected void addBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInf(bundle);
+        addMetaInf(bundle,"/MANIFEST-"+module+".MF");
         addActivator(bundle);
         if(module.equals("module3")){
             addDeclarativeServices(bundle);
@@ -41,11 +41,11 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         services.setContents("services content");
     }
 
-    private void addMetaInf(DirectoryResource root) {
+    private void addMetaInf(DirectoryResource root,String manifestName) {
         DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
         FileResource<?> fileResource = (FileResource<?>) metaInf.getChild("MANIFEST.MF");
         if(!fileResource.exists()){
-            fileResource.setContents(getClass().getResourceAsStream("/MANIFEST.MF"));
+            fileResource.setContents(getClass().getResourceAsStream(manifestName));
 
         }
     }

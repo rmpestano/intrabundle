@@ -107,6 +107,21 @@ public class OsgiPlugin implements Plugin {
 
     }
 
+    @Command("moduleDependencies")
+    public void moduleDependencies(@PipeIn String in, PipeOut out){
+        OSGiModule choice = choiceModule();
+        out.println(resourceBundle.get().getString("module.dependencies",choice));
+        if(project.getModulesDependencies().get(choice).isEmpty()){
+            out.println(resourceBundle.get().getString("module.noDependency"));
+        }
+        else{
+            for (OSGiModule m : project.getModulesDependencies().get(choice)) {
+                out.println(m.toString());
+            }
+        }
+
+    }
+
     private OSGiModule choiceModule(){
            return prompt.promptChoiceTyped(resourceBundle.get().getString("module.choice"), getModules());
     }

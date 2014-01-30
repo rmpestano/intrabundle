@@ -11,7 +11,9 @@ import org.jboss.forge.resources.Resource;
 
 import javax.enterprise.inject.Typed;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -21,6 +23,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private List<OSGiModule> modules;
+    private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
 
 
     public OSGiProjectImpl() {
@@ -47,6 +50,33 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
             modules = initalizeModules();
         }
         return modules;
+    }
+
+    private Map<OSGiModule,List<OSGiModule>> initalizeModulesDependencies() {
+        Map<OSGiModule,List<OSGiModule>> dependencies = new HashMap<OSGiModule, List<OSGiModule>>();
+        for (OSGiModule m1 : getModules()) {
+            dependencies.put(m1,new ArrayList<OSGiModule>());
+            if(m1.getImportedPackages().isEmpty()){
+                //has no module depencies, go to next module
+                continue;
+            }
+            for (OSGiModule m2 : getModules()) {
+                if(m2.equals(m1)){
+                    continue;
+                }
+                if(!m2.getExportedPackages().isEmpty()){
+                    for (String s : m2.getExportedPackages()) {
+                        if(m1.getImportedPackages().contains(s)){
+                            dependencies.get(m1).add(m2);
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+        }
+        return dependencies;
     }
 
     private List<OSGiModule> initalizeModules() {
@@ -76,6 +106,12 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         return "OSGiProjectImpl [" + getProjectRoot() + "]";
     }
 
+    public Map<OSGiModule, List<OSGiModule>> getModulesDependencies() {
+        if(moduleDependenciesMap == null){
+            moduleDependenciesMap = initalizeModulesDependencies();
+        }
+        return moduleDependenciesMap;
+    }
 
 
 }

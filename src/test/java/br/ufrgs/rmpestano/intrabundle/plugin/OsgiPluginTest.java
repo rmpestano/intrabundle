@@ -26,7 +26,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
                 .addPackages(true, OsgiPlugin.class.getPackage())
-                .addAsResource("MANIFEST.MF");
+                .addAsResource("MANIFEST-module2.MF");
         System.out.println(jar.toString(true));
         return jar;
     }
@@ -78,7 +78,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         if(OSUtils.isWindows()){
             assertion = "\r"+assertion;
         }
-        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices")+assertion));
+        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices") + assertion));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("1");
         getShell().execute("osgi listExportedPackages");
-        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package1"));
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package2"));
     }
 
     @Test
@@ -106,6 +106,14 @@ public class OsgiPluginTest extends BaseOSGiTest {
         queueInputLines("1");
         getShell().execute("osgi listImportedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
+    }
+
+    @Test
+    public void moduleDependenciesTest() throws Exception {
+        resetOutput();
+        queueInputLines("1");
+        getShell().execute("osgi moduleDependencies");
+        Assert.assertTrue(getOutput().contains("module3"));
     }
 
     //@Test
