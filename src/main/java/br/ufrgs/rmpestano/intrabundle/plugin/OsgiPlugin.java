@@ -77,6 +77,40 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command(value ="listExportedPackages")
+    public void listExportedPackages(@PipeIn String in, PipeOut out){
+        OSGiModule choice = choiceModule();
+        out.println(resourceBundle.get().getString("module.listExported",choice));
+        if(choice.getExportedPackages().isEmpty()){
+          out.println(resourceBundle.get().getString("module.noExportedPackages"));
+        }
+        else{
+            for (String s : choice.getExportedPackages()) {
+                out.println(s);
+            }
+        }
+
+    }
+
+    @Command(value ="listImportedPackages")
+    public void listImportedPackages(@PipeIn String in, PipeOut out){
+        OSGiModule choice = choiceModule();
+        out.println(resourceBundle.get().getString("module.listImported",choice));
+        if(choice.getImportedPackages().isEmpty()){
+            out.println(resourceBundle.get().getString("module.noImportedPackages"));
+        }
+        else{
+            for (String s : choice.getImportedPackages()) {
+                out.println(s);
+            }
+        }
+
+    }
+
+    private OSGiModule choiceModule(){
+           return prompt.promptChoiceTyped(resourceBundle.get().getString("module.choice"), getModules());
+    }
+
     public List<OSGiModule> getModules() {
         return project.getModules();
     }

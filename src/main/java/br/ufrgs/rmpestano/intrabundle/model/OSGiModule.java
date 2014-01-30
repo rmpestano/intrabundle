@@ -4,6 +4,7 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.FileResource;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by rmpestano on 1/28/14.
@@ -17,4 +18,8 @@ public interface OSGiModule extends Serializable,Project {
     FileResource<?> getManifest();
 
     FileResource<?> getActivator();
+
+    List<String> getImportedPackages();
+
+    List<String> getExportedPackages();
 }

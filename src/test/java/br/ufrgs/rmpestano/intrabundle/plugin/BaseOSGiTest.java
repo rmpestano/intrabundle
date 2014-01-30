@@ -45,7 +45,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
         FileResource<?> fileResource = (FileResource<?>) metaInf.getChild("MANIFEST.MF");
         if(!fileResource.exists()){
-            fileResource.setContents("Bundle-Activator:br.ufrgs.rmpestano.activator.Activator");
+            fileResource.setContents(getClass().getResourceAsStream("/MANIFEST.MF"));
+
         }
     }
 

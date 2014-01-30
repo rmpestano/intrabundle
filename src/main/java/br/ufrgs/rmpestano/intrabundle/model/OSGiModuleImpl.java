@@ -12,6 +12,9 @@ import javax.enterprise.inject.Typed;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -24,6 +27,8 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     private Boolean usesDeclarativeServices;
     private FileResource<?> activator;
     private FileResource<?> manifest;
+    private List<String> exportedPackages;
+    private List<String> importedPackages;
 
 
     public OSGiModuleImpl() {
@@ -119,6 +124,77 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
         return OSGiInf.exists() && OSGiInf.getChild("service.xml").exists();
     }
 
+    private FileResource<?> findManifest() {
+        Resource<?> metaInf = getProjectRoot().getChild("META-INF");
+        if (metaInf == null || !metaInf.exists()) {
+            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
+        }
+        Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
+        if (manifest == null || !manifest.exists()) {
+            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
+        }
+        return (FileResource<?>) manifest;
+    }
+
+    private List<String> findExportedPackages() {
+        exportedPackages = new ArrayList<String>();
+        try {
+            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            String line;
+            while ((line = file.readLine())!= null){
+                  if(line.contains("Export-Package")){
+                      line = line.substring(line.lastIndexOf(":")+1).trim();
+                      if(!"".equals(line)){
+                          exportedPackages.addAll(Arrays.asList(line.split(",")));
+                      }
+                      //try to get packages from next lines
+                      String nextLine;
+                      while((nextLine  = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")){
+                          exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                      }
+                      break;
+
+                  }
+            }
+        } catch (Exception e) {
+            //TODO log ex
+            e.printStackTrace();
+        }
+        finally {
+            return exportedPackages;
+        }
+    }
+
+    private List<String> findImportedPackages() {
+        importedPackages = new ArrayList<String>();
+        try {
+            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            String line;
+            while ((line = file.readLine())!= null){
+                if(line.contains("Import-Package")){
+                    line = line.substring(line.lastIndexOf(":")+1).trim();
+                    if(!"".equals(line)){
+                        importedPackages.addAll(Arrays.asList(line.split(",")));
+                    }
+                    //try to get packages from next lines
+                    String nextLine;
+                    while((nextLine  = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")){
+                        importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    }
+                    break;
+
+                }
+            }
+        } catch (Exception e) {
+            //TODO log ex
+            e.printStackTrace();
+        }
+        finally {
+            return importedPackages;
+        }
+    }
+
+
     //getters
 
     public Boolean getUsesDeclarativeServices() {
@@ -148,17 +224,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
         return manifest;
     }
 
-    private FileResource<?> findManifest() {
-        Resource<?> metaInf = getProjectRoot().getChild("META-INF");
-        if (metaInf == null || !metaInf.exists()) {
-            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
-        }
-        Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
-        if (manifest == null || !manifest.exists()) {
-            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
-        }
-        return (FileResource<?>) manifest;
-    }
 
     public Long getLinesOfCode() {
         if (totalLoc == null) {
@@ -166,5 +231,20 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
             totalLoc = countModuleLines(getProjectRoot());
         }
         return totalLoc;
+    }
+
+    public List<String> getExportedPackages() {
+        if(exportedPackages == null){
+            exportedPackages = findExportedPackages();
+        }
+        return exportedPackages;
+    }
+
+
+    public List<String> getImportedPackages() {
+        if(importedPackages == null){
+            importedPackages = findImportedPackages();
+        }
+        return importedPackages;
     }
 }

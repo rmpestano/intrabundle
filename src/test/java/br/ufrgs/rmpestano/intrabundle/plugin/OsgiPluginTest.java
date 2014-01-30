@@ -92,6 +92,22 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().contains(activatorPath));
     }
 
+    @Test
+    public void exportedPackagesTest() throws Exception {
+        resetOutput();
+        queueInputLines("1");
+        getShell().execute("osgi listExportedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package1"));
+    }
+
+    @Test
+    public void importedPackagesTest() throws Exception {
+        resetOutput();
+        queueInputLines("1");
+        getShell().execute("osgi listImportedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
+    }
+
     //@Test
     public void testPrompt() throws Exception {
         //queueInputLines("y");
