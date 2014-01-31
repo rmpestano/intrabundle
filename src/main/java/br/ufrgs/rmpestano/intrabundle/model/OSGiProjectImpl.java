@@ -57,7 +57,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         for (OSGiModule m1 : getModules()) {
             dependencies.put(m1,new ArrayList<OSGiModule>());
             if(m1.getImportedPackages().isEmpty()){
-                //has no module depencies, go to next module
+                //has no module dependencies, go to next module
                 continue;
             }
             for (OSGiModule m2 : getModules()) {

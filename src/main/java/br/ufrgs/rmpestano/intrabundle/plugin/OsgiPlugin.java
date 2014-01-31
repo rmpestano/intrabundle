@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
@@ -27,7 +28,7 @@ public class OsgiPlugin implements Plugin {
     OSGiProject project;
 
     @Inject
-    @br.ufrgs.rmpestano.intrabundle.annotation.Current
+    @Current
     Instance<ResourceBundle> resourceBundle;
 
 
