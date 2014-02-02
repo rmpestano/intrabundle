@@ -2,6 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
+import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.resources.DirectoryResource;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by rmpestano on 1/22/14.
  */
 @Typed()
-public class OSGiModuleImpl extends BaseProject implements OSGiModule {
+public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private Long totalLoc;

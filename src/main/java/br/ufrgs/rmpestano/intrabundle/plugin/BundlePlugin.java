@@ -1,12 +1,11 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
-import org.jboss.forge.project.Project;
-import org.jboss.forge.project.facets.events.InstallFacets;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiModuleImpl;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.Arrays;
 
@@ -20,17 +19,13 @@ public class BundlePlugin implements Plugin {
     private ShellPrompt prompt;
 
     @Inject
-    Project project;
+    OSGiModule bundle;
 
-    @Inject
-    private Event<InstallFacets> event;
+
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
-        if (!project.hasFacet(BundleFacet.class)){
-            event.fire(new InstallFacets(BundleFacet.class));
-        }
-        out.println("Executed default command.");
+        out.println(((OSGiModuleImpl)bundle).getProjectRoot().toString());
     }
 
     @Command

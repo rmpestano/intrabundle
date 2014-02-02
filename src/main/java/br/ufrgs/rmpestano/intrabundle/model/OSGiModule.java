@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.FileResource;
 
 import java.io.Serializable;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * Created by rmpestano on 1/28/14.
  */
-public interface OSGiModule extends Serializable,Project {
+public interface OSGiModule extends Serializable{
 
     Long getLinesOfCode();
 

@@ -2,9 +2,8 @@ package br.ufrgs.rmpestano.intrabundle.locator;
 
 import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
-import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectImpl;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiModuleImpl;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.locator.ProjectLocator;
 import org.jboss.forge.project.services.ProjectFactory;
@@ -22,11 +21,11 @@ import javax.inject.Singleton;
  * Created by rmpestano on 1/22/14.
  */
 @Singleton
-public class OSGiProjectLocator implements ProjectLocator {
+public class BundleProjectLocator implements ProjectLocator {
 
     private final ProjectFactory factory;
 
-    private final Instance<OSGiFacet> osgiFacetInstance;
+    private final Instance<BundleFacet> bundleFacetInstance;
 
     @Inject
     @Current
@@ -37,36 +36,36 @@ public class OSGiProjectLocator implements ProjectLocator {
 
 
     @Inject
-    public OSGiProjectLocator(final ProjectFactory factory, @Any final Instance<OSGiFacet> osgiFacet) {
+    public BundleProjectLocator(final ProjectFactory factory, @Any final Instance<BundleFacet> bundleFacet) {
         this.factory = factory;
-        this.osgiFacetInstance = osgiFacet;
+        this.bundleFacetInstance = bundleFacet;
     }
 
     @Override
     public Project createProject(DirectoryResource directoryResource) {
-        OSGiFacet osgi = osgiFacetInstance.get();
-        OSGiProjectImpl result = new OSGiProjectImpl(factory, directoryResource);
-        osgi.setProject(result);
+        BundleFacet bundle = bundleFacetInstance.get();
+        OSGiModuleImpl result = new OSGiModuleImpl(factory, directoryResource);
+        bundle.setProject(result);
         /* we are not going to install OSGi projects, only inspect existing ones
         if (!osgi.isInstalled()) {
             result.installFacet(osgi);
         } else    */
-        result.registerFacet(osgi);
+        result.registerFacet(bundle);
 
-        if (!result.hasFacet(OSGiFacet.class) || result.hasFacet(BundleFacet.class)) {
+        if (!result.hasFacet(BundleFacet.class)) {
             return null;
         }
         if(!directoryResource.getChild("pom.xml").exists()){
             FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
             pom.setContents(getClass().getResourceAsStream("/pom.xml"));
         }
-        shell.println(ShellColor.YELLOW,resourceBundle.get().getString("osgi.welcome"));
+        shell.println(ShellColor.YELLOW,resourceBundle.get().getString("bundle.welcome"));
         return result;
     }
 
 
     @Override
     public boolean containsProject(DirectoryResource directoryResource) {
-        return osgiFacetInstance.get().isOSGiProject(directoryResource);
+        return bundleFacetInstance.get().isOsgiBundle(directoryResource);
     }
 }
