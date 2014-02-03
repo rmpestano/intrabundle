@@ -23,6 +23,18 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-git-tools:1.4.4.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-javaee-impl:1.4.4.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-shell-api:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-parser-xml:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-event-bus:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-maven-api:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-javaee-api:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-test-harness:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-spi:1.0.0.CR6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-cdi:1.0.0.CR6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-shell:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-project-model-maven:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-git-tools:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge:forge-javaee-impl:1.4.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:forge-shell-api:1.4.4.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:1.0-SP4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:1.0.0.Beta1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:jsr250-api:1.0" level="project" />

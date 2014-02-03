@@ -25,8 +25,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
-                .addPackages(true, OsgiPlugin.class.getPackage())
-                .addAsResource("MANIFEST-module2.MF");
+                .addPackages(true, OsgiPlugin.class.getPackage());
         System.out.println(jar.toString(true));
         return jar;
     }

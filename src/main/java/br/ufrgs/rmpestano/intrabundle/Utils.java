@@ -63,6 +63,9 @@ public class Utils {
                 if (line.contains("interface")) {
                     return true;
                 }
+                if(line.contains("class")){
+                    return false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

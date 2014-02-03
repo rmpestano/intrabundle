@@ -12,4 +12,5 @@ public interface OSGiProject extends Serializable{
     List<OSGiModule> getModules();
 
     Map<OSGiModule, List<OSGiModule>> getModulesDependencies();
+
 }

@@ -4,7 +4,6 @@ import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModuleImpl;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
@@ -46,7 +45,7 @@ public class OsgiPlugin implements Plugin {
     @Command(value = "listBundles")
     public void listBundles(@PipeIn String in, PipeOut out) {
         for (int i = 0; i < getModules().size(); i++) {
-            out.println("bundle(" + i + "):" + ((OSGiModuleImpl)getModules().get(i)).getProjectRoot());
+            out.println("bundle(" + i + "):" + getModules().get(i).toString());
         }
     }
 
@@ -55,7 +54,7 @@ public class OsgiPlugin implements Plugin {
         long total = 0;
         for (int i = 0; i < getModules().size(); i++) {
             long loci = getModules().get(i).getLinesOfCode();
-            out.println(((OSGiModuleImpl)getModules().get(i)).getProjectRoot() + ":" + loci);
+            out.println(getModules().get(i).toString() + ":" + loci);
             total += loci;
         }
         out.println("Total lines of code:" + total);

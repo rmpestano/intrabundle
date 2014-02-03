@@ -31,17 +31,17 @@ public class BundlePlugin implements Plugin {
         out.println("default command");
     }
 
-    @Command
+    @Command(value = "usesDeclarativeServices")
     public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
            out.println(bundle.getUsesDeclarativeServices().toString());
     }
 
-    @Command(help = "prints module activator path")
+    @Command(value = "activator", help = "prints module activator path")
     public void activator(@PipeIn String in, PipeOut out) {
             out.println((bundle.getActivator() != null ? bundle.getActivator().getFullyQualifiedName() : resourceBundle.get().getString("osgi.no-activator")));
     }
 
-    @Command(help = "list bundle exported packages")
+    @Command(value = "exportedPackages",help = "list bundle exported packages")
     public void exportedPackages(PipeOut out){
         if(bundle.getExportedPackages().isEmpty()){
             out.println(resourceBundle.get().getString("module.noExportedPackages"));
@@ -53,7 +53,7 @@ public class BundlePlugin implements Plugin {
         }
     }
 
-    @Command(help = "list bundle imported packages")
+    @Command(value = "importedPackages",help = "list bundle imported packages")
     public void importedPackages(PipeOut out){
         if(bundle.getImportedPackages().isEmpty()){
             out.println(resourceBundle.get().getString("module.noImportedPackages"));
@@ -65,7 +65,7 @@ public class BundlePlugin implements Plugin {
         }
     }
 
-    @Command(help = "true if bundle exported packages contains only interfaces, false if it contains one or more classes")
+    @Command(value = "publishesInterfaces", help = "true if bundle exported packages contains only interfaces, false if it contains one or more classes")
     public void publishesInterfaces(@PipeIn String in, PipeOut out, @Option String... args) {
         out.println(bundle.getPublishesInterfaces().toString());
     }
