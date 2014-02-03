@@ -84,7 +84,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     @Test
     public void activatorTest() throws Exception {
         resetOutput();
-        getShell().execute("osgi listActivators");
+        getShell().execute("osgi activators");
         String activatorPath = "/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
         if(OSUtils.isWindows()){
            activatorPath = activatorPath.replaceAll("/", File.separator + File.separator);
@@ -96,7 +96,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void exportedPackagesTest() throws Exception {
         resetOutput();
         queueInputLines("1");
-        getShell().execute("osgi listExportedPackages");
+        getShell().execute("osgi exportedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package2"));
     }
 
@@ -104,7 +104,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void importedPackagesTest() throws Exception {
         resetOutput();
         queueInputLines("1");
-        getShell().execute("osgi listImportedPackages");
+        getShell().execute("osgi importedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
     }
 

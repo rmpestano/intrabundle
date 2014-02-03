@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.Utils;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -8,6 +9,7 @@ import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.resources.ResourceFilter;
 
 import javax.enterprise.inject.Typed;
 import java.io.File;
@@ -30,6 +32,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private FileResource<?> manifest;
     private List<String> exportedPackages;
     private List<String> importedPackages;
+    private Boolean publishesInterfaces;
 
 
     public OSGiModuleImpl() {
@@ -85,8 +88,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         if(!actvatorPath.startsWith("/")){
             actvatorPath = "/" +actvatorPath;
         }
-        actvatorPath = "/src"+actvatorPath;
-        Resource<?> activator = getProjectRoot().getChild(actvatorPath.concat(".java"));
+        Resource<?> activator = Utils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java"));
         if(activator == null || !activator.exists()){
             throw new RuntimeException("Could not find activator class at "+getProjectRoot() + actvatorPath);
         }
@@ -121,12 +123,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     }
 
     private boolean usesDeclarativeServices() {
-        Resource<?> OSGiInf = getProjectRoot().getChild("OSGI-INF");
+        Resource<?> OSGiInf = Utils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("service.xml").exists();
     }
 
     private FileResource<?> findManifest() {
-        Resource<?> metaInf = getProjectRoot().getChild("META-INF");
+        Resource<?> metaInf = Utils.getProjectMetaInfPath(projectRoot);
         if (metaInf == null || !metaInf.exists()) {
             throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
@@ -247,5 +249,47 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
             importedPackages = findImportedPackages();
         }
         return importedPackages;
+    }
+
+    public Boolean getPublishesInterfaces() {
+        if(publishesInterfaces == null){
+            publishesInterfaces = publishedInterfaces();
+        }
+        return publishesInterfaces;
+    }
+
+    /**
+     * verifies if exported packages by the bundle are only exporting interfaces
+     */
+    private Boolean publishedInterfaces() {
+        if(getExportedPackages().isEmpty()){
+            return false;
+        }
+
+        for (String exportedPackage : getExportedPackages()) {
+            String exportedPackagePath = exportedPackage.trim().replaceAll("\\.","/");
+            if(!exportedPackagePath.startsWith("/")){
+                exportedPackagePath = "/" +exportedPackagePath;
+            }
+            List<Resource<?>> resources =  Utils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+                @Override
+                public boolean accept(Resource<?> resource) {
+                    return resource.getName().endsWith(".java");
+                }
+            });
+
+            if(!resources.isEmpty()){
+                for (Resource<?> resource : resources) {
+                    if(!Utils.isInterface((FileResource<?>) resource)){
+                        return false;
+                    }
+                }
+
+            }
+
+        }
+        //all exported packages contains only interfaces
+        return true;
+
     }
 }

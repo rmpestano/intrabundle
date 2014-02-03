@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
+import br.ufrgs.rmpestano.intrabundle.Utils;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
@@ -28,8 +29,8 @@ public class BundleFacet extends BaseFacet {
          return project != null && isOsgiBundle(project.getProjectRoot());
     }
 
-    public boolean isOsgiBundle(DirectoryResource root){
-        Resource<?> metaInf = findManifest(root);
+    public boolean isOsgiBundle(DirectoryResource projectRoot){
+        Resource<?> metaInf = Utils.getProjectMetaInfPath(projectRoot);
         if(!metaInf.exists()){
             return false;
         }
@@ -49,36 +50,6 @@ public class BundleFacet extends BaseFacet {
 
     }
 
-    private Resource<?> findManifest(DirectoryResource root) {
-        if(!isMavenProject()){
-            return root.getChild("META-INF");
-        }else{
-           return root.getChild("src").getChild("main").getChild("resources").getChild("META-INF");
-        }
-
-    }
-
-    private boolean isMavenProject(){
-        if(project == null){
-            return false;
-        }
-        Resource<?> pom = project.getProjectRoot().getChild("pom.xml");
-        if(pom.exists()){
-            try{
-            RandomAccessFile file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine())!= null){
-                 if(line.contains("<dependencies>")){
-                     return true;//minimal pom added to non OSGi projects doest have 'dependencies' section
-                 }
-            }
-            }catch (Exception ex){
-                ex.printStackTrace();
-                //log ex
-            }
-        }
-        return false;
-    }
 
     private boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
         for (int i = 0 ;i<aFile.getChannel().size();i++){

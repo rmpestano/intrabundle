@@ -21,4 +21,6 @@ public interface OSGiModule extends Serializable{
     List<String> getImportedPackages();
 
     List<String> getExportedPackages();
+
+    Boolean getPublishesInterfaces();
 }

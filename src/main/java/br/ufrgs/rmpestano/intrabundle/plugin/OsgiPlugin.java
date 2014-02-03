@@ -71,7 +71,7 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
-    @Command(value = "listActivators", help = "list modules activator classes")
+    @Command(value = "activators", help = "list modules activator classes")
     public void listActivators(@PipeIn String in, PipeOut out) {
         out.println(resourceBundle.get().getString("osgi.listActivators"));
         for (OSGiModule module: getModules()) {
@@ -79,7 +79,7 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
-    @Command(value ="listExportedPackages")
+    @Command(value ="exportedPackages")
     public void listExportedPackages(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
         out.println(resourceBundle.get().getString("module.listExported",choice));
@@ -94,7 +94,7 @@ public class OsgiPlugin implements Plugin {
 
     }
 
-    @Command(value ="listImportedPackages")
+    @Command(value ="importedPackages")
     public void listImportedPackages(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
         out.println(resourceBundle.get().getString("module.listImported",choice));
@@ -109,7 +109,7 @@ public class OsgiPlugin implements Plugin {
 
     }
 
-    @Command("moduleDependencies")
+    @Command("dependencies")
     public void moduleDependencies(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
         out.println(resourceBundle.get().getString("module.dependencies",choice));
