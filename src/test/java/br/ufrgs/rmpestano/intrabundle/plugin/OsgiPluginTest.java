@@ -1,7 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -31,14 +30,13 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Inject
-    @Current
-    ResourceBundle resourceBundle;
+    MessageProvider provider;
 
     @Test
     public void testDefaultCommand() throws Exception {
         resetOutput();
         getShell().execute("osgi");
-        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.defaultCommand")));
+        Assert.assertTrue(getOutput().contains(provider.getMessage("osgi.defaultCommand")));
     }
 
     @Test
@@ -77,7 +75,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         if(OSUtils.isWindows()){
             assertion = "\r"+assertion;
         }
-        Assert.assertTrue(getOutput().contains(resourceBundle.getString("osgi.declarativeServices") + assertion));
+        Assert.assertTrue(getOutput().contains(provider.getMessage("osgi.declarativeServices") + assertion));
     }
 
     @Test

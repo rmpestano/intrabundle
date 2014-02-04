@@ -1,11 +1,10 @@
 package br.ufrgs.rmpestano.intrabundle.i18n;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
+import br.ufrgs.rmpestano.intrabundle.annotation.CurrentLocale;
 import br.ufrgs.rmpestano.intrabundle.event.LocaleChangeEvent;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class MessageProvider implements Serializable {
 
 
     @Inject
-    @Current
+    @CurrentLocale
     Instance<String> localeLanguage;
 
     private ResourceBundle currentBundle;
@@ -29,8 +28,6 @@ public class MessageProvider implements Serializable {
         return getCurrentBundle().getString(key, params);
     }
 
-    @Produces
-    @Current
     public ResourceBundle getCurrentBundle() {
         if (currentBundle == null) {
             try {

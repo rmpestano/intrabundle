@@ -1,7 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -17,8 +16,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
 
     @Inject
-    @Current
-    ResourceBundle resourceBundle;
+    MessageProvider provider;
 
     @Deployment
     public static JavaArchive getDeployment() {
@@ -71,5 +69,12 @@ public class BundlePluginTest extends BaseBundleTest {
         resetOutput();
         getShell().execute("bundle importedPackages");
         Assert.assertTrue(getOutput().contains("org.osgi.framework"));
+    }
+
+    @Test
+    public void locTest() throws Exception {
+        resetOutput();
+        getShell().execute("bundle loc");
+        Assert.assertTrue(getOutput().startsWith("2"));
     }
 }

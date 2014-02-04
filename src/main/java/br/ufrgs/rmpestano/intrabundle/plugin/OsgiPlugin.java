@@ -1,15 +1,13 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -28,13 +26,12 @@ public class OsgiPlugin implements Plugin {
     OSGiProject project;
 
     @Inject
-    @Current
-    Instance<ResourceBundle> resourceBundle;
+    MessageProvider provider;
 
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
-        out.println(ShellColor.YELLOW, resourceBundle.get().getString("osgi.defaultCommand"));
+        out.println(ShellColor.YELLOW, provider.getMessage("osgi.defaultCommand"));
     }
 
     @Command(value = "countBundles")
@@ -62,7 +59,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
     public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
-        out.println(resourceBundle.get().getString("osgi.declarativeServices"));
+        out.println(provider.getMessage("osgi.declarativeServices"));
         for (OSGiModule module: getModules()) {
             if(module.getUsesDeclarativeServices()){
                 out.println(module.toString());
@@ -72,18 +69,18 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "activators", help = "list modules activator classes")
     public void listActivators(@PipeIn String in, PipeOut out) {
-        out.println(resourceBundle.get().getString("osgi.listActivators"));
+        out.println(provider.getMessage("osgi.listActivators"));
         for (OSGiModule module: getModules()) {
-             out.println(module.toString()+":"+(module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : resourceBundle.get().getString("osgi.no-activator")));
+             out.println(module.toString()+":"+(module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
         }
     }
 
     @Command(value ="exportedPackages")
     public void listExportedPackages(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
-        out.println(resourceBundle.get().getString("module.listExported",choice));
+        out.println(provider.getMessage("module.listExported",choice));
         if(choice.getExportedPackages().isEmpty()){
-          out.println(resourceBundle.get().getString("module.noExportedPackages"));
+          out.println(provider.getMessage("module.noExportedPackages"));
         }
         else{
             for (String s : choice.getExportedPackages()) {
@@ -96,9 +93,9 @@ public class OsgiPlugin implements Plugin {
     @Command(value ="importedPackages")
     public void listImportedPackages(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
-        out.println(resourceBundle.get().getString("module.listImported",choice));
+        out.println(provider.getMessage("module.listImported",choice));
         if(choice.getImportedPackages().isEmpty()){
-            out.println(resourceBundle.get().getString("module.noImportedPackages"));
+            out.println(provider.getMessage("module.noImportedPackages"));
         }
         else{
             for (String s : choice.getImportedPackages()) {
@@ -111,9 +108,9 @@ public class OsgiPlugin implements Plugin {
     @Command("dependencies")
     public void moduleDependencies(@PipeIn String in, PipeOut out){
         OSGiModule choice = choiceModule();
-        out.println(resourceBundle.get().getString("module.dependencies",choice));
+        out.println(provider.getMessage("module.dependencies",choice));
         if(project.getModulesDependencies().get(choice).isEmpty()){
-            out.println(resourceBundle.get().getString("module.noDependency"));
+            out.println(provider.getMessage("module.noDependency"));
         }
         else{
             for (OSGiModule m : project.getModulesDependencies().get(choice)) {
@@ -124,7 +121,7 @@ public class OsgiPlugin implements Plugin {
     }
 
     private OSGiModule choiceModule(){
-           return prompt.promptChoiceTyped(resourceBundle.get().getString("module.choice"), getModules());
+           return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
     }
 
     public List<OSGiModule> getModules() {

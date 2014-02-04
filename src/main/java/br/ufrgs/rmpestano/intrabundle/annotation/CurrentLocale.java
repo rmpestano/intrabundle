@@ -15,5 +15,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Retention(RUNTIME)
 @Target({ METHOD, PARAMETER, TYPE, FIELD })
-public @interface Current {
+public @interface CurrentLocale {
 }

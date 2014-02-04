@@ -1,8 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.locator;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModuleImpl;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.locator.ProjectLocator;
@@ -28,8 +27,7 @@ public class BundleProjectLocator implements ProjectLocator {
     private final Instance<BundleFacet> bundleFacetInstance;
 
     @Inject
-    @Current
-    Instance<ResourceBundle> resourceBundle;
+    MessageProvider provider;
 
     @Inject
     Shell shell;
@@ -59,7 +57,7 @@ public class BundleProjectLocator implements ProjectLocator {
             FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
             pom.setContents(getClass().getResourceAsStream("/pom.xml"));
         }
-        shell.println(ShellColor.YELLOW,resourceBundle.get().getString("bundle.welcome"));
+        shell.println(ShellColor.YELLOW,provider.getMessage("bundle.welcome"));
         return result;
     }
 

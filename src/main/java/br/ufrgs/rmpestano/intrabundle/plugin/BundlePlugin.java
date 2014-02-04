@@ -1,12 +1,11 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
@@ -22,8 +21,7 @@ public class BundlePlugin implements Plugin {
     OSGiModule bundle;
 
     @Inject
-    @br.ufrgs.rmpestano.intrabundle.annotation.Current
-    Instance<ResourceBundle> resourceBundle;
+    MessageProvider messageProvider;
 
 
     @DefaultCommand
@@ -38,13 +36,13 @@ public class BundlePlugin implements Plugin {
 
     @Command(value = "activator", help = "prints module activator path")
     public void activator(@PipeIn String in, PipeOut out) {
-            out.println((bundle.getActivator() != null ? bundle.getActivator().getFullyQualifiedName() : resourceBundle.get().getString("osgi.no-activator")));
+            out.println((bundle.getActivator() != null ? bundle.getActivator().getFullyQualifiedName() : messageProvider.getMessage("osgi.no-activator")));
     }
 
     @Command(value = "exportedPackages",help = "list bundle exported packages")
     public void exportedPackages(PipeOut out){
         if(bundle.getExportedPackages().isEmpty()){
-            out.println(resourceBundle.get().getString("module.noExportedPackages"));
+            out.println(messageProvider.getMessage("module.noExportedPackages"));
         }
         else{
             for (String s : bundle.getExportedPackages()) {
@@ -56,7 +54,7 @@ public class BundlePlugin implements Plugin {
     @Command(value = "importedPackages",help = "list bundle imported packages")
     public void importedPackages(PipeOut out){
         if(bundle.getImportedPackages().isEmpty()){
-            out.println(resourceBundle.get().getString("module.noImportedPackages"));
+            out.println(messageProvider.getMessage("module.noImportedPackages"));
         }
         else{
             for (String s : bundle.getImportedPackages()) {
@@ -66,8 +64,13 @@ public class BundlePlugin implements Plugin {
     }
 
     @Command(value = "publishesInterfaces", help = "true if bundle exported packages contains only interfaces, false if it contains one or more classes")
-    public void publishesInterfaces(@PipeIn String in, PipeOut out, @Option String... args) {
+    public void publishesInterfaces(PipeOut out) {
         out.println(bundle.getPublishesInterfaces().toString());
+    }
+
+    @Command(value = "loc",help = "Count bundle lines of code")
+    public void loc(PipeOut out){
+         out.println(bundle.getLinesOfCode() != null ? bundle.getLinesOfCode().toString():"0");
     }
 
 
