@@ -20,14 +20,11 @@ import java.util.List;
 public class OsgiPlugin implements Plugin {
 
     @Inject
-    private ShellPrompt prompt;
-
-    @Inject
     OSGiProject project;
-
     @Inject
     MessageProvider provider;
-
+    @Inject
+    private ShellPrompt prompt;
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
@@ -41,8 +38,8 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "listBundles")
     public void listBundles(@PipeIn String in, PipeOut out) {
-        for (int i = 0; i < getModules().size(); i++) {
-            out.println("bundle(" + i + "):" + getModules().get(i).toString());
+        for (OSGiModule osGiModule : getModules()) {
+            out.println(osGiModule.toString());
         }
     }
 
@@ -59,9 +56,9 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
     public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
-        out.println(provider.getMessage("osgi.declarativeServices"));
-        for (OSGiModule module: getModules()) {
-            if(module.getUsesDeclarativeServices()){
+        out.println(ShellColor.YELLOW,provider.getMessage("osgi.declarativeServices"));
+        for (OSGiModule module : getModules()) {
+            if (module.getUsesDeclarativeServices()) {
                 out.println(module.toString());
             }
         }
@@ -69,59 +66,103 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "activators", help = "list modules activator classes")
     public void listActivators(@PipeIn String in, PipeOut out) {
-        out.println(provider.getMessage("osgi.listActivators"));
-        for (OSGiModule module: getModules()) {
-             out.println(module.toString()+":"+(module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
+        out.println(ShellColor.YELLOW,provider.getMessage("osgi.listActivators"));
+        for (OSGiModule module : getModules()) {
+            out.println(module.toString() + ":" + (module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
         }
     }
 
-    @Command(value ="exportedPackages")
-    public void listExportedPackages(@PipeIn String in, PipeOut out){
-        OSGiModule choice = choiceModule();
-        out.println(provider.getMessage("module.listExported",choice));
-        if(choice.getExportedPackages().isEmpty()){
-          out.println(provider.getMessage("module.noExportedPackages"));
-        }
-        else{
-            for (String s : choice.getExportedPackages()) {
-                out.println(s);
+    @Command(value = "exportedPackages")
+    public void listExportedPackages(@PipeIn String in, PipeOut out) {
+        if (!allModules(provider.getMessage("packages"))) {
+            OSGiModule choice = choiceModule();
+            listModuleExportedPackages(choice, out);
+        }//execute command for all modules
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleExportedPackages(osGiModule, out);
             }
         }
 
     }
 
-    @Command(value ="importedPackages")
-    public void listImportedPackages(@PipeIn String in, PipeOut out){
-        OSGiModule choice = choiceModule();
-        out.println(provider.getMessage("module.listImported",choice));
-        if(choice.getImportedPackages().isEmpty()){
-            out.println(provider.getMessage("module.noImportedPackages"));
-        }
-        else{
-            for (String s : choice.getImportedPackages()) {
-                out.println(s);
+    @Command(value = "importedPackages")
+    public void listImportedPackages(@PipeIn String in, PipeOut out) {
+        if (!allModules(provider.getMessage("packages"))) {
+            OSGiModule choice = choiceModule();
+            listModuleImportedPackages(choice, out);
+        }//execute command for all modules
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleImportedPackages(osGiModule, out);
             }
         }
-
     }
 
     @Command("dependencies")
-    public void moduleDependencies(@PipeIn String in, PipeOut out){
-        OSGiModule choice = choiceModule();
-        out.println(provider.getMessage("module.dependencies",choice));
-        if(project.getModulesDependencies().get(choice).isEmpty()){
-            out.println(provider.getMessage("module.noDependency"));
+    public void moduleDependencies(@PipeIn String in, PipeOut out) {
+        if (!this.allModules(provider.getMessage("dependencies"))) {
+            OSGiModule choice = choiceModule();
+            this.listModuleDependencies(choice, out);
+        }//execute command for all modules
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleDependencies(osGiModule, out);
+            }
         }
-        else{
+    }
+
+    @Command("publishInterfaces")
+    public void publishInterfaces(@PipeIn String in, PipeOut out) {
+        out.println(ShellColor.YELLOW, provider.getMessage("osgi.publishInterfaces"));
+        for (OSGiModule osGiModule : getModules()) {
+            if(osGiModule.getPublishesInterfaces()){
+                out.println(osGiModule.toString());
+            }
+        }
+    }
+
+    private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listImported", module) + " =====");
+        if (module.getImportedPackages().isEmpty()) {
+            out.println(provider.getMessage("module.noImportedPackages"));
+        } else {
+            for (String s : module.getImportedPackages()) {
+                out.println(s);
+            }
+        }
+
+    }
+
+    private void listModuleExportedPackages(OSGiModule module, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listExported", module) + " =====");
+        if (module.getExportedPackages().isEmpty()) {
+            out.println(provider.getMessage("module.noExportedPackages"));
+        } else {
+            for (String s : module.getExportedPackages()) {
+                out.println(s);
+            }
+        }
+
+    }
+
+    private void listModuleDependencies(OSGiModule choice, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.dependencies", choice) + " =====");
+        if (project.getModulesDependencies().get(choice).isEmpty()) {
+            out.println(provider.getMessage("module.noDependency"));
+        } else {
             for (OSGiModule m : project.getModulesDependencies().get(choice)) {
                 out.println(m.toString());
             }
         }
-
     }
 
-    private OSGiModule choiceModule(){
-           return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
+    private OSGiModule choiceModule() {
+        return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
+    }
+
+    private boolean allModules(String allWhat) {
+        return prompt.promptBoolean(provider.getMessage("module.all", allWhat));
     }
 
     public List<OSGiModule> getModules() {

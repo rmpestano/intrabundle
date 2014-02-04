@@ -59,6 +59,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         return projectRoot;
     }
 
+    public void setProjectRoot(DirectoryResource projectRoot) {
+        this.projectRoot = projectRoot;
+    }
+
     @Override
     public boolean exists() {
         return (projectRoot != null) && projectRoot.exists();
