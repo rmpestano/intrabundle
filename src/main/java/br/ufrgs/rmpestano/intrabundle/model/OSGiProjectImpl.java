@@ -103,7 +103,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
 
     @Override
     public String toString() {
-        return "OSGiProjectImpl [" + getProjectRoot() + "]";
+        return getProjectRoot().toString();
     }
 
     public Map<OSGiModule, List<OSGiModule>> getModulesDependencies() {

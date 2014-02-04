@@ -24,4 +24,5 @@ public interface OSGiModule extends Serializable{
 
     Boolean getPublishesInterfaces();
 
+
 }

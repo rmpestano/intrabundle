@@ -263,11 +263,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     }
 
     /**
-     * verifies if exported packages by the bundle are only exporting interfaces
+     * <code>true</code> if exported packages by the bundle are only exporting interfaces
+     * <code>false</code> if module is exporting one or more classes in exported packages
      */
     private Boolean publishedInterfaces() {
         if(getExportedPackages().isEmpty()){
-            return false;
+            return true;//no exported packages means the module is not publishing packages with implementation details
         }
 
         for (String exportedPackage : getExportedPackages()) {

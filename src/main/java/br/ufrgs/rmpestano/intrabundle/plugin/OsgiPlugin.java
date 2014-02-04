@@ -2,6 +2,8 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
+import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.shell.ShellColor;
@@ -9,6 +11,7 @@ import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,10 +24,16 @@ public class OsgiPlugin implements Plugin {
 
     @Inject
     OSGiProject project;
+
     @Inject
     MessageProvider provider;
+
     @Inject
-    private ShellPrompt prompt;
+    ShellPrompt prompt;
+
+    @Inject
+    JasperManager jasperManager;
+
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
@@ -167,6 +176,20 @@ public class OsgiPlugin implements Plugin {
 
     public List<OSGiModule> getModules() {
         return project.getModules();
+    }
+
+    public List<ModuleDTO> getModulesToReport(){
+        List<ModuleDTO> modulesDTO = new ArrayList<ModuleDTO>();
+
+        for (OSGiModule module : getModules()) {
+               modulesDTO.add(new ModuleDTO(module));
+        }
+        return modulesDTO;
+    }
+
+    @Command(help = "Generate a .pdf file containing information about all bundles of the project")
+    public void report(){
+        jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).build();
     }
 
 }

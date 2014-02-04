@@ -31,6 +31,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports</artifactId>
+      <version>5.1.2</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>itext</artifactId>
+          <groupId>com.lowagie</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.lowagie</groupId>
+      <artifactId>itext</artifactId>
+      <version>2.1.7</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.forge</groupId>
       <artifactId>forge-test-harness</artifactId>
       <version>${forge.version}</version>
@@ -64,6 +80,58 @@
           <encoding>UTF-8</encoding>
           <source>1.6</source>
           <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jasperreports-maven-plugin</artifactId>
+        <version>1.0-beta-1</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>compile-reports</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>5.1.2</version>
+            <scope>compile</scope>
+            <exclusions>
+              <exclusion>
+                <artifactId>itext</artifactId>
+                <groupId>com.lowagie</groupId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.8</version>
+          </dependency>
+          <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
+          </dependency>
+          <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+          </dependency>
+          <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.5</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <xmlValidation>true</xmlValidation>
+          <sourceDirectory>src/main/resources/reports</sourceDirectory>
+          <outputDirectory>target/classes/reports</outputDirectory>
         </configuration>
       </plugin>
     </plugins>
