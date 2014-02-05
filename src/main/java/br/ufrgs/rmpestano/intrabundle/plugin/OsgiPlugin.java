@@ -193,6 +193,7 @@ public class OsgiPlugin implements Plugin {
     public void report(){
         Map<String,Object> params = new HashMap<String, Object>();
         params.put("project",project);
+        params.put("provider",provider);
         jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).params(params).build();
     }
 

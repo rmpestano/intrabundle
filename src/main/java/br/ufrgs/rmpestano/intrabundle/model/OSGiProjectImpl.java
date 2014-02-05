@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by rmpestano on 1/22/14.
  */
-@Typed()
+@Typed
 public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;

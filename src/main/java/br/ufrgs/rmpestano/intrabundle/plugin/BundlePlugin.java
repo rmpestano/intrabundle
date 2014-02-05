@@ -31,7 +31,7 @@ public class BundlePlugin implements Plugin {
 
     @Command(value = "usesDeclarativeServices")
     public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
-           out.println(bundle.getUsesDeclarativeServices().toString());
+           out.println(bundle.getUsesDeclarativeServices() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));
     }
 
     @Command(value = "activator", help = "prints module activator path")
@@ -65,7 +65,7 @@ public class BundlePlugin implements Plugin {
 
     @Command(value = "publishesInterfaces", help = "true if bundle exported packages contains only interfaces, false if it contains one or more classes")
     public void publishesInterfaces(PipeOut out) {
-        out.println(bundle.getPublishesInterfaces().toString());
+        out.println(bundle.getPublishesInterfaces() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));
     }
 
     @Command(value = "loc",help = "Count bundle lines of code")
