@@ -2,9 +2,15 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="126"/>
+	<property name="ireport.y" value="187"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
 	<subDataset name="dataset2" uuid="d7b6b6d8-d637-4afa-8917-e54086fa6c53"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/rmpestano/projetos/intrabundle/src/main/resources/reports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="project" class="java.lang.Object" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<field name="module" class="java.lang.Object"/>
 	<group name="Group1">
 		<groupFooter>
@@ -68,7 +74,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="352">
+		<band height="370" splitType="Prevent">
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="0fde7ae3-f01f-4a68-826a-ffc94240dfe8" x="206" y="23" width="327" height="20"/>
 				<textElement>
@@ -77,7 +83,7 @@
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).toString()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="4d830cb2-6c13-47c0-868e-1e63c1f4f9bf" positionType="FixRelativeToBottom" x="-1" y="303" width="555" height="1"/>
+				<reportElement uuid="4d830cb2-6c13-47c0-868e-1e63c1f4f9bf" positionType="FixRelativeToBottom" x="-1" y="360" width="555" height="1" isPrintWhenDetailOverflows="true"/>
 			</line>
 			<staticText>
 				<reportElement uuid="f839506d-28cc-44af-85da-98cceddb47c5" x="0" y="23" width="184" height="20"/>
@@ -129,37 +135,47 @@
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getActivator() == null ? "No activator found" : ((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getActivator()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="00ffc0e4-7e06-4ed6-b6b1-bf81a407a80b" x="0" y="154" width="184" height="20"/>
+				<reportElement uuid="00ffc0e4-7e06-4ed6-b6b1-bf81a407a80b" x="0" y="157" width="184" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Exported Packages:]]></text>
 			</staticText>
-			<componentElement>
-				<reportElement uuid="f17324ed-ccd0-4385-9c4d-5a556122ba47" x="206" y="154" width="327" height="50" isPrintWhenDetailOverflows="true"/>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Horizontal" ignoreWidth="false">
-					<datasetRun subDataset="dataset1" uuid="4a0d1c08-3266-4d70-920b-7db9f134f83f">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getExportedPackages())]]></dataSourceExpression>
-					</datasetRun>
-					<jr:listContents height="50" width="327"/>
-				</jr:list>
-			</componentElement>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="241ef3b1-b29d-4e59-bf7f-1b3dcf328fee" positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="206" y="157" width="327" height="47" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getExportedPackages()]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement uuid="9508de29-1728-42fa-bd16-331ab47f56cd" x="0" y="225" width="184" height="20"/>
+				<reportElement uuid="4a79cfca-8b1e-4656-83ef-a445628793f3" x="0" y="216" width="184" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Imported Packages:]]></text>
 			</staticText>
-			<componentElement>
-				<reportElement uuid="8ac97692-2be4-4a48-96b3-87eae559d566" x="206" y="225" width="327" height="50" isPrintWhenDetailOverflows="true"/>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" ignoreWidth="true">
-					<datasetRun subDataset="dataset2" uuid="05b87190-ec1e-4048-a3a5-c7eb1120c60a">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getImportedPackages())]]></dataSourceExpression>
-					</datasetRun>
-					<jr:listContents height="50" width="327"/>
-				</jr:list>
-			</componentElement>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="471385c1-2f53-4b1b-813a-f43cb5268584" stretchType="RelativeToBandHeight" mode="Opaque" x="206" y="216" width="327" height="53" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getImportedPackages()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="439bcbcc-e72a-4611-8f50-ae8ce9ded448" x="0" y="286" width="184" height="60"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Bundle dependencies:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="586587d0-bffc-4ce0-9b17-39ae4f86c3d8" stretchType="RelativeToBandHeight" mode="Opaque" x="206" y="286" width="327" height="60" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((java.util.Map)((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)$P{project}).getModulesDependencies()).get($F{module})]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

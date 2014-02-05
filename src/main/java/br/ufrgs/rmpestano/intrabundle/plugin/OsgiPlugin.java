@@ -12,7 +12,9 @@ import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -189,7 +191,9 @@ public class OsgiPlugin implements Plugin {
 
     @Command(help = "Generate a .pdf file containing information about all bundles of the project")
     public void report(){
-        jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).build();
+        Map<String,Object> params = new HashMap<String, Object>();
+        params.put("project",project);
+        jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).params(params).build();
     }
 
 }

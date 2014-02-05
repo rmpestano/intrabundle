@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,7 @@ public class JasperManager implements Serializable {
         if(reportName == null || data == null){
             throw new RuntimeException("reportName and data is required to generate the report");
         }
+        new JRBeanCollectionDataSource(Arrays.asList(new String[]{"abc","def"}));
         if(fileName == null){
             fileName = reportName;
         }
