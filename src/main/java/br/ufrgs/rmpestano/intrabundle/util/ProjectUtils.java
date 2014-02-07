@@ -2,7 +2,6 @@ package br.ufrgs.rmpestano.intrabundle.util;
 
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
-import org.jboss.forge.parser.java.SourceType;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
@@ -60,7 +59,7 @@ public class ProjectUtils implements Serializable {
 
     public static boolean isInterface(FileResource<?> resource) {
         JavaSource parser = JavaParser.parse(resource.getResourceInputStream());
-        return parser.getSourceType().equals(SourceType.INTERFACE);
+        return parser.isInterface();
 
     }
 
