@@ -73,5 +73,10 @@ public class BundlePlugin implements Plugin {
          out.println(bundle.getLinesOfCode() != null ? bundle.getLinesOfCode().toString():"0");
     }
 
+    @Command(value = "lot",help = "Count bundle lines of test code")
+    public void lot(PipeOut out){
+        out.println(bundle.getLinesOfTestCode() != null ? bundle.getLinesOfTestCode().toString():"0");
+    }
+
 
 }

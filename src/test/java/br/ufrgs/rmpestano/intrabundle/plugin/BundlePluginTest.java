@@ -2,6 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
@@ -26,8 +27,10 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
-                .addPackages(true, BundlePlugin.class.getPackage()).addClass(BundleProjectLocator.class);
-
+                .addClass(ProjectUtils.class)
+                .addClass(BundlePlugin.class).
+                addClass(LocalePlugin.class).
+                addClass(BundleProjectLocator.class);
         System.out.println(jar.toString(true));
         return jar;
     }
@@ -36,14 +39,14 @@ public class BundlePluginTest extends BaseBundleTest {
     public void testDeclarativeServices() throws Exception {
         resetOutput();
         getShell().execute("bundle usesDeclarativeServices");
-        Assert.assertTrue(getOutput().contains("true"));
+        Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
     }
 
     @Test
     public void testPublishesInterfaces() throws Exception {
         resetOutput();
         getShell().execute("bundle publishesInterfaces");
-        Assert.assertTrue(getOutput().contains("true"));
+        Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
     }
 
     @Test
@@ -77,4 +80,15 @@ public class BundlePluginTest extends BaseBundleTest {
         getShell().execute("bundle loc");
         Assert.assertTrue(getOutput().startsWith("2"));
     }
+
+    /**
+     * lines of test code test
+     */
+    @Test
+    public void lotTest() throws Exception {
+        resetOutput();
+        getShell().execute("bundle lot");
+        Assert.assertTrue(getOutput().startsWith("1"));
+    }
+
 }

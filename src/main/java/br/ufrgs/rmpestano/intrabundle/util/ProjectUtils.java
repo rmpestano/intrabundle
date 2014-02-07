@@ -1,18 +1,20 @@
 package br.ufrgs.rmpestano.intrabundle.util;
 
+import org.jboss.forge.parser.JavaParser;
+import org.jboss.forge.parser.java.JavaSource;
+import org.jboss.forge.parser.java.SourceType;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 
 /**
  * Created by rmpestano on 2/3/14.
  */
-public class ProjectUtils implements Serializable{
+public class ProjectUtils implements Serializable {
 
     public static boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
@@ -52,26 +54,21 @@ public class ProjectUtils implements Serializable{
         }
     }
 
-    public static Resource getProjectMetaInfPath(DirectoryResource root) {
-        return  getProjectResourcesPath(root).getChild("META-INF");
+    public static Resource<?> getProjectMetaInfPath(DirectoryResource root) {
+        return getProjectResourcesPath(root).getChild("META-INF");
     }
 
-    public static boolean isInterface(FileResource<?> intef) {
-        try {
-            RandomAccessFile file = new RandomAccessFile(new File(intef.getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains("interface")) {
-                    return true;
-                }
-                if(line.contains("class")){
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public static boolean isInterface(FileResource<?> resource) {
+        JavaSource parser = JavaParser.parse(resource.getResourceInputStream());
+        return parser.getSourceType().equals(SourceType.INTERFACE);
 
+    }
+
+    public static Resource<?> getProjectTestPath(DirectoryResource root) {
+        if (isMavenProject(root)) {
+            return root.getChild("src").getChild("test").getChild("java");
+        } else {
+            return root.getChild("test");
+        }
     }
 }

@@ -12,6 +12,8 @@ public interface OSGiModule extends Serializable{
 
     Long getLinesOfCode();
 
+    Long getLinesOfTestCode();
+
     Boolean getUsesDeclarativeServices();
 
     FileResource<?> getManifest();

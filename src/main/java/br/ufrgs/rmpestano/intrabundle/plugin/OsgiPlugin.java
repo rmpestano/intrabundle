@@ -67,7 +67,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
     public void usesDeclarativeServices(@PipeIn String in, PipeOut out) {
-        out.println(ShellColor.YELLOW,provider.getMessage("osgi.declarativeServices"));
+        out.println(ShellColor.YELLOW, provider.getMessage("osgi.declarativeServices"));
         for (OSGiModule module : getModules()) {
             if (module.getUsesDeclarativeServices()) {
                 out.println(module.toString());
@@ -77,7 +77,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "activators", help = "list modules activator classes")
     public void listActivators(@PipeIn String in, PipeOut out) {
-        out.println(ShellColor.YELLOW,provider.getMessage("osgi.listActivators"));
+        out.println(ShellColor.YELLOW, provider.getMessage("osgi.listActivators"));
         for (OSGiModule module : getModules()) {
             out.println(module.toString() + ":" + (module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
         }
@@ -127,7 +127,7 @@ public class OsgiPlugin implements Plugin {
     public void publishInterfaces(@PipeIn String in, PipeOut out) {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.publishInterfaces"));
         for (OSGiModule osGiModule : getModules()) {
-            if(osGiModule.getPublishesInterfaces()){
+            if (osGiModule.getPublishesInterfaces()) {
                 out.println(osGiModule.toString());
             }
         }
@@ -180,20 +180,20 @@ public class OsgiPlugin implements Plugin {
         return project.getModules();
     }
 
-    public List<ModuleDTO> getModulesToReport(){
+    public List<ModuleDTO> getModulesToReport() {
         List<ModuleDTO> modulesDTO = new ArrayList<ModuleDTO>();
 
         for (OSGiModule module : getModules()) {
-               modulesDTO.add(new ModuleDTO(module));
+            modulesDTO.add(new ModuleDTO(module));
         }
         return modulesDTO;
     }
 
     @Command(help = "Generate a .pdf file containing information about all bundles of the project")
-    public void report(){
-        Map<String,Object> params = new HashMap<String, Object>();
-        params.put("project",project);
-        params.put("provider",provider);
+    public void report() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("project", project);
+        params.put("provider", provider);
         jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).params(params).build();
     }
 

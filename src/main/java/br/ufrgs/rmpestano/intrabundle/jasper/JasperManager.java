@@ -86,7 +86,7 @@ public class JasperManager implements Serializable {
 
 	/**
 	 * get JasperPrint from .jasper file
-	 * 
+	 *
 	 */
 	public JasperPrint getJasperPrint() {
 		try {

@@ -18,12 +18,12 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         DirectoryResource main = root.getOrCreateChildDirectory("module");
         addMetaInf(main,"/MANIFEST.MF");
         addActivator(main);
+        addTestClass(main);
         addDeclarativeServices(main);
         addExportedPackage(main);
         getShell().setCurrentResource(main);
         return getProject();
     }
-
 
     private void addDeclarativeServices(DirectoryResource root) {
         DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
@@ -49,6 +49,15 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
         activator.setContents("activator content");
+    }
+
+    private void addTestClass(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("test").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano");
+        FileResource<?> testClass = (FileResource<?>) resource.getChild("TestClass.java");
+        testClass.setContents("test class content");
     }
 
     private void addExportedPackage(DirectoryResource root){

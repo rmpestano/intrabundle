@@ -27,6 +27,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private Long totalLoc;
+    private Long totalTestLoc;//test lines of code
     private Boolean usesDeclarativeServices;
     private FileResource<?> activator;
     private FileResource<?> manifest;
@@ -101,6 +102,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
     }
 
+    /**
+     * count lines of .java files under src folder
+     * @param projectRoot
+     * @return
+     */
     private Long countModuleLines(DirectoryResource projectRoot) {
         for (Resource<?> resource : projectRoot.listResources()) {
             if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
@@ -109,11 +115,31 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource) {
+            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectTestPath(getProjectRoot()))) {
                 this.totalLoc = countModuleLines((DirectoryResource) resource);
             }
         }
         return totalLoc;
+    }
+
+    /**
+     * count lines of .java files under test folder
+     * @param projectRoot
+     * @return
+     */
+    private Long countModuleTestLines(DirectoryResource projectRoot) {
+        for (Resource<?> resource : projectRoot.listResources()) {
+            if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
+                try {
+                    this.totalTestLoc += countFileLines((FileResource<?>) resource);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectSourcePath(getProjectRoot()))) {
+                this.totalTestLoc = countModuleTestLines((DirectoryResource) resource);
+            }
+        }
+        return totalTestLoc;
     }
 
     private Long countFileLines(FileResource<?> resource) throws IOException {
@@ -201,6 +227,42 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         }
     }
 
+    /**
+     * <code>true</code> if exported packages by the bundle are only exporting interfaces
+     * <code>false</code> if module is exporting one or more classes in exported packages
+     */
+    private Boolean publishedInterfaces() {
+        if(getExportedPackages().isEmpty()){
+            return true;//no exported packages means the module is not publishing packages with implementation details
+        }
+
+        for (String exportedPackage : getExportedPackages()) {
+            String exportedPackagePath = exportedPackage.trim().replaceAll("\\.","/");
+            if(!exportedPackagePath.startsWith("/")){
+                exportedPackagePath = "/" +exportedPackagePath;
+            }
+            List<Resource<?>> resources =  ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+                @Override
+                public boolean accept(Resource<?> resource) {
+                    return resource.getName().endsWith(".java");
+                }
+            });
+
+            if(!resources.isEmpty()){
+                for (Resource<?> resource : resources) {
+                    if(!ProjectUtils.isInterface((FileResource<?>) resource)){
+                        return false;
+                    }
+                }
+
+            }
+
+        }
+        //all exported packages contains only interfaces
+        return true;
+
+    }
+
 
     //getters
 
@@ -262,39 +324,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         return publishesInterfaces;
     }
 
-    /**
-     * <code>true</code> if exported packages by the bundle are only exporting interfaces
-     * <code>false</code> if module is exporting one or more classes in exported packages
-     */
-    private Boolean publishedInterfaces() {
-        if(getExportedPackages().isEmpty()){
-            return true;//no exported packages means the module is not publishing packages with implementation details
+    public Long getLinesOfTestCode() {
+        if(totalTestLoc == null){
+            totalTestLoc = new Long(0L);
+            totalTestLoc = countModuleTestLines(getProjectRoot());
         }
-
-        for (String exportedPackage : getExportedPackages()) {
-            String exportedPackagePath = exportedPackage.trim().replaceAll("\\.","/");
-            if(!exportedPackagePath.startsWith("/")){
-                exportedPackagePath = "/" +exportedPackagePath;
-            }
-            List<Resource<?>> resources =  ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
-                @Override
-                public boolean accept(Resource<?> resource) {
-                    return resource.getName().endsWith(".java");
-                }
-            });
-
-            if(!resources.isEmpty()){
-                for (Resource<?> resource : resources) {
-                    if(!ProjectUtils.isInterface((FileResource<?>) resource)){
-                        return false;
-                    }
-                }
-
-            }
-
-        }
-        //all exported packages contains only interfaces
-        return true;
-
+        return totalTestLoc;
     }
 }
