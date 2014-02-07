@@ -25,7 +25,7 @@ public class ProjectUtils implements Serializable{
                 String line;
                 while ((line = file.readLine()) != null) {
                     if (line.contains("<dependencies>")) {
-                        return true;//minimal pom added to non OSGi projects doest have 'dependencies' section
+                        return true;//minimal pom added to non maven projects doest have 'dependencies' section
                     }
                 }
             } catch (Exception ex) {
