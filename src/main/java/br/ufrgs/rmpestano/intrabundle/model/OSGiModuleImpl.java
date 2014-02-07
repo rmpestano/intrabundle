@@ -34,7 +34,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private List<String> exportedPackages;
     private List<String> importedPackages;
     private Boolean publishesInterfaces;
-
+    private Boolean declaresPermissions;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -155,6 +155,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private boolean usesDeclarativeServices() {
         Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("service.xml").exists();
+    }
+
+    private Boolean declaresPermissions() {
+        Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
+        return OSGiInf.exists() && OSGiInf.getChild("permissions.perm").exists();
     }
 
     private FileResource<?> findManifest() {
@@ -323,6 +328,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         }
         return publishesInterfaces;
     }
+
+    @Override
+    public Boolean getDeclaresPermissions() {
+        if(declaresPermissions == null){
+            declaresPermissions = declaresPermissions();
+        }
+        return declaresPermissions;
+    }
+
 
     public Long getLinesOfTestCode() {
         if(totalTestLoc == null){

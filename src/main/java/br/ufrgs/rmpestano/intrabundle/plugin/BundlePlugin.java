@@ -34,6 +34,11 @@ public class BundlePlugin implements Plugin {
            out.println(bundle.getUsesDeclarativeServices() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));
     }
 
+    @Command(value = "declaresPermissions")
+    public void declaresPermissions(@PipeIn String in, PipeOut out) {
+        out.println(bundle.getDeclaresPermissions() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));
+    }
+
     @Command(value = "activator", help = "prints module activator path")
     public void activator(@PipeIn String in, PipeOut out) {
             out.println((bundle.getActivator() != null ? bundle.getActivator().getFullyQualifiedName() : messageProvider.getMessage("osgi.no-activator")));

@@ -120,9 +120,5 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().contains("module3"));
     }
 
-    //@Test
-    public void testPrompt() throws Exception {
-        //queueInputLines("y");
-        //getShell().execute("os prompt foo bar");
-    }
+
 }

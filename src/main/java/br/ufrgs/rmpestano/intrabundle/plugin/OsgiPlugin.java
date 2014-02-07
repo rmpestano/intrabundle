@@ -62,7 +62,18 @@ public class OsgiPlugin implements Plugin {
             out.println(getModules().get(i).toString() + ":" + loci);
             total += loci;
         }
-        out.println("Total lines of code:" + total);
+        out.println(provider.getMessage("osgi.total-loc") + total);
+    }
+
+    @Command(value = "lot", help = "count lines of test code of all bundles")
+    public void lot(@PipeIn String in, PipeOut out) {
+        long total = 0;
+        for (int i = 0; i < getModules().size(); i++) {
+            long loti = getModules().get(i).getLinesOfTestCode();
+            out.println(getModules().get(i).toString() + ":" + loti);
+            total += loti;
+        }
+        out.println(provider.getMessage("osgi.total-lot") + total);
     }
 
     @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
@@ -128,6 +139,16 @@ public class OsgiPlugin implements Plugin {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.publishInterfaces"));
         for (OSGiModule osGiModule : getModules()) {
             if (osGiModule.getPublishesInterfaces()) {
+                out.println(osGiModule.toString());
+            }
+        }
+    }
+
+    @Command("declaresPermissions")
+    public void declaresPermissions(@PipeIn String in, PipeOut out) {
+        out.println(ShellColor.YELLOW, provider.getMessage("osgi.declaresPermissions"));
+        for (OSGiModule osGiModule : getModules()) {
+            if (osGiModule.getDeclaresPermissions()) {
                 out.println(osGiModule.toString());
             }
         }

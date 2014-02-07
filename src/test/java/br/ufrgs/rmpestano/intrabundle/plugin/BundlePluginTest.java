@@ -36,21 +36,28 @@ public class BundlePluginTest extends BaseBundleTest {
     }
 
     @Test
-    public void testDeclarativeServices() throws Exception {
+    public void shouldUseDeclarativeServices() throws Exception {
         resetOutput();
         getShell().execute("bundle usesDeclarativeServices");
         Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
     }
 
     @Test
-    public void testPublishesInterfaces() throws Exception {
+    public void shouldPublishInterfaces() throws Exception {
         resetOutput();
         getShell().execute("bundle publishesInterfaces");
         Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
     }
 
     @Test
-    public void activatorTest() throws Exception {
+    public void shouldDeclarePermissions() throws Exception{
+        resetOutput();
+        getShell().execute("bundle declaresPermissions");
+        Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
+    }
+
+    @Test
+    public void shouldFindActivator() throws Exception {
         resetOutput();
         getShell().execute("bundle activator");
         String activatorPath = "/module/src/br/ufrgs/rmpestano/activator/Activator.java";
@@ -61,21 +68,21 @@ public class BundlePluginTest extends BaseBundleTest {
     }
 
     @Test
-    public void exportedPackagesTest() throws Exception {
+    public void shouldGetExportedPackages() throws Exception {
         resetOutput();
         getShell().execute("bundle exportedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.api"));
     }
 
     @Test
-    public void importedPackagesTest() throws Exception {
+    public void shouldGetImportedPackages() throws Exception {
         resetOutput();
         getShell().execute("bundle importedPackages");
         Assert.assertTrue(getOutput().contains("org.osgi.framework"));
     }
 
     @Test
-    public void locTest() throws Exception {
+    public void shouldCountLinesOfCode() throws Exception {
         resetOutput();
         getShell().execute("bundle loc");
         Assert.assertTrue(getOutput().startsWith("2"));
@@ -85,7 +92,7 @@ public class BundlePluginTest extends BaseBundleTest {
      * lines of test code test
      */
     @Test
-    public void lotTest() throws Exception {
+    public void shouldCountLinesOfTest() throws Exception {
         resetOutput();
         getShell().execute("bundle lot");
         Assert.assertTrue(getOutput().startsWith("1"));
