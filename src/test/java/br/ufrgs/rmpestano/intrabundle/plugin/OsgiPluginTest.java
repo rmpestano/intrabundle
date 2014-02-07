@@ -1,6 +1,8 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
+import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -24,7 +26,10 @@ public class OsgiPluginTest extends BaseOSGiTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
-                .addPackages(true, OsgiPlugin.class.getPackage());
+                .addClass(OsgiPlugin.class)
+                .addClass(JasperManager.class)
+                .addClass(LocalePlugin.class)
+                .addClass(ProjectUtils.class);
         System.out.println(jar.toString(true));
         return jar;
     }
@@ -92,6 +97,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     @Test
     public void exportedPackagesTest() throws Exception {
         resetOutput();
+        queueInputLines("y");
         queueInputLines("1");
         getShell().execute("osgi exportedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package2"));
@@ -100,6 +106,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     @Test
     public void importedPackagesTest() throws Exception {
         resetOutput();
+        queueInputLines("y");
         queueInputLines("1");
         getShell().execute("osgi importedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
