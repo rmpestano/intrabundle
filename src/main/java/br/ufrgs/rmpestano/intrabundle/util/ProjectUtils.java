@@ -1,4 +1,4 @@
-package br.ufrgs.rmpestano.intrabundle;
+package br.ufrgs.rmpestano.intrabundle.util;
 
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
@@ -7,11 +7,12 @@ import org.jboss.forge.resources.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 
 /**
  * Created by rmpestano on 2/3/14.
  */
-public class Utils {
+public class ProjectUtils implements Serializable{
 
     public static boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {

@@ -1,7 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
-import br.ufrgs.rmpestano.intrabundle.Utils;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
@@ -18,6 +18,7 @@ import java.io.RandomAccessFile;
 @Singleton
 public class BundleFacet extends BaseFacet {
 
+
     @Override
     public boolean install() {
 
@@ -30,7 +31,7 @@ public class BundleFacet extends BaseFacet {
     }
 
     public boolean isOsgiBundle(DirectoryResource projectRoot){
-        Resource<?> metaInf = Utils.getProjectMetaInfPath(projectRoot);
+        Resource<?> metaInf = ProjectUtils.getProjectMetaInfPath(projectRoot);
         if(!metaInf.exists()){
             return false;
         }

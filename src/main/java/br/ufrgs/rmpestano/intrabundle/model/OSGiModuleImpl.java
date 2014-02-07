@@ -1,6 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.Utils;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -92,7 +92,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         if(!actvatorPath.startsWith("/")){
             actvatorPath = "/" +actvatorPath;
         }
-        Resource<?> activator = Utils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java"));
+        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java"));
         if(activator == null || !activator.exists()){
             throw new RuntimeException("Could not find activator class at "+getProjectRoot() + actvatorPath);
         }
@@ -127,12 +127,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     }
 
     private boolean usesDeclarativeServices() {
-        Resource<?> OSGiInf = Utils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
+        Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("service.xml").exists();
     }
 
     private FileResource<?> findManifest() {
-        Resource<?> metaInf = Utils.getProjectMetaInfPath(projectRoot);
+        Resource<?> metaInf = ProjectUtils.getProjectMetaInfPath(projectRoot);
         if (metaInf == null || !metaInf.exists()) {
             throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
@@ -276,7 +276,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
             if(!exportedPackagePath.startsWith("/")){
                 exportedPackagePath = "/" +exportedPackagePath;
             }
-            List<Resource<?>> resources =  Utils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+            List<Resource<?>> resources =  ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
                 @Override
                 public boolean accept(Resource<?> resource) {
                     return resource.getName().endsWith(".java");
@@ -285,7 +285,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
             if(!resources.isEmpty()){
                 for (Resource<?> resource : resources) {
-                    if(!Utils.isInterface((FileResource<?>) resource)){
+                    if(!ProjectUtils.isInterface((FileResource<?>) resource)){
                         return false;
                     }
                 }
