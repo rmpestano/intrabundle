@@ -10,6 +10,7 @@ import org.jboss.forge.resources.*;
 
 import javax.enterprise.inject.Typed;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -153,8 +154,23 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     private boolean usesDeclarativeServices() {
-        Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
-        return OSGiInf.exists() && OSGiInf.getChild("service.xml").exists();
+        Resource<?> manifest = getManifest();
+        if(manifest!= null && manifest.exists()){
+            try {
+                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()),"r");
+                String line;
+                while((line = aFile.readLine()) !=null){
+                    if(line.contains("Service-Component")){
+                        return true;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     private Boolean declaresPermissions() {

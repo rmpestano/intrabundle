@@ -29,16 +29,6 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMetaInf(bundle,"/MANIFEST-"+module+".MF");
         addActivator(bundle);
-        if(module.equals("module3")){
-            addDeclarativeServices(bundle);
-        }
-    }
-
-    private void addDeclarativeServices(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
-        resource.createNewFile();
-        FileResource<?> services = (FileResource<?>) resource.getChild("service.xml");
-        services.setContents("services content");
     }
 
     private void addMetaInf(DirectoryResource root,String manifestName) {

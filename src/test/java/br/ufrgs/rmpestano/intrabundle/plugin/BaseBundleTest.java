@@ -19,7 +19,6 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         addMetaInf(main,"/MANIFEST.MF");
         addActivator(main);
         addTestClass(main);
-        addDeclarativeServices(main);
         addPermissions(main);
         addExportedPackage(main);
         getShell().setCurrentResource(main);
@@ -30,12 +29,6 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
         FileResource<?> permissions = (FileResource<?>) resource.getChild("permissions.perm");
         permissions.setContents("permissions content");
-    }
-
-    private void addDeclarativeServices(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
-        FileResource<?> services = (FileResource<?>) resource.getChild("service.xml");
-        services.setContents("services content");
     }
 
     private void addMetaInf(DirectoryResource root,String manifestName) {
