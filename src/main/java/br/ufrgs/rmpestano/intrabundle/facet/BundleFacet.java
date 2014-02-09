@@ -32,7 +32,7 @@ public class BundleFacet extends BaseFacet {
 
     public boolean isOsgiBundle(DirectoryResource projectRoot){
         Resource<?> metaInf = ProjectUtils.getProjectMetaInfPath(projectRoot);
-        if(!metaInf.exists()){
+        if(metaInf == null || !metaInf.exists()){
             return false;
         }
         Resource<?> manifest = metaInf.getChild("MANIFEST.MF");

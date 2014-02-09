@@ -6,10 +6,7 @@ import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
-import org.jboss.forge.resources.DirectoryResource;
-import org.jboss.forge.resources.FileResource;
-import org.jboss.forge.resources.Resource;
-import org.jboss.forge.resources.ResourceFilter;
+import org.jboss.forge.resources.*;
 
 import javax.enterprise.inject.Typed;
 import java.io.File;
@@ -23,7 +20,7 @@ import java.util.List;
  * Created by rmpestano on 1/22/14.
  */
 @Typed()
-public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
+public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private Long totalLoc;
@@ -33,6 +30,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private FileResource<?> manifest;
     private List<String> exportedPackages;
     private List<String> importedPackages;
+    private List<String> requiredBundles;
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
 
@@ -80,22 +78,22 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         randomAccessFile = new RandomAccessFile(f, "r");
 
         String line;
-        while((line = randomAccessFile.readLine()) != null){
+        while ((line = randomAccessFile.readLine()) != null) {
             if (line.contains("Bundle-Activator:")) {
-               break;
+                break;
             }
         }
-        if(line == null){
+        if (line == null) {
             return null;//no activator
         }
         String actvatorPath = line.trim().substring(line.indexOf("Bundle-Activator:") + 17);
-        actvatorPath = actvatorPath.trim().replaceAll("\\.","/");
-        if(!actvatorPath.startsWith("/")){
-            actvatorPath = "/" +actvatorPath;
+        actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
+        if (!actvatorPath.startsWith("/")) {
+            actvatorPath = "/" + actvatorPath;
         }
-        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java"));
-        if(activator == null || !activator.exists()){
-            throw new RuntimeException("Could not find activator class at "+getProjectRoot() + actvatorPath);
+        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")):null;
+        if (activator == null || !activator.exists()) {
+            throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
         }
 
         return (FileResource<?>) activator;
@@ -104,6 +102,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
     /**
      * count lines of .java files under src folder
+     *
      * @param projectRoot
      * @return
      */
@@ -124,6 +123,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
     /**
      * count lines of .java files under test folder
+     *
      * @param projectRoot
      * @return
      */
@@ -165,11 +165,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     private FileResource<?> findManifest() {
         Resource<?> metaInf = ProjectUtils.getProjectMetaInfPath(projectRoot);
         if (metaInf == null || !metaInf.exists()) {
-            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
+            throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
         Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
         if (manifest == null || !manifest.exists()) {
-            throw new RuntimeException("OSGi project(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
+            throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
         }
         return (FileResource<?>) manifest;
     }
@@ -179,26 +179,25 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         try {
             RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
-            while ((line = file.readLine())!= null){
-                  if(line.contains("Export-Package")){
-                      line = line.substring(line.lastIndexOf(":")+1).trim();
-                      if(!"".equals(line)){
-                          exportedPackages.addAll(Arrays.asList(line.split(",")));
-                      }
-                      //try to get packages from next lines
-                      String nextLine;
-                      while((nextLine  = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")){
-                          exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                      }
-                      break;
+            while ((line = file.readLine()) != null) {
+                if (line.contains("Export-Package")) {
+                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (!"".equals(line)) {
+                        exportedPackages.addAll(Arrays.asList(line.split(",")));
+                    }
+                    //try to get packages from next lines
+                    String nextLine;
+                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                        exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    }
+                    break;
 
-                  }
+                }
             }
         } catch (Exception e) {
             //TODO log ex
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             return exportedPackages;
         }
     }
@@ -208,15 +207,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         try {
             RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
-            while ((line = file.readLine())!= null){
-                if(line.contains("Import-Package")){
-                    line = line.substring(line.lastIndexOf(":")+1).trim();
-                    if(!"".equals(line)){
+            while ((line = file.readLine()) != null) {
+                if (line.contains("Import-Package")) {
+                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (!"".equals(line)) {
                         importedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
                     String nextLine;
-                    while((nextLine  = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")){
+                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
                         importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                     }
                     break;
@@ -226,40 +225,71 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
         } catch (Exception e) {
             //TODO log ex
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             return importedPackages;
+        }
+    }
+
+    private List<String> findRequiredBundles() {
+        requiredBundles = new ArrayList<String>();
+        try {
+            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.contains("Require-Bundle")) {
+                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (!"".equals(line)) {
+                        requiredBundles.addAll(Arrays.asList(line.split(",")));
+                    }
+                    //try to get required bundles from next lines
+                    String nextLine;
+                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                        requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    }
+                    break;
+
+                }
+            }
+        } catch (Exception e) {
+            //TODO log ex
+            e.printStackTrace();
+        } finally {
+            return requiredBundles;
         }
     }
 
     /**
      * <code>true</code> if exported packages by the bundle are only exporting interfaces
-     * <code>false</code> if module is exporting one or more classes in exported packages
+     * <code>false</code> if the bumdle is exporting one or more classes in exported packages
      */
     private Boolean publishedInterfaces() {
-        if(getExportedPackages().isEmpty()){
+        if (getExportedPackages().isEmpty()) {
             return true;//no exported packages means the module is not publishing packages with implementation details
         }
 
         for (String exportedPackage : getExportedPackages()) {
-            String exportedPackagePath = exportedPackage.trim().replaceAll("\\.","/");
-            if(!exportedPackagePath.startsWith("/")){
-                exportedPackagePath = "/" +exportedPackagePath;
+            String exportedPackagePath = exportedPackage.trim().replaceAll("\\.", "/");
+            if (!exportedPackagePath.startsWith("/")) {
+                exportedPackagePath = "/" + exportedPackagePath;
             }
-            List<Resource<?>> resources =  ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
-                @Override
-                public boolean accept(Resource<?> resource) {
-                    return resource.getName().endsWith(".java");
-                }
-            });
+            try {
+                //get .java files under exported packages
+                List<Resource<?>> resources = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+                    @Override
+                    public boolean accept(Resource<?> resource) {
+                        return resource.getName().endsWith(".java");
+                    }
+                }):null;
 
-            if(!resources.isEmpty()){
-                for (Resource<?> resource : resources) {
-                    if(!ProjectUtils.isInterface((FileResource<?>) resource)){
-                        return false;
+                if (resources != null && !resources.isEmpty()) {
+                    for (Resource<?> resource : resources) {
+                        if (!ProjectUtils.isInterface((FileResource<?>) resource)) {
+                            return false;
+                        }
                     }
                 }
-
+            } catch (ResourceException ex) {
+                //log ex
             }
 
         }
@@ -308,22 +338,30 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
     }
 
     public List<String> getExportedPackages() {
-        if(exportedPackages == null){
+        if (exportedPackages == null) {
             exportedPackages = findExportedPackages();
         }
         return exportedPackages;
     }
 
+    @Override
+    public List<String> getRequiredBundles() {
+        if(requiredBundles == null){
+            requiredBundles = findRequiredBundles();
+        }
+        return requiredBundles;
+    }
+
 
     public List<String> getImportedPackages() {
-        if(importedPackages == null){
+        if (importedPackages == null) {
             importedPackages = findImportedPackages();
         }
         return importedPackages;
     }
 
     public Boolean getPublishesInterfaces() {
-        if(publishesInterfaces == null){
+        if (publishesInterfaces == null) {
             publishesInterfaces = publishedInterfaces();
         }
         return publishesInterfaces;
@@ -331,7 +369,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
     @Override
     public Boolean getDeclaresPermissions() {
-        if(declaresPermissions == null){
+        if (declaresPermissions == null) {
             declaresPermissions = declaresPermissions();
         }
         return declaresPermissions;
@@ -339,7 +377,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule,Project {
 
 
     public Long getLinesOfTestCode() {
-        if(totalTestLoc == null){
+        if (totalTestLoc == null) {
             totalTestLoc = new Long(0L);
             totalTestLoc = countModuleTestLines(getProjectRoot());
         }

@@ -68,6 +68,18 @@ public class BundlePlugin implements Plugin {
         }
     }
 
+    @Command(value = "requiredBundles",help = "list bundle required bundles")
+    public void requiredBundles(PipeOut out){
+        if(bundle.getRequiredBundles().isEmpty()){
+            out.println(messageProvider.getMessage("module.noRequiredBundles"));
+        }
+        else{
+            for (String s : bundle.getRequiredBundles()) {
+                out.println(s);
+            }
+        }
+    }
+
     @Command(value = "publishesInterfaces", help = "true if bundle exported packages contains only interfaces, false if it contains one or more classes")
     public void publishesInterfaces(PipeOut out) {
         out.println(bundle.getPublishesInterfaces() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));

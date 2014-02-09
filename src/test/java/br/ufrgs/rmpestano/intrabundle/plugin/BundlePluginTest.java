@@ -88,6 +88,13 @@ public class BundlePluginTest extends BaseBundleTest {
         Assert.assertTrue(getOutput().startsWith("2"));
     }
 
+    @Test
+    public void shouldFindRequiredBundle() throws Exception {
+        resetOutput();
+        getShell().execute("bundle requiredBundles");
+        Assert.assertTrue(getOutput().contains("org.apache.tuscany.sdo.spec;visibility:=reexport"));
+    }
+
     /**
      * lines of test code test
      */

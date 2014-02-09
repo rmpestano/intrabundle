@@ -39,7 +39,8 @@ public class ProjectUtils implements Serializable {
 
     public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
-            return projectRoot.getChild("src").getChild("main").getChild("resources");
+            Resource<?> src = projectRoot.getChild("src");
+            return src.exists() ? src.getChild("main").getChild("resources"):null;
         } else {
             return projectRoot;
         }
@@ -47,14 +48,17 @@ public class ProjectUtils implements Serializable {
 
     public static Resource<?> getProjectSourcePath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
-            return projectRoot.getChild("src").getChild("main").getChild("java");
+            Resource<?> src = projectRoot.getChild("src");
+            Resource<?> main = src.exists() ? src.getChild("main"):null;
+            return main != null && main.exists() ? main.getChild("java"):null;
         } else {
             return projectRoot.getChild("src");
         }
     }
 
     public static Resource<?> getProjectMetaInfPath(DirectoryResource root) {
-        return getProjectResourcesPath(root).getChild("META-INF");
+        Resource<?> srcPath = getProjectResourcesPath(root);
+        return srcPath != null ? srcPath.getChild("META-INF"):null;
     }
 
     public static boolean isInterface(FileResource<?> resource) {
@@ -65,7 +69,9 @@ public class ProjectUtils implements Serializable {
 
     public static Resource<?> getProjectTestPath(DirectoryResource root) {
         if (isMavenProject(root)) {
-            return root.getChild("src").getChild("test").getChild("java");
+            Resource<?> srcPath = root.getChild("src");
+            Resource<?> testPath = srcPath.exists() ? srcPath.getChild("test"):null;
+            return testPath != null && testPath.exists() ? testPath.getChild("java"):null;
         } else {
             return root.getChild("test");
         }

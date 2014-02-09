@@ -24,9 +24,10 @@ public interface OSGiModule extends Serializable{
 
     List<String> getExportedPackages();
 
+    List<String> getRequiredBundles();
+
     Boolean getPublishesInterfaces();
 
     Boolean getDeclaresPermissions();
-
 
 }

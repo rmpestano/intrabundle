@@ -121,6 +121,19 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command(value = "requiredBundles")
+    public void listRequiredBundles(@PipeIn String in, PipeOut out) {
+        if (!allModules(provider.getMessage("requireBundles"))) {
+            OSGiModule choice = choiceModule();
+            listModuleRequiredBundles(choice, out);
+        }//execute command for all bundles
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleRequiredBundles(osGiModule, out);
+            }
+        }
+    }
+
     @Command("dependencies")
     public void moduleDependencies(@PipeIn String in, PipeOut out) {
         if (!this.allModules(provider.getMessage("dependencies"))) {
@@ -172,6 +185,18 @@ public class OsgiPlugin implements Plugin {
             out.println(provider.getMessage("module.noExportedPackages"));
         } else {
             for (String s : module.getExportedPackages()) {
+                out.println(s);
+            }
+        }
+
+    }
+
+    private void listModuleRequiredBundles(OSGiModule module, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listRequiredBundles", module) + " =====");
+        if (module.getExportedPackages().isEmpty()) {
+            out.println(provider.getMessage("module.noRequiredBundle"));
+        } else {
+            for (String s : module.getRequiredBundles()) {
                 out.println(s);
             }
         }
