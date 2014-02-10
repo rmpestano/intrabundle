@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<module xmlns="urn:jboss:module:1.0" name="br.ufrgs.rmpestano.intrabundle" slot="0.1-SNAPSHOT-509cc16b-25b0-428c-9cc6-265bb91cf034">
+  <resources>
+   <resource-root path="intrabundle.jar"/>
+  </resources>
+  <dependencies>
+   <module name="br.ufrgs.rmpestano.intrabundle.dependencies" slot="0.1-SNAPSHOT-509cc16b-25b0-428c-9cc6-265bb91cf034"/>
+    <module name="org.jboss.forge.javaee.api" services="import"/>
+    <module name="org.jboss.forge.maven.api" services="import"/>
+    <module name="org.jboss.forge.scaffold.api" services="import"/>
+    <module name="org.jboss.forge.scaffoldx.api" services="import"/>
+    <module name="org.jboss.forge.shell.api" services="import"/>
+    <module name="org.jboss.seam.render" services="import"/>
+    <module name="javax.api"/>
+    <module name="org.eclipse.javaparser" />
+  </dependencies>
+</module>

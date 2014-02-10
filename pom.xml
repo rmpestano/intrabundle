@@ -49,17 +49,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-   <!-- <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.9.1.v20130905-0837</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jdt</groupId>
-      <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.7.1</version>
-      <scope>provided</scope>
-    </dependency>-->
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
@@ -69,6 +58,12 @@
       <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
       <version>2.1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.tycho</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.9.1.v20130905-0837</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.forge</groupId>
@@ -87,6 +82,18 @@
       <artifactId>forge-javaee-impl</artifactId>
       <version>${forge.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge</groupId>
+      <artifactId>forge-parser-java-api</artifactId>
+      <version>1.4.4-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge</groupId>
+      <artifactId>forge-parser-java</artifactId>
+      <version>1.4.4-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <repositories>

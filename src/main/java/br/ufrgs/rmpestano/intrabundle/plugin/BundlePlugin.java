@@ -3,10 +3,12 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  *
@@ -98,6 +100,21 @@ public class BundlePlugin implements Plugin {
     @Command(value = "lot",help = "Count bundle lines of test code")
     public void lot(PipeOut out){
         out.println(bundle.getLinesOfTestCode() != null ? bundle.getLinesOfTestCode().toString():"0");
+    }
+
+    @Command(value = "staleReferences",help = "List files possibly containing OSGi service stale references")
+    public void staleReferences(PipeOut out){
+        List<Resource<?>> staleReferences = bundle.getStaleReferences();
+        if(!staleReferences.isEmpty()){
+            out.println(messageProvider.getMessage("bundle.listing-stale-references"));
+            for (Resource<?> staleReference : staleReferences) {
+                out.println(staleReference.getFullyQualifiedName());
+            }
+
+        }
+        else{
+            messageProvider.getMessage("bundle.noStaleReferences");
+        }
     }
 
 

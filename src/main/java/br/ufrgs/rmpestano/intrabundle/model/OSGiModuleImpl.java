@@ -2,6 +2,9 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.jboss.forge.parser.JavaParser;
+import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -36,6 +39,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private List<String> requiredBundles;
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
+    private List<Resource<?>> staleReferences;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -336,6 +340,37 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     }
 
+    public List<Resource<?>> findStaleReferences(){
+        staleReferences = new ArrayList<Resource<?>>();
+
+        searchStaleReferences(staleReferences, (DirectoryResource) ProjectUtils.getProjectSourcePath(projectRoot));
+
+        return staleReferences;
+    }
+
+    private void searchStaleReferences(List<Resource<?>> staleReferences, DirectoryResource root) {
+            for (Resource<?> child : root.listResources()) {
+                if(child instanceof DirectoryResource){
+                    searchStaleReferences(staleReferences, (DirectoryResource) child);
+                }
+                else if(child instanceof FileResource && child.getName().endsWith(".java")){
+                    JavaSource source = JavaParser.parse(child.getResourceInputStream());
+                    if(source.hasImport("org.osgi.framework.BundleContext")){
+                        if(verifyStaleReference(source)){
+                            staleReferences.add((Resource<?>) child);
+                        }
+                    }
+                }
+            }
+    }
+
+    private boolean verifyStaleReference(JavaSource source) {
+        CompilationUnit comp = (CompilationUnit) source.getInternal();
+        comp.getRoot().toString();
+        source.getOrigin().toString();
+        return true;
+    }
+
 
     //getters
 
@@ -418,6 +453,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             declaresPermissions = declaresPermissions();
         }
         return declaresPermissions;
+    }
+
+    @Override
+    public List<Resource<?>> getStaleReferences() {
+        if(staleReferences == null){
+            staleReferences = findStaleReferences();
+        }
+        return staleReferences;
     }
 
 

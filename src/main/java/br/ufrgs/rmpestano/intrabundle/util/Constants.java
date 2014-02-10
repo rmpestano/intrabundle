@@ -14,4 +14,5 @@ public interface Constants {
         public static final String REQUIRE_BUNDLE = "Require-Bundle";
         public static final String ACTIVATOR = "Bundle-Activator";
     }
+
 }
