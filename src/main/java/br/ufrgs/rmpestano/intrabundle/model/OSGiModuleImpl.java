@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
@@ -27,6 +28,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Long totalLoc;
     private Long totalTestLoc;//test lines of code
     private Boolean usesDeclarativeServices;
+    private Boolean usesBlueprint;
     private FileResource<?> activator;
     private FileResource<?> manifest;
     private List<String> exportedPackages;
@@ -80,14 +82,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
         String line;
         while ((line = randomAccessFile.readLine()) != null) {
-            if (line.contains("Bundle-Activator:")) {
+            if (line.contains(Constants.Manifest.ACTIVATOR)) {
                 break;
             }
         }
         if (line == null) {
             return null;//no activator
         }
-        String actvatorPath = line.trim().substring(line.indexOf("Bundle-Activator:") + 17);
+        String actvatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
         actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
         if (!actvatorPath.startsWith("/")) {
             actvatorPath = "/" + actvatorPath;
@@ -160,7 +162,27 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()),"r");
                 String line;
                 while((line = aFile.readLine()) !=null){
-                    if(line.contains("Service-Component")){
+                    if(line.contains(Constants.Manifest.DECLARATIVE_SERVICES)){
+                        return true;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private boolean usesBlueprint() {
+        Resource<?> manifest = getManifest();
+        if(manifest!= null && manifest.exists()){
+            try {
+                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()),"r");
+                String line;
+                while((line = aFile.readLine()) !=null){
+                    if(line.contains(Constants.Manifest.BLUE_PRINT)){
                         return true;
                     }
                 }
@@ -196,7 +218,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains("Export-Package")) {
+                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
                     line = line.substring(line.indexOf(":") + 1).trim();
                     if (!"".equals(line)) {
                         exportedPackages.addAll(Arrays.asList(line.split(",")));
@@ -224,7 +246,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains("Import-Package")) {
+                if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
                     line = line.substring(line.indexOf(":") + 1).trim();
                     if (!"".equals(line)) {
                         importedPackages.addAll(Arrays.asList(line.split(",")));
@@ -252,7 +274,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains("Require-Bundle")) {
+                if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
                     line = line.substring(line.indexOf(":") + 1).trim();
                     if (!"".equals(line)) {
                         requiredBundles.addAll(Arrays.asList(line.split(",")));
@@ -322,6 +344,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             usesDeclarativeServices = usesDeclarativeServices();
         }
         return usesDeclarativeServices;
+    }
+
+    public Boolean getUsesBlueprint() {
+        if(usesBlueprint == null){
+            usesBlueprint = usesBlueprint();
+        }
+        return usesBlueprint;
     }
 
     @Override

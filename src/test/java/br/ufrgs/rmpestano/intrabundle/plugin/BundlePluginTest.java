@@ -57,6 +57,13 @@ public class BundlePluginTest extends BaseBundleTest {
     }
 
     @Test
+    public void shouldNotUseBlueprint() throws Exception{
+        resetOutput();
+        getShell().execute("bundle usesBlueprint");
+        Assert.assertTrue(getOutput().contains(provider.getMessage("no")));
+    }
+
+    @Test
     public void shouldFindActivator() throws Exception {
         resetOutput();
         getShell().execute("bundle activator");

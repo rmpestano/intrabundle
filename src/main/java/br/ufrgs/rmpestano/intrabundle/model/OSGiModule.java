@@ -16,6 +16,8 @@ public interface OSGiModule extends Serializable{
 
     Boolean getUsesDeclarativeServices();
 
+    Boolean getUsesBlueprint();
+
     FileResource<?> getManifest();
 
     FileResource<?> getActivator();
