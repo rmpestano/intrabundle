@@ -27,6 +27,7 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addClass(ProjectUtils.class)
                 .addClass(BundlePlugin.class).
                 addClass(LocalePlugin.class).
@@ -110,6 +111,14 @@ public class BundlePluginTest extends BaseBundleTest {
         resetOutput();
         getShell().execute("bundle lot");
         Assert.assertTrue(getOutput().startsWith("1"));
+    }
+
+    @Test
+    public void shouldContainStaleReferences() throws Exception {
+        resetOutput();
+        getShell().clear();
+        getShell().execute("bundle staleReferences");
+        Assert.assertTrue(getOutput().contains("HelloStaleManager.java"));
     }
 
 }

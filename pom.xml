@@ -63,7 +63,7 @@
       <groupId>org.eclipse.tycho</groupId>
       <artifactId>org.eclipse.jdt.core</artifactId>
       <version>3.9.1.v20130905-0837</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.forge</groupId>
@@ -85,15 +85,9 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-parser-java-api</artifactId>
-      <version>1.4.4-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.forge</groupId>
       <artifactId>forge-parser-java</artifactId>
-      <version>1.4.4-SNAPSHOT</version>
-      <scope>provided</scope>
+      <version>${forge.version}</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <repositories>

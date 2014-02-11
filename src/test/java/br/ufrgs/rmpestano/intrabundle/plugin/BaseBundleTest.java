@@ -16,13 +16,26 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
     public Project initializeOSGiProject() throws Exception{
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("module");
-        addMetaInf(main,"/MANIFEST.MF");
+        addMetaInf(main, "/MANIFEST.MF");
         addActivator(main);
         addTestClass(main);
         addPermissions(main);
         addExportedPackage(main);
+        addHelloManager(main);
         getShell().setCurrentResource(main);
         return getProject();
+    }
+
+    private void addHelloManager(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").
+                getOrCreateChildDirectory("manager");
+        FileResource<?> manager = (FileResource<?>) resource.getChild("HelloManager.java");
+        manager.setContents(getClass().getResourceAsStream("/HelloManager.java"));
+        FileResource<?> staleManager = (FileResource<?>) resource.getChild("HelloStaleManager.java");
+        staleManager.setContents(getClass().getResourceAsStream("/HelloStaleManager.java"));
     }
 
     private void addPermissions(DirectoryResource root) {
@@ -47,7 +60,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("rmpestano").
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents("activator content");
+        activator.setContents(getClass().getResourceAsStream("/Activator.java"));
     }
 
     private void addTestClass(DirectoryResource root) {

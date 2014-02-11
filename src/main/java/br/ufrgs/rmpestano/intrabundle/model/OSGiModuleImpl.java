@@ -1,5 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
+import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -13,6 +15,7 @@ import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.resources.*;
 
 import javax.enterprise.inject.Typed;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +43,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
     private List<Resource<?>> staleReferences;
+
+    @Inject
+    ASTVisitors visitors;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -355,9 +361,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 }
                 else if(child instanceof FileResource && child.getName().endsWith(".java")){
                     JavaSource source = JavaParser.parse(child.getResourceInputStream());
-                    if(source.hasImport("org.osgi.framework.BundleContext")){
+                    if(source.hasImport("org.osgi.framework.ServiceReference")){
                         if(verifyStaleReference(source)){
-                            staleReferences.add((Resource<?>) child);
+                            staleReferences.add(child);
                         }
                     }
                 }
@@ -366,9 +372,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     private boolean verifyStaleReference(JavaSource source) {
         CompilationUnit comp = (CompilationUnit) source.getInternal();
-        comp.getRoot().toString();
-        source.getOrigin().toString();
-        return true;
+        StaleReferencesVisitor staleReferencesVisitor =  ASTVisitors.getStaleReferencesVisitor();
+        comp.accept(staleReferencesVisitor);
+        staleReferencesVisitor.visit(comp);
+        return staleReferencesVisitor.getNumGetServices() != staleReferencesVisitor.getNumUngetServices();
     }
 
 
