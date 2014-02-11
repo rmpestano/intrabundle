@@ -1,8 +1,8 @@
 package br.ufrgs.rmpestano.intrabundle.jdt;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.SimpleName;
 
 /**
  * Created by rmpestano on 2/10/14.
@@ -21,11 +21,11 @@ public class StaleReferencesVisitor extends ASTVisitor {
 
     @Override
     public boolean visit(MethodInvocation node) {
-        Expression expression = node.getExpression();
-        if(expression != null){
-            if (((MethodInvocation)expression.getParent()).getName().toString().equals("getService")) {
+        SimpleName name = node.getName();
+        if(name != null){
+            if (name.toString().equals("getService")) {
                 numGetServices++;
-            } else if (((MethodInvocation)expression.getParent()).getName().toString().equals("ungetService")) {
+            } else if (name.toString().equals("ungetService")) {
                 numUngetServices++;
             }
         }

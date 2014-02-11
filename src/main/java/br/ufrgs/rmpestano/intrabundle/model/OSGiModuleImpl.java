@@ -104,7 +104,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         if (!actvatorPath.startsWith("/")) {
             actvatorPath = "/" + actvatorPath;
         }
-        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")):null;
+        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
         if (activator == null || !activator.exists()) {
             throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
         }
@@ -167,12 +167,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     private boolean usesDeclarativeServices() {
         Resource<?> manifest = getManifest();
-        if(manifest!= null && manifest.exists()){
+        if (manifest != null && manifest.exists()) {
             try {
-                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()),"r");
+                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
                 String line;
-                while((line = aFile.readLine()) !=null){
-                    if(line.contains(Constants.Manifest.DECLARATIVE_SERVICES)){
+                while ((line = aFile.readLine()) != null) {
+                    if (line.contains(Constants.Manifest.DECLARATIVE_SERVICES)) {
                         return true;
                     }
                 }
@@ -187,12 +187,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     private boolean usesBlueprint() {
         Resource<?> manifest = getManifest();
-        if(manifest!= null && manifest.exists()){
+        if (manifest != null && manifest.exists()) {
             try {
-                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()),"r");
+                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
                 String line;
-                while((line = aFile.readLine()) !=null){
-                    if(line.contains(Constants.Manifest.BLUE_PRINT)){
+                while ((line = aFile.readLine()) != null) {
+                    if (line.contains(Constants.Manifest.BLUE_PRINT)) {
                         return true;
                     }
                 }
@@ -327,7 +327,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                     public boolean accept(Resource<?> resource) {
                         return resource.getName().endsWith(".java");
                     }
-                }):null;
+                }) : null;
 
                 if (resources != null && !resources.isEmpty()) {
                     for (Resource<?> resource : resources) {
@@ -346,7 +346,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     }
 
-    public List<Resource<?>> findStaleReferences(){
+    public List<Resource<?>> findStaleReferences() {
         staleReferences = new ArrayList<Resource<?>>();
 
         searchStaleReferences(staleReferences, (DirectoryResource) ProjectUtils.getProjectSourcePath(projectRoot));
@@ -355,24 +355,23 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     private void searchStaleReferences(List<Resource<?>> staleReferences, DirectoryResource root) {
-            for (Resource<?> child : root.listResources()) {
-                if(child instanceof DirectoryResource){
-                    searchStaleReferences(staleReferences, (DirectoryResource) child);
-                }
-                else if(child instanceof FileResource && child.getName().endsWith(".java")){
-                    JavaSource source = JavaParser.parse(child.getResourceInputStream());
-                    if(source.hasImport("org.osgi.framework.ServiceReference")){
-                        if(verifyStaleReference(source)){
-                            staleReferences.add(child);
-                        }
+        for (Resource<?> child : root.listResources()) {
+            if (child instanceof DirectoryResource) {
+                searchStaleReferences(staleReferences, (DirectoryResource) child);
+            } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
+                JavaSource source = JavaParser.parse(child.getResourceInputStream());
+                if (source.hasImport("org.osgi.framework.ServiceReference")) {
+                    if (verifyStaleReference(source)) {
+                        staleReferences.add(child);
                     }
                 }
             }
+        }
     }
 
     private boolean verifyStaleReference(JavaSource source) {
         CompilationUnit comp = (CompilationUnit) source.getInternal();
-        StaleReferencesVisitor staleReferencesVisitor =  ASTVisitors.getStaleReferencesVisitor();
+        StaleReferencesVisitor staleReferencesVisitor = ASTVisitors.getStaleReferencesVisitor();
         comp.accept(staleReferencesVisitor);
         staleReferencesVisitor.visit(comp);
         return staleReferencesVisitor.getNumGetServices() != staleReferencesVisitor.getNumUngetServices();
@@ -389,7 +388,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     public Boolean getUsesBlueprint() {
-        if(usesBlueprint == null){
+        if (usesBlueprint == null) {
             usesBlueprint = usesBlueprint();
         }
         return usesBlueprint;
@@ -433,7 +432,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public List<String> getRequiredBundles() {
-        if(requiredBundles == null){
+        if (requiredBundles == null) {
             requiredBundles = findRequiredBundles();
         }
         return requiredBundles;
@@ -464,7 +463,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public List<Resource<?>> getStaleReferences() {
-        if(staleReferences == null){
+        if (staleReferences == null) {
             staleReferences = findStaleReferences();
         }
         return staleReferences;
