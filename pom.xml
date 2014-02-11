@@ -83,12 +83,6 @@
       <version>${forge.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-parser-java</artifactId>
-      <version>${forge.version}</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   <repositories>
     <repository>
