@@ -40,7 +40,9 @@ public class ProjectUtils implements Serializable {
     public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
-            return src.exists() ? src.getChild("main").getChild("resources"):null;
+            Resource<?> main  = src.exists() ? src.getChild("main"):null;
+            Resource<?> resources = main != null && main.exists() ? main.getChild("resources"):null;
+            return resources;
         } else {
             return projectRoot;
         }

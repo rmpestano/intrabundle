@@ -1,6 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -82,10 +83,21 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private List<OSGiModule> initalizeModules() {
         List<OSGiModule> modulesFound = new ArrayList<OSGiModule>();
         OSGiFacet osgi = getFacet(OSGiFacet.class);
-        List<Resource<?>> metaInfList = new ArrayList<Resource<?>>();
-        osgi.getMetaInfDirectories(this.getProjectRoot(), metaInfList, 0);
+        List<Resource<?>> metaInfList = osgi.getMetaInfDirectories(this.getProjectRoot());
         for (Resource<?> resource : metaInfList) {
-            OSGiModule osGiModule = new OSGiModuleImpl(factory, (DirectoryResource) resource.getParent());
+            if(!osgi.isOSGiModule(resource)){
+                continue;
+            }
+            DirectoryResource moduleRoot = null;
+            if(ProjectUtils.isMavenProject(this.getProjectRoot())){
+                 //back four directory levels to find module root(root/src/main/resources/meta-inf/)
+                 moduleRoot = (DirectoryResource) resource.getParent().getParent().getParent().getParent();
+            }
+            else{
+                //for non maven projects the root is the parent(root/meta-inf/)
+                moduleRoot =  (DirectoryResource) resource.getParent();
+            }
+            OSGiModule osGiModule = new OSGiModuleImpl(factory, moduleRoot);
             modulesFound.add(osGiModule);
         }
         return modulesFound;

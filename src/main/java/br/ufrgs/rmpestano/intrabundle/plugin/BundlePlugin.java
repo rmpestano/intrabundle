@@ -113,7 +113,7 @@ public class BundlePlugin implements Plugin {
 
         }
         else{
-            messageProvider.getMessage("bundle.noStaleReferences");
+            out.println(messageProvider.getMessage("bundle.noStaleReferences"));
         }
     }
 

@@ -1,10 +1,10 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
-import org.jboss.forge.resources.ResourceFilter;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
@@ -51,7 +51,7 @@ public class OSGiFacet extends BaseFacet {
     public boolean isOSGiProject(DirectoryResource directoryResource) {
         List<Resource<?>> metaInfList = new ArrayList<Resource<?>>();
 
-        this.getMetaInfDirectories(directoryResource, metaInfList, 0);
+        metaInfList = this.getMetaInfDirectories(directoryResource);
 
         if (metaInfList.isEmpty()) {
             return false;
@@ -66,32 +66,31 @@ public class OSGiFacet extends BaseFacet {
 
     /**
      * gather META-INF directories by looking
-     * for each @parent directory get its meta-inf directory
-     * until metaInfSearchLevel is reached
+     * for each child directory verifying if meta-inf directory exists
      *
      * @param parent
-     * @param resourcesFound
-     * @param currentLevel
      */
-    public void getMetaInfDirectories(DirectoryResource parent, List<Resource<?>> resourcesFound, int currentLevel) {
-        if (currentLevel >= metaInfSearchLevel) {
-            return;
-        }
-        for (Resource<?> r : parent.listResources()) {
+    public List<Resource<?>> getMetaInfDirectories(DirectoryResource parent) {
+        List<Resource<?>> resourcesFound = new ArrayList<Resource<?>>();
+        for (final Resource<?> r : parent.listResources()) {
             if (r instanceof DirectoryResource) {
-                resourcesFound.addAll(r.listResources(new ResourceFilter() {
-                    @Override
-                    public boolean accept(Resource<?> resource) {
-                        return resource.getName().equalsIgnoreCase("meta-inf");
+                DirectoryResource dir = (DirectoryResource) r;
+                if (ProjectUtils.isMavenProject(dir)){
+                    Resource<?> resources = ProjectUtils.getProjectResourcesPath(dir);
+                    if(resources != null && resources instanceof DirectoryResource && resources.getChild("META-INF").exists()){
+                        resourcesFound.add(resources.getChild("META-INF"));
                     }
-                }));
-                getMetaInfDirectories((DirectoryResource) r, resourcesFound, ++currentLevel);
+                } else{
+                      if(dir.getChild("META-INF").exists()){
+                          resourcesFound.add(dir.getChild("META-INF"));
+                      }
+                }
             }
         }
-
+        return resourcesFound;
     }
 
-    private boolean isOSGiModule(Resource<?> metaInf) {
+    public boolean isOSGiModule(Resource<?> metaInf) {
         Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
         if (!manifest.exists()) {
             return false;
