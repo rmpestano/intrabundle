@@ -5,8 +5,6 @@ import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.forge.project.Project;
-import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.shell.util.OSUtils;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -50,28 +48,23 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi countBundles");
         Assert.assertTrue(getOutput().contains("Total number of bundles:3"));
-
     }
 
     @Test
-    public void testCountDifferentProject() throws Exception {
-        initializeOSGiProject2();
+    public void testListBundles() throws Exception {
         resetOutput();
-        getShell().execute("osgi countBundles");
-        Assert.assertTrue(getOutput().contains("Total number of bundles:4"));
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
     }
 
-    public Project initializeOSGiProject2() throws Exception
-    {
-        DirectoryResource root = createTempFolder();
-        DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBundle(main,"module1");
-        addBundle(main,"module2");
-        addBundle(main,"module3");
-        addBundle(main,"module4");
-        getShell().setCurrentResource(main);
-        return getProject();
+    @Test
+    public void testListBundlesInMavenProject() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
     }
+
 
     @Test
     public void testDeclarativeServices() throws Exception {
