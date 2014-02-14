@@ -21,8 +21,6 @@ import java.util.List;
 @Singleton
 public class OSGiFacet extends BaseFacet {
 
-    private int metaInfSearchLevel = 1;//defines how much directory levels to go down looking for OSGi metadata(manifest file)
-
 
     @Override
     public boolean install() {
@@ -120,13 +118,5 @@ public class OSGiFacet extends BaseFacet {
     @Produces
     public OSGiProject getCurrentOSGiProject() {
         return (OSGiProject) getProject();
-    }
-
-    public int getMetaInfSearchLevel() {
-        return metaInfSearchLevel;
-    }
-
-    public void setMetaInfSearchLevel(int metaInfSearchLevel) {
-        this.metaInfSearchLevel = metaInfSearchLevel;
     }
 }
