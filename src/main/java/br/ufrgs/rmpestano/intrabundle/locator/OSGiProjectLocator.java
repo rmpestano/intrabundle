@@ -1,9 +1,9 @@
 package br.ufrgs.rmpestano.intrabundle.locator;
 
-import br.ufrgs.rmpestano.intrabundle.annotation.Current;
+import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
-import br.ufrgs.rmpestano.intrabundle.i18n.ResourceBundle;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectImpl;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.locator.ProjectLocator;
 import org.jboss.forge.project.services.ProjectFactory;
@@ -28,8 +28,7 @@ public class OSGiProjectLocator implements ProjectLocator {
     private final Instance<OSGiFacet> osgiFacetInstance;
 
     @Inject
-    @Current
-    Instance<ResourceBundle> resourceBundle;
+    MessageProvider provider;
 
     @Inject
     Shell shell;
@@ -44,23 +43,22 @@ public class OSGiProjectLocator implements ProjectLocator {
     @Override
     public Project createProject(DirectoryResource directoryResource) {
         OSGiFacet osgi = osgiFacetInstance.get();
-        OSGiProject result = new OSGiProject(factory, directoryResource);
+        OSGiProjectImpl result = new OSGiProjectImpl(factory, directoryResource);
         osgi.setProject(result);
-        if(!directoryResource.getChild("pom.xml").exists()){
-            directoryResource.createNewFile();
-            FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
-            pom.setContents(getClass().getResourceAsStream("/pom.xml"));
-        }
         /* we are not going to install OSGi projects, only inspect existing ones
         if (!osgi.isInstalled()) {
             result.installFacet(osgi);
         } else    */
         result.registerFacet(osgi);
 
-        if (!result.hasFacet(OSGiFacet.class)) {
-            throw new IllegalStateException("Could not create OSGi project [OSGi facet could not be installed.]");
+        if (!result.hasFacet(OSGiFacet.class) || result.hasFacet(BundleFacet.class)) {
+            return null;
         }
-        shell.println(ShellColor.YELLOW,resourceBundle.get().getString("osgi.welcome"));
+        if(!directoryResource.getChild("pom.xml").exists()){
+            FileResource<?> pom = (FileResource<?>) directoryResource.getChild("pom.xml");
+            pom.setContents(getClass().getResourceAsStream("/pom.xml"));
+        }
+        shell.println(ShellColor.YELLOW,provider.getMessage("osgi.welcome"));
         return result;
     }
 

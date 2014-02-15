@@ -1,86 +1,87 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import org.jboss.forge.project.BaseProject;
-import org.jboss.forge.project.Facet;
-import org.jboss.forge.project.facets.FacetNotFoundException;
-import org.jboss.forge.project.services.ProjectFactory;
-import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 
-import javax.enterprise.inject.Typed;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * Created by rmpestano on 1/22/14.
+ * Created by rmpestano on 1/28/14.
  */
-@Typed()
-public class OSGiModule extends BaseProject {
-    private DirectoryResource projectRoot = null;
-    private final ProjectFactory factory;
-    private Long totalLoc;
+public interface OSGiModule extends Serializable{
 
-    public OSGiModule(final ProjectFactory factory, final DirectoryResource dir) {
-        this.factory = factory;
-        this.projectRoot = dir;
-    }
+    /**
+     *
+     * @return total .java files(under src or src/main/java) lines of code
+     */
+    Long getLinesOfCode();
 
-    @Override
-    public <F extends Facet> F getFacet(final Class<F> type) {
-        try {
-            return super.getFacet(type);
-        } catch (FacetNotFoundException e) {
-            factory.registerSingleFacet(this, type);
-            return super.getFacet(type);
-        }
-    }
+    /**
+     *
+     * @return total .java files(under test or src/test/ava) test lines of code
+     */
+    Long getLinesOfTestCode();
 
-    @Override
-    public DirectoryResource getProjectRoot() {
-        return projectRoot;
-    }
+    /**
+     * @return <code>true</code> if bundle uses declarative services specification
+     * <code>false</code> if it doesnt
+     */
+    Boolean getUsesDeclarativeServices();
 
-    @Override
-    public boolean exists() {
-        return (projectRoot != null) && projectRoot.exists();
-    }
+    /**
+     * @return <code>true</code> if bundle uses Blueprint specification
+     * <code>false</code> if it doesnt
+     */
+    Boolean getUsesBlueprint();
 
-    @Override
-    public String toString() {
-        return "OSGiModule [" + getProjectRoot() + "]";
-    }
+    /**
+     *
+     * @return bundle MANIFEST.MF file
+     */
+    FileResource<?> getManifest();
 
-    public Long getLinesOfCode() {
+    /**
+     *
+     * @return bundle activator java file
+     */
+    FileResource<?> getActivator();
 
-        this.totalLoc = new Long(0L);
-        return countLines(getProjectRoot());
-    }
+    /**
+     *
+     * @return bundle imported packages
+     */
+    List<String> getImportedPackages();
 
-    private Long countLines(DirectoryResource projectRoot) {
-        for (Resource<?> resource : projectRoot.listResources()) {
-              if(resource instanceof FileResource<?> && resource.getName().endsWith(".java")){
-                  try{
-                      this.totalLoc +=  getFileLines((FileResource<?>)resource);
-                  }catch (Exception e){
-                      e.printStackTrace();
-                  }
-              }
-              else if(resource instanceof DirectoryResource){
-                  this.totalLoc = countLines((DirectoryResource)resource);
-              }
-        }
-        return totalLoc;
-    }
+    /**
+     *
+     * @return bundle exported packages
+     */
+    List<String> getExportedPackages();
 
-    private Long getFileLines(FileResource<?> resource) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(new File(resource.getFullyQualifiedName()),"r");
-        Long total = new Long(0);
-        String line;
-        while ((line = file.readLine()) != null){
-              total++;
-        }
-        return total;
-    }
+    /**
+     *
+     * @return bundle required bundles
+     */
+    List<String> getRequiredBundles();
+
+    /**
+     * @return <code>true</code> if bundle exported packages contains only interfaces
+     * <code>false</code> if it has one or more classes
+     */
+    Boolean getPublishesInterfaces();
+
+    /**
+     *
+     * @return <code>true</code> if bundle declares permissions
+     * <code>false</code> otherwise
+     */
+    Boolean getDeclaresPermissions();
+
+    /**
+     *
+     * @return .java files possibly containing OSGi service stale references
+     */
+    List<Resource<?>> getStaleReferences();
+
 }
