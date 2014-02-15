@@ -3,6 +3,7 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import org.jboss.forge.addon.facets.constraints.FacetConstraint;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  */
 @Alias("bundle")
-@RequiresFacet(BundleFacet.class)
+@FacetConstraint(BundleFacet.class)
 public class BundlePlugin implements Plugin {
     @Inject
     private ShellPrompt prompt;

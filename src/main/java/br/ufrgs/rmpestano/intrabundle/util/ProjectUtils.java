@@ -1,10 +1,11 @@
 package br.ufrgs.rmpestano.intrabundle.util;
 
+
+import org.jboss.forge.addon.resource.DirectoryResource;
+import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
-import org.jboss.forge.resources.DirectoryResource;
-import org.jboss.forge.resources.FileResource;
-import org.jboss.forge.resources.Resource;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -66,7 +67,6 @@ public class ProjectUtils implements Serializable {
     public static boolean isInterface(FileResource<?> resource) {
         JavaSource parser = JavaParser.parse(resource.getResourceInputStream());
         return parser.isInterface();
-
     }
 
     public static Resource<?> getProjectTestPath(DirectoryResource root) {

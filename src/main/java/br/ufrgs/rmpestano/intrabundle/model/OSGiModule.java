@@ -1,7 +1,8 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import org.jboss.forge.resources.FileResource;
-import org.jboss.forge.resources.Resource;
+import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.resource.Resource;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,16 +10,14 @@ import java.util.List;
 /**
  * Created by rmpestano on 1/28/14.
  */
-public interface OSGiModule extends Serializable{
+public interface OSGiModule extends Serializable, Project {
 
     /**
-     *
      * @return total .java files(under src or src/main/java) lines of code
      */
     Long getLinesOfCode();
 
     /**
-     *
      * @return total .java files(under test or src/test/ava) test lines of code
      */
     Long getLinesOfTestCode();
@@ -36,31 +35,26 @@ public interface OSGiModule extends Serializable{
     Boolean getUsesBlueprint();
 
     /**
-     *
      * @return bundle MANIFEST.MF file
      */
     FileResource<?> getManifest();
 
     /**
-     *
      * @return bundle activator java file
      */
     FileResource<?> getActivator();
 
     /**
-     *
      * @return bundle imported packages
      */
     List<String> getImportedPackages();
 
     /**
-     *
      * @return bundle exported packages
      */
     List<String> getExportedPackages();
 
     /**
-     *
      * @return bundle required bundles
      */
     List<String> getRequiredBundles();
@@ -72,14 +66,12 @@ public interface OSGiModule extends Serializable{
     Boolean getPublishesInterfaces();
 
     /**
-     *
      * @return <code>true</code> if bundle declares permissions
      * <code>false</code> otherwise
      */
     Boolean getDeclaresPermissions();
 
     /**
-     *
      * @return .java files possibly containing OSGi service stale references
      */
     List<Resource<?>> getStaleReferences();

@@ -1,7 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
+import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectFactory;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,7 +31,7 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addClass(ProjectUtils.class)
                 .addClass(BundlePlugin.class).
                 addClass(LocalePlugin.class).
-                addClass(BundleProjectLocator.class);
+                addClass(BundleProjectFactory.class);
         System.out.println(jar.toString(true));
         return jar;
     }

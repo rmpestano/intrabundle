@@ -2,9 +2,11 @@ package br.ufrgs.rmpestano.intrabundle.facet;
 
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
-import org.jboss.forge.project.facets.BaseFacet;
-import org.jboss.forge.resources.DirectoryResource;
-import org.jboss.forge.resources.Resource;
+import org.jboss.forge.addon.facets.AbstractFacet;
+import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.ProjectFacet;
+import org.jboss.forge.addon.resource.DirectoryResource;
+import org.jboss.forge.addon.resource.Resource;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
@@ -16,8 +18,13 @@ import java.io.RandomAccessFile;
  * Created by rmpestano on 1/22/14.
  */
 @Singleton
-public class BundleFacet extends BaseFacet {
+public class BundleFacet extends AbstractFacet<OSGiModule> implements ProjectFacet {
 
+
+    @Override
+    public OSGiModule getFaceted() {
+        return origin;
+    }
 
     @Override
     public boolean install() {
@@ -27,7 +34,12 @@ public class BundleFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-         return project != null && isOsgiBundle(project.getProjectRoot());
+         return origin != null && isOsgiBundle(origin.getRootDirectory());
+    }
+
+    @Override
+    public boolean uninstall() {
+        return false;
     }
 
     public boolean isOsgiBundle(DirectoryResource projectRoot){
@@ -64,7 +76,7 @@ public class BundleFacet extends BaseFacet {
 
     @Produces
     public OSGiModule produceCurrentBundle(){
-        return (OSGiModule) getProject();
+        return origin;
     }
 
 }

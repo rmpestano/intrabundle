@@ -1,20 +1,17 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.jboss.forge.addon.projects.AbstractProject;
+import org.jboss.forge.addon.projects.ProjectFactory;
+import org.jboss.forge.addon.resource.*;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
-import org.jboss.forge.project.BaseProject;
-import org.jboss.forge.project.Facet;
-import org.jboss.forge.project.Project;
-import org.jboss.forge.project.facets.FacetNotFoundException;
-import org.jboss.forge.project.services.ProjectFactory;
-import org.jboss.forge.resources.*;
 
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,8 +24,7 @@ import java.util.List;
 /**
  * Created by rmpestano on 1/22/14.
  */
-@Typed()
-public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
+public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private Long totalLoc;
@@ -476,5 +472,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             totalTestLoc = countModuleTestLines(getProjectRoot());
         }
         return totalTestLoc;
+    }
+
+    @Override
+    public DirectoryResource getRootDirectory() {
+        return null;
+    }
+
+    @Override
+    public boolean supports(BundleFacet f) {
+        return true;
     }
 }
