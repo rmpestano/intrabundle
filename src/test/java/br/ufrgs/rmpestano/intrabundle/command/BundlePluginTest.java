@@ -1,4 +1,4 @@
-package br.ufrgs.rmpestano.intrabundle.plugin;
+package br.ufrgs.rmpestano.intrabundle.command;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectFactory;
@@ -29,7 +29,7 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addClass(ProjectUtils.class)
-                .addClass(BundlePlugin.class).
+                .addClass(BundleCommand.class).
                 addClass(LocalePlugin.class).
                 addClass(BundleProjectFactory.class);
         System.out.println(jar.toString(true));

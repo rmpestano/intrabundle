@@ -1,4 +1,4 @@
-package br.ufrgs.rmpestano.intrabundle.plugin;
+package br.ufrgs.rmpestano.intrabundle.command;
 
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;

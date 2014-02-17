@@ -7,5 +7,5 @@
   <version>0.1-SNAPSHOT</version>
   <name>intrabundle</name>
        <dependencies></dependencies>
-    <!-- minimal pom file(required for forge), added by OSGi plugin for non maven projects  -->
+    <!-- minimal pom file(required for forge), added by OSGi command for non maven projects  -->
 </project>
