@@ -4,13 +4,12 @@ import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.Resource;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by rmpestano on 1/28/14.
  */
-public interface OSGiModule extends Serializable, Project {
+public interface OSGiModule extends Project {
 
     /**
      * @return total .java files(under src or src/main/java) lines of code
@@ -75,5 +74,6 @@ public interface OSGiModule extends Serializable, Project {
      * @return .java files possibly containing OSGi service stale references
      */
     List<Resource<?>> getStaleReferences();
+
 
 }

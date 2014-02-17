@@ -7,9 +7,7 @@ import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Created by rmpestano on 2/3/14.
@@ -77,5 +75,28 @@ public class ProjectUtils implements Serializable {
         } else {
             return root.getChild("test");
         }
+    }
+
+    public static boolean isOSGiManifest(Resource<?> resource) {
+        if(resource instanceof FileResource){
+            RandomAccessFile aFile = null;
+            try {
+                aFile = new RandomAccessFile(new File(resource.getFullyQualifiedName()),"r");
+                for (int i = 0 ;i < aFile.getChannel().size();i++){
+                    String line = aFile.readLine();
+                    if(line.contains("Bundle-Version")){
+                        return true;
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            ;
+        }
+        return false;
     }
 }

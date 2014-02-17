@@ -1,13 +1,12 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.jboss.forge.addon.projects.AbstractProject;
-import org.jboss.forge.addon.projects.ProjectFactory;
+import org.jboss.forge.addon.projects.ProjectFacet;
 import org.jboss.forge.addon.resource.*;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
@@ -25,8 +24,8 @@ import java.util.List;
  * Created by rmpestano on 1/22/14.
  */
 public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
+
     private DirectoryResource projectRoot = null;
-    private final ProjectFactory factory;
     private Long totalLoc;
     private Long totalTestLoc;//test lines of code
     private Boolean usesDeclarativeServices;
@@ -43,43 +42,10 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
     @Inject
     ASTVisitors visitors;
 
-    public OSGiModuleImpl() {
-        factory = null;
-    }
-
-    public OSGiModuleImpl(final ProjectFactory factory, final DirectoryResource dir) {
-        this.factory = factory;
+    public OSGiModuleImpl(final DirectoryResource dir) {
         this.projectRoot = dir;
     }
 
-    @Override
-    public <F extends Facet> F getFacet(final Class<F> type) {
-        try {
-            return super.getFacet(type);
-        } catch (FacetNotFoundException e) {
-            factory.registerSingleFacet(this, type);
-            return super.getFacet(type);
-        }
-    }
-
-    @Override
-    public DirectoryResource getProjectRoot() {
-        return projectRoot;
-    }
-
-    public void setProjectRoot(DirectoryResource projectRoot) {
-        this.projectRoot = projectRoot;
-    }
-
-    @Override
-    public boolean exists() {
-        return (projectRoot != null) && projectRoot.exists();
-    }
-
-    @Override
-    public String toString() {
-        return getProjectRoot().toString();
-    }
 
     private FileResource<?> findActivator() throws IOException {
         RandomAccessFile randomAccessFile;
@@ -102,7 +68,7 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
         }
         Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
         if (activator == null || !activator.exists()) {
-            throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
+            throw new RuntimeException("Could not find activator class at " + projectRoot + actvatorPath);
         }
 
         return (FileResource<?>) activator;
@@ -123,7 +89,7 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectTestPath(getProjectRoot()))) {
+            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectTestPath(projectRoot))) {
                 this.totalLoc = countModuleLines((DirectoryResource) resource);
             }
         }
@@ -144,7 +110,7 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectSourcePath(getProjectRoot()))) {
+            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectSourcePath(projectRoot))) {
                 this.totalTestLoc = countModuleTestLines((DirectoryResource) resource);
             }
         }
@@ -209,11 +175,11 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
     private FileResource<?> findManifest() {
         Resource<?> metaInf = ProjectUtils.getProjectMetaInfPath(projectRoot);
         if (metaInf == null || !metaInf.exists()) {
-            throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
+            throw new RuntimeException("OSGi bundle(" + projectRoot.getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
         Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
         if (manifest == null || !manifest.exists()) {
-            throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
+            throw new RuntimeException("OSGi bundle(" + projectRoot.getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
         }
         return (FileResource<?>) manifest;
     }
@@ -414,7 +380,7 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
     public Long getLinesOfCode() {
         if (totalLoc == null) {
             totalLoc = new Long(0L);
-            totalLoc = countModuleLines(getProjectRoot());
+            totalLoc = countModuleLines(projectRoot);
         }
         return totalLoc;
     }
@@ -469,18 +435,25 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
             totalTestLoc = new Long(0L);
-            totalTestLoc = countModuleTestLines(getProjectRoot());
+            totalTestLoc = countModuleTestLines(projectRoot);
         }
         return totalTestLoc;
     }
 
     @Override
     public DirectoryResource getRootDirectory() {
-        return null;
+        return projectRoot;
     }
 
+
     @Override
-    public boolean supports(BundleFacet f) {
+    public boolean supports(ProjectFacet type) {
         return true;
+    }
+
+
+    @Override
+    public String toString() {
+        return projectRoot.toString();
     }
 }
