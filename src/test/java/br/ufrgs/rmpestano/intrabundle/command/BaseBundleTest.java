@@ -26,12 +26,12 @@ public abstract class BaseBundleTest {
 
     @Deployment
     @Dependencies({
-            @AddonDependency(name = "org.jboss.forge.addon:maven"),
-            @AddonDependency(name = "org.jboss.forge.addon:ui"),
-            @AddonDependency(name = "org.jboss.forge.addon:projects"),
-            @AddonDependency(name = "org.jboss.forge.addon:shell-test-harness"),
-            @AddonDependency(name = "org.jboss.forge.addon:resources"),
-            @AddonDependency(name = "org.jboss.forge.furnace.container:cdi"),
+            @AddonDependency(name = "org.jboss.forge.addon:maven",version = "2.0.0.Final"),
+            @AddonDependency(name = "org.jboss.forge.addon:ui",version = "2.0.0.Final"),
+            @AddonDependency(name = "org.jboss.forge.addon:projects",version = "2.0.0.Final"),
+            @AddonDependency(name = "org.jboss.forge.addon:shell-test-harness",version = "2.0.0.Final"),
+            @AddonDependency(name = "org.jboss.forge.addon:resources",version = "2.0.0.Final"),
+            @AddonDependency(name = "org.jboss.forge.furnace.container:cdi",version = "2.0.0.Final"),
             @AddonDependency(name = "br.ufrgs.rmpestano:intrabundle", version = "0.1-SNAPSHOT")
     })
     public static ForgeArchive getDeployment()
