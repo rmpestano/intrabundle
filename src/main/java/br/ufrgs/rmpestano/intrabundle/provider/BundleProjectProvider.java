@@ -41,8 +41,7 @@ public class BundleProjectProvider implements ProjectProvider {
     @Override
     public Project createProject(final DirectoryResource dir)
     {
-        Project project = new OSGiModuleImpl(dir) {
-        };
+        Project project = new OSGiModuleImpl(dir);
 
         try
         {
