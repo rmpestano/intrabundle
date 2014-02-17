@@ -60,6 +60,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge.addon:environment-api:2.0.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge.addon:environment-impl:2.0.0.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge.addon:ui-impl:2.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.forge.addon:projects-api:forge-addon:2.0.0.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge.addon:parser-java-api:2.0.0.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.forge:java-parser-api:1.1.7.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.forge.addon:maven:forge-addon:2.0.0.Final" level="project" />

@@ -3,7 +3,6 @@ package br.ufrgs.rmpestano.intrabundle.command;
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.addon.facets.constraints.FacetConstraint;
-import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.projects.Projects;
@@ -113,6 +112,6 @@ public class BundleCommand  {
 
     protected OSGiModule getProject(UIContext context)
     {
-        return Projects.getSelectedProject(projectFactory, context);
+        return (OSGiModule) Projects.getSelectedProject(projectFactory, context);
     }
 }
