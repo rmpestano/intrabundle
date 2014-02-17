@@ -83,13 +83,16 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
      */
     private Long countModuleLines(DirectoryResource projectRoot) {
         for (Resource<?> resource : projectRoot.listResources()) {
-            if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
+            FileResource<?> fileResource = resource.reify(FileResource.class);
+            if (fileResource != null && fileResource.getName().endsWith(".java")) {
                 try {
                     this.totalLoc += countFileLines((FileResource<?>) resource);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectTestPath(projectRoot))) {
+            }
+           DirectoryResource directoryResource = resource.reify(DirectoryResource.class);
+           if (directoryResource != null && !directoryResource.equals(ProjectUtils.getProjectTestPath(projectRoot))) {
                 this.totalLoc = countModuleLines((DirectoryResource) resource);
             }
         }
@@ -104,13 +107,16 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
      */
     private Long countModuleTestLines(DirectoryResource projectRoot) {
         for (Resource<?> resource : projectRoot.listResources()) {
-            if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
+            FileResource fileResource = resource.reify(FileResource.class);
+            if (fileResource != null && fileResource.getName().endsWith(".java")) {
                 try {
                     this.totalTestLoc += countFileLines((FileResource<?>) resource);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectSourcePath(projectRoot))) {
+            }
+            DirectoryResource directoryResource = resource.reify(DirectoryResource.class);
+            if (directoryResource != null && !directoryResource.equals(ProjectUtils.getProjectSourcePath(projectRoot))) {
                 this.totalTestLoc = countModuleTestLines((DirectoryResource) resource);
             }
         }
@@ -318,13 +324,16 @@ public class OSGiModuleImpl extends AbstractProject implements OSGiModule {
 
     private void searchStaleReferences(List<Resource<?>> staleReferences, DirectoryResource root) {
         for (Resource<?> child : root.listResources()) {
-            if (child instanceof DirectoryResource) {
-                searchStaleReferences(staleReferences, (DirectoryResource) child);
-            } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
-                JavaSource source = JavaParser.parse(child.getResourceInputStream());
+            DirectoryResource directoryResource = child.reify(DirectoryResource.class);
+            if (directoryResource != null) {
+                searchStaleReferences(staleReferences, directoryResource);
+            }
+            FileResource fileResource = child.reify(FileResource.class);
+            if (fileResource !=  null && fileResource.getName().endsWith(".java")) {
+                JavaSource source = JavaParser.parse(fileResource.getResourceInputStream());
                 if (source.hasImport("org.osgi.framework.ServiceReference")) {
                     if (verifyStaleReference(source)) {
-                        staleReferences.add(child);
+                        staleReferences.add(fileResource);
                     }
                 }
             }

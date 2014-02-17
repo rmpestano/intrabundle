@@ -47,10 +47,12 @@ public class BundleFacet implements ProvidedProjectFacet,MutableFacet<Project>
 
     private boolean hasOSGiManifest(DirectoryResource rootDirectory) {
         for (Resource<?> resource : rootDirectory.listResources()) {
-            if(resource instanceof DirectoryResource){
-                return hasOSGiManifest((DirectoryResource) resource);
+            DirectoryResource directoryResource = resource.reify(DirectoryResource.class);
+            if(directoryResource !=null){
+                return hasOSGiManifest(directoryResource);
             }
-            if(resource instanceof FileResource && resource.getName().toLowerCase().endsWith(".mf")){
+            FileResource<?> fileResource = resource.reify(FileResource.class);
+            if(fileResource != null && fileResource.getName().toLowerCase().endsWith(".mf")){
                if(ProjectUtils.isOSGiManifest(resource)){
                    return true;
                }
