@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.ufrgs.rmpestano</groupId>
     <artifactId>intrabundle</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>intrabundle</name>
     <properties>
         <forge.version>2.0.0.Final</forge.version>
@@ -37,14 +37,21 @@
 
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
-            <artifactId>projects-api</artifactId>
+            <artifactId>projects</artifactId>
             <version>${forge.version}</version>
             <classifier>forge-addon</classifier>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
-            <artifactId>parser-java-api</artifactId>
+            <artifactId>projects</artifactId>
+            <version>${forge.version}</version>
+            <classifier>forge-addon</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.forge.addon</groupId>
+            <artifactId>parser-java</artifactId>
             <version>${forge.version}</version>
             <scope>provided</scope>
         </dependency>
