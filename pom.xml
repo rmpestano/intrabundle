@@ -12,6 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+
+        <!-- addons -->
         <dependency>
             <groupId>org.jboss.forge.furnace.container</groupId>
             <artifactId>cdi</artifactId>
@@ -20,16 +22,10 @@
             <version>${forge.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.forge.furnace.test</groupId>
-            <artifactId>furnace-test-harness</artifactId>
+            <groupId>org.jboss.forge.addon</groupId>
+            <artifactId>shell-test-harness</artifactId>
+            <classifier>forge-addon</classifier>
             <version>${forge.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.forge.furnace.test</groupId>
-            <artifactId>arquillian-furnace-classpath</artifactId>
-            <version>${forge.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
@@ -37,7 +33,6 @@
             <classifier>forge-addon</classifier>
             <version>${forge.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>ui</artifactId>
@@ -57,6 +52,20 @@
             <artifactId>org.eclipse.jdt.core</artifactId>
             <version>3.9.1.v20130905-0837</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>org.jboss.forge.furnace.test</groupId>
+            <artifactId>furnace-test-harness</artifactId>
+            <version>${forge.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.forge.furnace.test</groupId>
+            <artifactId>arquillian-furnace-classpath</artifactId>
+            <version>${forge.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <repositories>

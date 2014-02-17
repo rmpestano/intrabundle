@@ -1,29 +1,86 @@
 package br.ufrgs.rmpestano.intrabundle.command;
 
-import org.jboss.forge.project.Project;
-import org.jboss.forge.resources.DirectoryResource;
-import org.jboss.forge.resources.FileResource;
-import org.jboss.forge.test.SingletonAbstractShellTest;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.ProjectFactory;
+import org.jboss.forge.addon.resource.DirectoryResource;
+import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.shell.test.ShellTest;
+import org.jboss.forge.arquillian.AddonDependency;
+import org.jboss.forge.arquillian.Dependencies;
+import org.jboss.forge.arquillian.archive.ForgeArchive;
+import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * Created by rmpestano on 1/24/14.
  */
-public abstract class BaseBundleTest extends SingletonAbstractShellTest {
+@RunWith(Arquillian.class)
+public abstract class BaseBundleTest {
+
+    @Deployment
+    @Dependencies({
+            @AddonDependency(name = "org.jboss.forge.addon:maven"),
+            @AddonDependency(name = "org.jboss.forge.addon:ui"),
+            @AddonDependency(name = "org.jboss.forge.addon:projects"),
+            @AddonDependency(name = "org.jboss.forge.addon:shell-test-harness"),
+            @AddonDependency(name = "org.jboss.forge.addon:resources"),
+            @AddonDependency(name = "org.jboss.forge.furnace.container:cdi"),
+            @AddonDependency(name = "br.ufrgs.rmpestano:intrabundle", version = "0.1-SNAPSHOT")
+    })
+    public static ForgeArchive getDeployment()
+    {
+        ForgeArchive archive = ShrinkWrap
+                .create(ForgeArchive.class)
+                .addBeansXML()
+                .addAsAddonDependencies(
+                        AddonDependencyEntry.create("org.jboss.forge.addon:maven"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:ui"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:projects"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:shell-test-harness"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:resources"),
+                        AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi"),
+                        AddonDependencyEntry.create("br.ufrgs.rmpestano:intrabundle", "0.1-SNAPSHOT")
+                );
+
+        return archive;
+    }
+
+    @Inject
+    protected ProjectFactory projectFactory;
+
+    @Inject
+    protected BundleCommand bundleCommand;
+
+    @Inject
+    protected ShellTest shellTest;
+
+    protected Project project;
 
 
 
-    public Project initializeOSGiProject() throws Exception{
-        DirectoryResource root = createTempFolder();
-        DirectoryResource main = root.getOrCreateChildDirectory("module");
-        addMetaInf(main, "/MANIFEST.MF");
-        addActivator(main);
-        addTestClass(main);
-        addPermissions(main);
-        addExportedPackage(main);
-        addHelloManager(main);
-        getShell().setCurrentResource(main);
-        return getProject();
+    public void initializeOSGiProject() throws Exception {
+        if(project == null){
+            Project project = projectFactory.createTempProject();
+            DirectoryResource root = project.getRootDirectory();
+            DirectoryResource main = root.getOrCreateChildDirectory("module");
+            addMetaInf(main, "/MANIFEST.MF");
+            addActivator(main);
+            addTestClass(main);
+            addPermissions(main);
+            addExportedPackage(main);
+            addHelloManager(main);
+            shellTest.getShell().setCurrentResource(main);
+            this.project = project;
+        }
+
+
     }
 
     private void addHelloManager(DirectoryResource root) {
@@ -92,4 +149,16 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         }
     }
 
+
+    public void resetOutput(){
+        try {
+            shellTest.clearScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getOutput(){
+        return shellTest.getStdOut();
+    }
 }
