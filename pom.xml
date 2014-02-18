@@ -7,7 +7,7 @@
   <version>0.1</version>
   <name>intrabundle</name>
   <properties>
-    <forge.version>1.4.5-SNAPSHOT</forge.version>
+    <forge.version>1.4.4.Final</forge.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
