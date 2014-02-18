@@ -47,7 +47,13 @@ public class ProjectUtils implements Serializable {
             Resource<?> resources = main != null && main.exists() ? main.getChild("resources"):null;
             return resources != null && resources.exists() ? resources : null;
         } else {
-            return projectRoot;
+            Resource<?> resources = projectRoot.getChild("resources");
+            if(resources.exists()){
+                return resources;
+            }
+            else{
+                return projectRoot;
+            }
         }
     }
 
@@ -57,7 +63,12 @@ public class ProjectUtils implements Serializable {
             Resource<?> main = src.exists() ? src.getChild("main"):null;
             return main != null && main.exists() ? main.getChild("java"):null;
         } else {
-            return projectRoot.getChild("src");
+            Resource<?> src = projectRoot.getChild("src");
+            if(src.exists()){
+                return projectRoot.getChild("src");
+            } else{
+                return projectRoot;
+            }
         }
     }
 
