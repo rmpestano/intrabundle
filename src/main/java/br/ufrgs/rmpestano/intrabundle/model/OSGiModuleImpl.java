@@ -12,6 +12,7 @@ import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
+import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.*;
 
 import javax.enterprise.inject.Typed;
@@ -30,6 +31,7 @@ import java.util.List;
 public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
+    private final ResourceFactory resourceFactory;
     private Long totalLoc;
     private Long totalTestLoc;//test lines of code
     private Boolean usesDeclarativeServices;
@@ -46,11 +48,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     public OSGiModuleImpl() {
         factory = null;
+        resourceFactory = null;
     }
 
-    public OSGiModuleImpl(final ProjectFactory factory, final DirectoryResource dir) {
+    public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;
+        this.resourceFactory = resourceFactory;
     }
 
     @Override
@@ -103,7 +107,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         }
         Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
         if (activator == null || !activator.exists()) {
-            throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
+            //try to infer activator path from projectRoot path
+            if(actvatorPath.contains(projectRoot.getName())){
+                String[] activatoPathTokens = actvatorPath.split("/");
+                String projectRootPath = projectRoot.getFullyQualifiedName().substring(0,projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
+                activator = resourceFactory.getResourceFrom(new File((projectRootPath+actvatorPath).replaceAll("//","/").trim().concat(".java")));
+            }
+            if(activator == null || !activator.exists()){
+                throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
+            }
         }
 
         return (FileResource<?>) activator;

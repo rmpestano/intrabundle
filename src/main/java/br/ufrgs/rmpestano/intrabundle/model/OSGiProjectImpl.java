@@ -7,15 +7,13 @@ import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
+import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
 import javax.enterprise.inject.Typed;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -24,17 +22,20 @@ import java.util.Map;
 public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
+    private final ResourceFactory resourceFactory;
     private List<OSGiModule> modules;
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
 
 
     public OSGiProjectImpl() {
         factory = null;
+        resourceFactory = null;
     }
 
-    public OSGiProjectImpl(final ProjectFactory factory, final DirectoryResource dir) {
+    public OSGiProjectImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;
+        this.resourceFactory = resourceFactory;
     }
 
     @Override
@@ -94,12 +95,45 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         for (Resource<?> child : children) {
             DirectoryResource childRoot = (DirectoryResource) child;
             if(ProjectUtils.isOsgiBundle(childRoot)){
-                OSGiModule osGiModule = new OSGiModuleImpl(factory, childRoot);
+                OSGiModule osGiModule = new OSGiModuleImpl(factory, resourceFactory,childRoot);
                 modulesFound.add(osGiModule);
             }
         }
 
+        if(modulesFound.isEmpty()){
+            //try to find inside source
+            Resource<?> src = projectRoot.getChild("src").exists() ? projectRoot.getChild("src") :
+                    projectRoot.getChild("SRC").exists() ?  projectRoot.getChild("SRC") : null;
+            modulesFound.addAll(getModulesFromSource(src));
+
+        }
+
         return modulesFound;
+    }
+
+    private Collection<? extends OSGiModule> getModulesFromSource(Resource<?> root) {
+
+        List<OSGiModule> result = new ArrayList<OSGiModule>();
+        List<Resource<?>> children = root.listResources(new ResourceFilter() {
+            @Override
+            public boolean accept(Resource<?> resource) {
+                return resource instanceof DirectoryResource;
+            }
+        });
+
+        if(children != null && !children.isEmpty()){
+            for (Resource<?> child : children) {
+                DirectoryResource directoryResource = child.reify(DirectoryResource.class);
+                if(directoryResource != null && ProjectUtils.isOsgiBundle(directoryResource)){
+                    result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource));
+                }
+                else{
+                    result.addAll(getModulesFromSource(child));
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override
