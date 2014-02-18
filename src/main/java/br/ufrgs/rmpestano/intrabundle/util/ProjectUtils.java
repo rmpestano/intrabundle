@@ -87,23 +87,7 @@ public class ProjectUtils implements Serializable {
     }
 
     public static boolean isOsgiBundle(DirectoryResource projectRoot) {
-            Resource<?> manifestHome = ProjectUtils.getProjectManifestFolder(projectRoot);
-            if(manifestHome == null || !manifestHome.exists()){
-                return false;
-            }
-            List<Resource<?>> manifestCandidate =  manifestHome.listResources(new ResourceFilter() {
-                @Override
-                public boolean accept(Resource<?> resource) {
-                    return resource.getName().toLowerCase().endsWith(".mf");
-                }
-            });
-            if(manifestCandidate == null || manifestCandidate.isEmpty()){
-                return false;
-            }
-            Resource<?> manifest = manifestCandidate.get(0);
-            if(!manifest.exists()){
-                return false;
-            }
+            Resource<?> manifest = getBundleManifest(projectRoot);
             RandomAccessFile randomAccessFile;
             try {
                 File f = new File(manifest.getFullyQualifiedName());
@@ -115,6 +99,28 @@ public class ProjectUtils implements Serializable {
             }
 
         }
+
+    public static Resource<?> getBundleManifest(DirectoryResource projectRoot){
+        Resource<?> manifestHome = ProjectUtils.getProjectManifestFolder(projectRoot);
+        if(manifestHome == null || !manifestHome.exists()){
+            return null;
+        }
+        List<Resource<?>> manifestCandidate =  manifestHome.listResources(new ResourceFilter() {
+            @Override
+            public boolean accept(Resource<?> resource) {
+                return resource.getName().toLowerCase().endsWith(".mf");
+            }
+        });
+        if(manifestCandidate == null || manifestCandidate.isEmpty()){
+            return null;
+        }
+        Resource<?> manifest = manifestCandidate.get(0);
+        if(!manifest.exists()){
+            return manifest;
+        }
+
+        return null;
+    }
 
     public static boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
         String line;

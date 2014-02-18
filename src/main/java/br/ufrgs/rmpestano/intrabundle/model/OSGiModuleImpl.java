@@ -208,13 +208,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     private FileResource<?> findManifest() {
-        Resource<?> metaInf = ProjectUtils.getProjectManifestFolder(projectRoot);
+        Resource<?> metaInf = ProjectUtils.getBundleManifest(projectRoot);
         if (metaInf == null || !metaInf.exists()) {
             throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
-        }
-        Resource<?> manifest = metaInf.getChild("MANIFEST.MF");
-        if (manifest == null || !manifest.exists()) {
-            throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without MANIFEST.MF file cannot be analysed by intrabundle");
         }
         return (FileResource<?>) manifest;
     }
