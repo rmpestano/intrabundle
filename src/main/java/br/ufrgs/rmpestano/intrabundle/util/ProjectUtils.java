@@ -88,6 +88,9 @@ public class ProjectUtils implements Serializable {
 
     public static boolean isOsgiBundle(DirectoryResource projectRoot) {
             Resource<?> manifest = getBundleManifest(projectRoot);
+            if(manifest == null){
+                return false;
+            }
             RandomAccessFile randomAccessFile;
             try {
                 File f = new File(manifest.getFullyQualifiedName());
