@@ -32,7 +32,7 @@ public abstract class BaseBundleTest {
             @AddonDependency(name = "org.jboss.forge.addon:shell-test-harness",version = "2.0.0.Final"),
             @AddonDependency(name = "org.jboss.forge.addon:resources",version = "2.0.0.Final"),
             @AddonDependency(name = "org.jboss.forge.furnace.container:cdi",version = "2.0.0.Final"),
-            @AddonDependency(name = "br.ufrgs.rmpestano:intrabundle", version = "0.1-SNAPSHOT")
+            @AddonDependency(name = "br.ufrgs.rmpestano:intrabundle",version = "0.1")
     })
     public static ForgeArchive getDeployment()
     {
@@ -45,10 +45,9 @@ public abstract class BaseBundleTest {
                         AddonDependencyEntry.create("org.jboss.forge.addon:projects"),
                         AddonDependencyEntry.create("org.jboss.forge.addon:shell-test-harness"),
                         AddonDependencyEntry.create("org.jboss.forge.addon:resources"),
-                        AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi"),
-                        AddonDependencyEntry.create("br.ufrgs.rmpestano:intrabundle", "0.1-SNAPSHOT")
-                );
-
+                        AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi")
+                ).addClass(BaseBundleTest.class).addClass(BundlePluginTest.class);
+        System.out.println(archive.toString(true));
         return archive;
     }
 

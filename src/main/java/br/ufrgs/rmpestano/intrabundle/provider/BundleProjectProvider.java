@@ -10,6 +10,7 @@ import org.jboss.forge.addon.projects.ProvidedProjectFacet;
 import org.jboss.forge.addon.resource.DirectoryResource;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFilter;
+import org.jboss.forge.furnace.services.Imported;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -24,6 +25,9 @@ public class BundleProjectProvider implements ProjectProvider {
 
     @Inject
     private FacetFactory factory;
+
+    @Inject
+    Imported<BundleFacet> bundleFacet;
 
 
     @Override
@@ -58,6 +62,9 @@ public class BundleProjectProvider implements ProjectProvider {
 
     @Override
     public boolean containsProject(DirectoryResource directoryResource) {
+        /*if(bundleFacet.selectExact(BundleFacet.class).isInstalled()){
+            return true;
+        } */
         List<Resource<?>> manifestList = directoryResource.listResources(new ResourceFilter() {
             @Override
             public boolean accept(Resource<?> resource) {
