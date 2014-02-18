@@ -118,7 +118,7 @@ public class ProjectUtils implements Serializable {
             return null;
         }
         Resource<?> manifest = manifestCandidate.get(0);
-        if(!manifest.exists()){
+        if(manifest.exists()){
             return manifest;
         }
 
