@@ -136,7 +136,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectTestPath(getProjectRoot()))) {
+            } else if (resource instanceof DirectoryResource) {
                 this.totalLoc = countModuleLines((DirectoryResource) resource);
             }
         }
@@ -157,7 +157,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (resource instanceof DirectoryResource && !resource.equals(ProjectUtils.getProjectSourcePath(getProjectRoot()))) {
+            } else if (resource instanceof DirectoryResource) {
                 this.totalTestLoc = countModuleTestLines((DirectoryResource) resource);
             }
         }
@@ -423,7 +423,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfCode() {
         if (totalLoc == null) {
             totalLoc = new Long(0L);
-            totalLoc = countModuleLines(getProjectRoot());
+            Resource<?> srcPath = ProjectUtils.getProjectSourcePath(projectRoot);
+            if(srcPath != null && srcPath.exists()){
+                totalLoc = countModuleLines((DirectoryResource) srcPath);
+            }
         }
         return totalLoc;
     }
@@ -478,7 +481,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
             totalTestLoc = new Long(0L);
-            totalTestLoc = countModuleTestLines(getProjectRoot());
+            Resource<?> testPath = ProjectUtils.getProjectTestPath(projectRoot);
+            if(testPath != null && testPath.exists()){
+                totalTestLoc = countModuleTestLines((DirectoryResource) testPath);
+            }
         }
         return totalTestLoc;
     }

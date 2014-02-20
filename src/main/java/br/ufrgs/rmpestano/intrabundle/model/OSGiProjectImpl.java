@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
@@ -24,6 +23,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private final ProjectFactory factory;
     private final ResourceFactory resourceFactory;
     private List<OSGiModule> modules;
+    private List<OSGiModule> testModules;//in case of separeted test modules
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
 
 
@@ -50,7 +50,11 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
 
     public List<OSGiModule> getModules() {
         if (modules == null) {
-            modules = initalizeModules();
+            modules = new ArrayList<OSGiModule>();
+            Resource<?> srcDir = ProjectUtils.getProjectSourcePath(getProjectRoot());
+            if(srcDir != null && srcDir.exists()){
+               initalizeModules(modules,(DirectoryResource)srcDir);
+            }
         }
         return modules;
     }
@@ -82,36 +86,16 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         return dependencies;
     }
 
-    private List<OSGiModule> initalizeModules() {
-        List<OSGiModule> modulesFound = new ArrayList<OSGiModule>();
-        OSGiFacet osgi = getFacet(OSGiFacet.class);
-        List<Resource<?>> children = this.getProjectRoot().listResources(new ResourceFilter() {
-            @Override
-            public boolean accept(Resource<?> resource) {
-                return resource instanceof DirectoryResource;
-            }
-        });
-
-        for (Resource<?> child : children) {
-            DirectoryResource childRoot = (DirectoryResource) child;
-            if(ProjectUtils.isOsgiBundle(childRoot)){
-                OSGiModule osGiModule = new OSGiModuleImpl(factory, resourceFactory,childRoot);
-                modulesFound.add(osGiModule);
-            }
-        }
-
-        if(modulesFound.isEmpty()){
-            //try to find inside source
-            Resource<?> src = projectRoot.getChild("src").exists() ? projectRoot.getChild("src") :
-                    projectRoot.getChild("SRC").exists() ?  projectRoot.getChild("SRC") : null;
-            modulesFound.addAll(getModulesFromSource(src));
-
-        }
-
-        return modulesFound;
+    /**
+     * initialize osgi modules under root dir
+     * @param root
+     * @return
+     */
+    private void initalizeModules(List<OSGiModule> modules, DirectoryResource root) {
+        modules.addAll(findModulesRecursively(root));
     }
 
-    private Collection<? extends OSGiModule> getModulesFromSource(Resource<?> root) {
+    private Collection<? extends OSGiModule> findModulesRecursively(Resource<?> root) {
 
         List<OSGiModule> result = new ArrayList<OSGiModule>();
         List<Resource<?>> children = root.listResources(new ResourceFilter() {
@@ -128,7 +112,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
                     result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource));
                 }
                 else{
-                    result.addAll(getModulesFromSource(child));
+                    result.addAll(findModulesRecursively(child));
                 }
             }
         }
@@ -158,5 +142,18 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         return moduleDependenciesMap;
     }
 
+    public List<OSGiModule> getTestModules() {
+        if(testModules == null){
+            testModules = new ArrayList<OSGiModule>();
+            Resource<?> testDir = ProjectUtils.getProjectTestPath(projectRoot);
+            if(testDir != null && testDir.exists()){
+                initalizeModules(testModules,(DirectoryResource)testDir);
+            }
+        }
+        return testModules;
+    }
 
+    public void setTestModules(List<OSGiModule> testModules) {
+        this.testModules = testModules;
+    }
 }

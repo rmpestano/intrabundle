@@ -68,10 +68,25 @@ public class OsgiPlugin implements Plugin {
     @Command(value = "lot", help = "count lines of test code of all bundles")
     public void lot(@PipeIn String in, PipeOut out) {
         long total = 0;
+        //get test code inside each module
         for (int i = 0; i < getModules().size(); i++) {
             long loti = getModules().get(i).getLinesOfTestCode();
-            out.println(getModules().get(i).toString() + ":" + loti);
-            total += loti;
+            if(loti != 0){
+                out.println(getModules().get(i).toString() + ":" + loti);
+                total += loti;
+            }
+        }
+        /**
+         * get test lines of code from OSGi bundles dedicated to test
+         */
+        if(!project.getTestModules().isEmpty()){
+            for (int i = 0; i < project.getTestModules().size(); i++) {
+                long loti =  project.getTestModules().get(i).getLinesOfCode();
+                if(loti != 0){
+                    out.println( project.getTestModules().get(i).toString() + ":" + loti);
+                    total += loti;
+                }
+            }
         }
         out.println(provider.getMessage("osgi.total-lot") + total);
     }

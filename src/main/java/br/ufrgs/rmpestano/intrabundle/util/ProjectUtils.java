@@ -61,7 +61,7 @@ public class ProjectUtils implements Serializable {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main"):null;
-            return main != null && main.exists() ? main.getChild("java"):null;
+            return main != null && main.exists() ? main.getChild("java"):projectRoot;
         } else {
             Resource<?> src = projectRoot.getChild("src");
             if(src.exists()){
