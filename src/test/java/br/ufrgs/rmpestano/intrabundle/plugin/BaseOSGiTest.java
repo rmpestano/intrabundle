@@ -3,8 +3,11 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
+import org.jboss.forge.resources.Resource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.junit.Before;
+
+import java.io.IOException;
 
 /**
  * Created by rmpestano on 1/24/14.
@@ -36,6 +39,27 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    public Project initializeOSGiProjectWithBundlesInSourceCode() throws IOException {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        DirectoryResource basePackage = main.getOrCreateChildDirectory("src").
+                getChildDirectory("br").getOrCreateChildDirectory("ufrgs").
+                getChildDirectory("rmpestano");
+        DirectoryResource mod1 = basePackage.getOrCreateChildDirectory("module1");
+        addManifest(mod1, "/MANIFEST.MF");
+        addActivator(mod1);
+
+        DirectoryResource mod2 = basePackage.getOrCreateChildDirectory("module2");
+        addManifest(mod2,"/MANIFEST.MF");
+        addActivator(mod2);
+
+        DirectoryResource mod3 = basePackage.getOrCreateChildDirectory("module3");
+        addManifest(mod3,"/MANIFEST.MF");
+        addActivator(mod3);
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
         if(!pom.exists()){
@@ -46,21 +70,26 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     protected void addBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInf(bundle,"/MANIFEST-"+module+".MF");
+        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
         addActivator(bundle);
     }
 
     protected void addMavenBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
-        addMetaInf(moduleResources,"/MANIFEST-"+module+".MF");
+        addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
         addMavenActivator(bundle);
         addPom(bundle);
     }
 
-    private void addMetaInf(DirectoryResource root,String manifestName) {
+    private void addMetaInfWithManifest(DirectoryResource root, String manifestName) {
         DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
-        FileResource<?> fileResource = (FileResource<?>) metaInf.getChild("MANIFEST.MF");
+        addManifest(metaInf,manifestName);
+    }
+
+
+    public void addManifest(Resource<?> parent,String manifestName){
+        FileResource<?> fileResource = (FileResource<?>) parent.getChild(manifestName);
         if(!fileResource.exists()){
             fileResource.setContents(getClass().getResourceAsStream(manifestName));
         }

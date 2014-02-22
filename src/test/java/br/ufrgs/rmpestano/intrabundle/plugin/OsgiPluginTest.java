@@ -37,28 +37,41 @@ public class OsgiPluginTest extends BaseOSGiTest {
     MessageProvider provider;
 
     @Test
-    public void testDefaultCommand() throws Exception {
+    public void shouldExecuteDefaultCommand() throws Exception {
         resetOutput();
         getShell().execute("osgi");
         Assert.assertTrue(getOutput().contains(provider.getMessage("osgi.defaultCommand")));
     }
 
     @Test
-    public void testCount() throws Exception {
+    public void shouldCountBundles() throws Exception {
         resetOutput();
         getShell().execute("osgi countBundles");
         Assert.assertTrue(getOutput().contains("Total number of bundles:3"));
     }
 
     @Test
-    public void testListBundles() throws Exception {
+    public void shouldListBundles() throws Exception {
         resetOutput();
         getShell().execute("osgi listBundles");
         Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
     }
 
+    /**
+     * test listBundles command in project where bundles
+     * are inside src instead of being separated projects as usual
+     */
     @Test
-    public void testListBundlesInMavenProject() throws Exception {
+    public void shouldListBundlesInSourceCode() throws Exception {
+        initializeOSGiProjectWithBundlesInSourceCode();
+        resetOutput();
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
+
+    }
+
+    @Test
+    public void shouldListBundlesInMavenProject() throws Exception {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi listBundles");
@@ -67,7 +80,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
 
     @Test
-    public void testDeclarativeServices() throws Exception {
+    public void module3ShouldUseDeclarativeServices() throws Exception {
         resetOutput();
         getShell().execute("osgi usesDeclarativeServices");
         String assertion = "\nmodule3";
@@ -78,7 +91,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
-    public void activatorTest() throws Exception {
+    public void shouldFindActivatorClass() throws Exception {
         resetOutput();
         getShell().execute("osgi activators");
         String activatorPath = "/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
@@ -89,7 +102,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
-    public void exportedPackagesTest() throws Exception {
+    public void shouldListExportedPackages() throws Exception {
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
@@ -98,7 +111,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
-    public void importedPackagesTest() throws Exception {
+    public void shouldListImportedPackages() throws Exception {
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
@@ -107,7 +120,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
-    public void moduleDependenciesTest() throws Exception {
+    public void shouldListModuleDependencies() throws Exception {
         resetOutput();
         queueInputLines("1");
         getShell().execute("osgi moduleDependencies");
