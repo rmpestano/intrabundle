@@ -6,6 +6,7 @@ import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import org.jboss.forge.project.Project;
 import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
@@ -51,6 +52,14 @@ public class OsgiPlugin implements Plugin {
     public void listBundles(@PipeIn String in, PipeOut out) {
         for (OSGiModule osGiModule : getModules()) {
             out.println(osGiModule.toString());
+        }
+    }
+
+
+    @Command(value = "bundleLocations")
+    public void bundleLocations(@PipeIn String in, PipeOut out) {
+        for (int i=1;i<=getModules().size();i++) {
+            out.println(i+" - "+((Project)getModules().get(i-1)).getProjectRoot().getFullyQualifiedName());
         }
     }
 
@@ -181,6 +190,8 @@ public class OsgiPlugin implements Plugin {
             }
         }
     }
+
+
 
     private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listImported", module) + " =====");

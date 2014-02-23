@@ -47,7 +47,12 @@ public class OSGiFacet extends BaseFacet {
      * @return true if it contains at least one OSGi bundle, false otherwise
      */
     public boolean isOSGiProject(DirectoryResource projectRoot) {
-
+         if(projectRoot.toString().equals("intrabundle")){
+             /* special case where intrabundle is considered OSGi bundle cause it has OSGi bundles inside
+               its source code(test folder)
+             */
+             return false;
+         }
         //try to find bundles in child directories
         for (Resource<?> child : projectRoot.listResources()) {
             DirectoryResource directoryResource = child.reify(DirectoryResource.class);
