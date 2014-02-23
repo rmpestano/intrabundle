@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreport" pageWidth="802" pageHeight="30" orientation="Landscape" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="552ebffc-1671-4c28-8da6-e5503d338f40">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
+	<field name="_THIS" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9070b26f-b6f9-4b5f-ab10-6614118ca814" positionType="Float" x="0" y="0" width="800" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{_THIS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

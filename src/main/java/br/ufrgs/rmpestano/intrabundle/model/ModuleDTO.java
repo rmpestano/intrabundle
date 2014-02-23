@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 /**
  * Created by rmpestano on 2/4/14.
+ * used by jasper reports
  */
 public class ModuleDTO implements Serializable {
 
-    OSGiModule module;
-
+    protected OSGiModule module;
 
     public ModuleDTO() {
     }

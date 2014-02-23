@@ -6,6 +6,7 @@ import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellColor;
@@ -300,7 +301,7 @@ public class OsgiPlugin implements Plugin {
     @Command(help = "Generate a .pdf file containing information about all bundles of the project")
     public void report() {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("project", project);
+        params.put("project", new OSGiProjectDTO(project));
         params.put("provider", provider);
         jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).params(params).build();
     }
