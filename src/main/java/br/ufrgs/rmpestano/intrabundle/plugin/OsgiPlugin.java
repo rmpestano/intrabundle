@@ -13,10 +13,7 @@ import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -37,6 +34,8 @@ public class OsgiPlugin implements Plugin {
 
     @Inject
     JasperManager jasperManager;
+
+    private boolean sorted;
 
 
     @DefaultCommand
@@ -277,6 +276,15 @@ public class OsgiPlugin implements Plugin {
     }
 
     public List<OSGiModule> getModules() {
+        if(!sorted){
+            Collections.sort(project.getModules(), new Comparator<OSGiModule>() {
+                @Override
+                public int compare(OSGiModule o1, OSGiModule o2) {
+                    return o1.toString().compareTo(o2.toString());
+                }
+            });
+            sorted = true;
+        }
         return project.getModules();
     }
 
