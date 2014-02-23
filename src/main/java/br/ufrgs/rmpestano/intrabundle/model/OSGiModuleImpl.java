@@ -365,7 +365,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 searchStaleReferences(staleReferences, (DirectoryResource) child);
             } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
                 JavaSource source = JavaParser.parse(child.getResourceInputStream());
-                if (source.hasImport("org.osgi.framework.ServiceReference")) {
+                if (source.hasImport("org.osgi.framework.ServiceReference") || source.hasImport("org.osgi.framework")) {
                     if (verifyStaleReference(source)) {
                         staleReferences.add(child);
                     }

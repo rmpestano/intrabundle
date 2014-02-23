@@ -7,6 +7,7 @@ import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.project.Project;
+import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
@@ -54,7 +55,6 @@ public class OsgiPlugin implements Plugin {
             out.println(osGiModule.toString());
         }
     }
-
 
     @Command(value = "bundleLocations")
     public void bundleLocations(@PipeIn String in, PipeOut out) {
@@ -171,6 +171,33 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command("staleReferences")
+    public void moduleStaleReferences(@PipeIn String in, PipeOut out) {
+        if (!this.allModules(provider.getMessage("staleReferences"))) {
+            OSGiModule bundle = choiceModule();
+            List<Resource<?>> staleReferences = bundle.getStaleReferences();
+            if(!staleReferences.isEmpty()){
+                out.println(provider.getMessage("bundle.listing-stale-references"));
+                for (Resource<?> staleReference : staleReferences) {
+                    out.println(staleReference.getFullyQualifiedName());
+                }
+
+            }
+            else{
+                out.println(provider.getMessage("bundle.noStaleReferences"));
+            }
+        }//execute command for all modules
+        else {
+            out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.staleReferences") + " =====");
+            int staleReferencesModules = 0;
+            for (OSGiModule module: getModules()) {
+               if(!module.getStaleReferences().isEmpty()){
+                   out.println(++staleReferencesModules+" - "+module);
+               }
+            }
+        }
+    }
+
     @Command("publishInterfaces")
     public void publishInterfaces(@PipeIn String in, PipeOut out) {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.publishInterfaces"));
@@ -239,6 +266,7 @@ public class OsgiPlugin implements Plugin {
             }
         }
     }
+
 
     private OSGiModule choiceModule() {
         return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
