@@ -25,6 +25,9 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private List<OSGiModule> modules;
     private List<OSGiModule> testModules;//in case of separeted test modules
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
+    private Long linesOfCode;
+    private Long linesOfTestCode;
+
 
 
     public OSGiProjectImpl() {
@@ -151,6 +154,34 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
             }
         }
         return testModules;
+    }
+
+    @Override
+    public Long getLinesOfCode() {
+        if(linesOfCode == null){
+            linesOfCode = new Long(0);
+            for (OSGiModule module : modules) {
+                linesOfCode += module.getLinesOfCode();
+            }
+        }
+        return linesOfCode;
+    }
+
+    @Override
+    public Long getLinesOfTestCode() {
+        if(linesOfTestCode == null){
+            linesOfTestCode = new Long(0);
+            for (OSGiModule module : modules) {
+                linesOfTestCode +=module.getLinesOfTestCode();
+            }
+
+            if(getTestModules() != null){
+                for (OSGiModule testModule : testModules) {
+                    linesOfTestCode+=testModule.getLinesOfCode();
+                }
+            }
+        }
+        return linesOfTestCode;
     }
 
     public void setTestModules(List<OSGiModule> testModules) {
