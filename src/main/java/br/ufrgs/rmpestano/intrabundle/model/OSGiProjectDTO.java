@@ -1,6 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
 import org.jboss.forge.project.Project;
+import org.jboss.forge.resources.Resource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,38 +21,68 @@ public class OSGiProjectDTO implements Serializable {
 
     //key is module.toString() and value is dependencies as strings to easy report
     //manipulation cause we are reusing subreport.jasper to print a list of Strings
-    protected Map<String,List<String>> moduleDependenciesCache = new HashMap<String, List<String>>();
+    protected Map<String, List<String>> moduleDependenciesCache = new HashMap<String, List<String>>();
+
+    protected Map<String, List<String>> moduleStaleReferencesCache = new HashMap<String, List<String>>();
+
+    protected Long numberOfStaleReferences;
 
 
     public OSGiProjectDTO() {
     }
 
 
-    public List<String> getLocations(){
-        if(locations == null){
+    public List<String> getLocations() {
+        if (locations == null) {
             locations = new ArrayList<String>();
             for (OSGiModule osGiModule : project.getModules()) {
-                locations.add(((Project)osGiModule).getProjectRoot().getFullyQualifiedName());
+                locations.add(((Project) osGiModule).getProjectRoot().getFullyQualifiedName());
             }
         }
         return locations;
     }
 
-     public List<String> getModuleDependencies(OSGiModule module){
-         String key = module.toString();
-         if(!moduleDependenciesCache.containsKey(key)){
-             List<String> moduleDependencies = new ArrayList<String>();
-             for (OSGiModule osGiModule: project.getModulesDependencies().get(module)) {
-                 moduleDependencies.add(osGiModule.toString());
-             }
-             moduleDependenciesCache.put(key, moduleDependencies);
-         }
+    public List<String> getModuleDependencies(OSGiModule module) {
+        String key = module.toString();
+        if (!moduleDependenciesCache.containsKey(key)) {
+            List<String> moduleDependencies = new ArrayList<String>();
+            for (OSGiModule osGiModule : project.getModulesDependencies().get(module)) {
+                moduleDependencies.add(osGiModule.toString());
+            }
+            moduleDependenciesCache.put(key, moduleDependencies);
+        }
 
-         return moduleDependenciesCache.get(key);
-     }
+        return moduleDependenciesCache.get(key);
+    }
+
+
+    public List<String> getModuleStaleReferences(OSGiModule module) {
+        String key = module.toString();
+        if (!moduleStaleReferencesCache.containsKey(key)) {
+            List<String> moduleStaleReferences = new ArrayList<String>();
+            for (Resource<?> resource : module.getStaleReferences()) {
+                moduleStaleReferences.add(resource.getFullyQualifiedName());
+            }
+            moduleStaleReferencesCache.put(key, moduleStaleReferences);
+//          moduleStaleReferencesCache.put(key, Arrays.<String>asList(String.valueOf(module.getStaleReferences())));
+        }
+
+        return moduleStaleReferencesCache.get(key);
+    }
+
 
     public OSGiProjectDTO(OSGiProject project) {
         this.project = project;
+    }
+
+    public Long getNumberOfStaleReferences() {
+        if (numberOfStaleReferences == null) {
+            numberOfStaleReferences = new Long(0);
+            for (OSGiModule osGiModule : project.getModules()) {
+                numberOfStaleReferences += getModuleStaleReferences(osGiModule).size();
+            }
+        }
+        return numberOfStaleReferences;
     }
 
     public OSGiProject getProject() {
