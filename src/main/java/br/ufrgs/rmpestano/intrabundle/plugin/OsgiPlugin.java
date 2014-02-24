@@ -7,6 +7,7 @@ import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO;
+import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellColor;
@@ -303,7 +304,8 @@ public class OsgiPlugin implements Plugin {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectDTO(project));
         params.put("provider", provider);
-        jasperManager.reportName("osgi").filename(project.toString()).data(getModulesToReport()).params(params).build();
+        FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(),FileType.PDF);
+        jasperManager.reportName("osgi").filename(project.toString()).type(type).data(getModulesToReport()).params(params).build();
     }
 
 }

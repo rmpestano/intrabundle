@@ -1,5 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import org.jboss.forge.project.Project;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class OSGiProjectDTO implements Serializable {
         if(locations == null){
             locations = new ArrayList<String>();
             for (OSGiModule osGiModule : project.getModules()) {
-                locations.add(osGiModule.toString());
+                locations.add(((Project)osGiModule).getProjectRoot().getFullyQualifiedName());
             }
         }
         return locations;

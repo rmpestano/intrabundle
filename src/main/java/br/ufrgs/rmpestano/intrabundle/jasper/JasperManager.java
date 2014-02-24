@@ -1,16 +1,14 @@
 package br.ufrgs.rmpestano.intrabundle.jasper;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.*;
 import org.jboss.forge.shell.Shell;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
@@ -25,6 +23,7 @@ public class JasperManager implements Serializable {
     private String reportName;
     private List<?> data;
     private Map params;
+    private FileType type;
 
     @Inject
     Shell shell;
@@ -59,6 +58,11 @@ public class JasperManager implements Serializable {
         return this;
     }
 
+    public JasperManager type(FileType type){
+        this.type = type;
+        return this;
+    }
+
     public JasperManager params(Map params){
             this.params = params;
             return this;
@@ -74,10 +78,63 @@ public class JasperManager implements Serializable {
         if(fileName == null){
             fileName = reportName;
         }
-        String path = shell.getCurrentDirectory().getFullyQualifiedName()+"/"+fileName+".pdf";
+
+        if(type == null){
+            type = FileType.PDF;
+        }
+        String path = shell.getCurrentDirectory().getFullyQualifiedName()+"/"+fileName+"."+type.getName();
         JasperPrint jp = getJasperPrint();
+        JRExporter exporter = null;
 		try {
-			JasperExportManager.exportReportToPdfStream(jp, new FileOutputStream(path));
+            switch (type){
+                case PDF: {
+                    JasperExportManager.exportReportToPdfFile(jp, path);
+                    break;
+                }
+                case HTML:{
+                    JasperExportManager.exportReportToHtmlFile(jp, path);
+                    break;
+                }
+                case TXT:{
+                    exporter = new JRTextExporter();
+                    exporter.setParameter(JRTextExporterParameter.JASPER_PRINT, jp);
+                    exporter.setParameter(JRTextExporterParameter.OUTPUT_FILE_NAME, path);
+                    exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, 300);
+                    exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, 40);
+                    exporter.exportReport();
+                    break;
+                }
+                case EXCEL:{
+                    exporter = new JRXlsExporter();
+                    exporter.setParameter(JRExporterParameter.JASPER_PRINT,
+                            jp);
+                    exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME,
+                            path);
+                    exporter.exportReport();
+                    break;
+                }
+
+                case CSV:{
+                    exporter = new JRCsvExporter();
+                    exporter.setParameter(JRExporterParameter.JASPER_PRINT,
+                            jp);
+                    exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME,
+                            path);
+                    exporter.exportReport();
+                    break;
+                }
+                case RTF:{
+                    exporter = new JRRtfExporter();
+                    exporter.setParameter(JRExporterParameter.JASPER_PRINT,
+                            jp);
+                    exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME,
+                            path);
+                    exporter.exportReport();
+                    break;
+                }
+
+            }
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
