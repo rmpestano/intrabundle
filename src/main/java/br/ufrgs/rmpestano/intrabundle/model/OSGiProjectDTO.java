@@ -4,10 +4,7 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by rmpestano on 2/4/14.
@@ -61,7 +58,7 @@ public class OSGiProjectDTO implements Serializable {
         if (!moduleStaleReferencesCache.containsKey(key)) {
             List<String> moduleStaleReferences = new ArrayList<String>();
             for (Resource<?> resource : module.getStaleReferences()) {
-                moduleStaleReferences.add(resource.getFullyQualifiedName());
+                moduleStaleReferences.add(resource.getName());
             }
             moduleStaleReferencesCache.put(key, moduleStaleReferences);
 //          moduleStaleReferencesCache.put(key, Arrays.<String>asList(String.valueOf(module.getStaleReferences())));

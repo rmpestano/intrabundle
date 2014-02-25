@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +83,10 @@ public class JasperManager implements Serializable {
 
         if(type == null){
             type = FileType.PDF;
+        }
+
+        if(params == null){
+            params = new HashMap();
         }
         String path = shell.getCurrentDirectory().getFullyQualifiedName()+"/"+fileName+"."+type.getName();
         JasperPrint jp = getJasperPrint();
@@ -156,6 +162,7 @@ public class JasperManager implements Serializable {
             if (is == null) {
                 throw new RuntimeException("File " + path + " not found");
             }
+            params.put("INITIAL_TIME",new Date());
             return JasperFillManager.fillReport(is, params, new JRBeanCollectionDataSource(data));
 		} catch (JRException e) {
 			throw new RuntimeException(e);
