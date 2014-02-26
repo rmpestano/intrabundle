@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="600" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="396"/>
+	<property name="ireport.y" value="882"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
@@ -61,7 +61,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="252" splitType="Stretch">
+		<band height="298" splitType="Stretch">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 			<staticText>
 				<reportElement uuid="6a4cdb7a-1920-454c-8e71-35492e79346c" x="10" y="93" width="287" height="20"/>
@@ -72,14 +72,14 @@
 				<text><![CDATA[Lines of test code:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="9b2adee2-74e3-450c-8bee-9c657b174893" x="329" y="93" width="313" height="20"/>
+				<reportElement uuid="9b2adee2-74e3-450c-8bee-9c657b174893" x="320" y="93" width="313" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getProject().getLinesOfTestCode()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="da86247f-b559-4584-b3fe-055835bb4545" x="329" y="10" width="311" height="20"/>
+				<reportElement uuid="da86247f-b559-4584-b3fe-055835bb4545" x="320" y="10" width="451" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -94,14 +94,14 @@
 				<text><![CDATA[Lines of code:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="2945bd2a-05ed-4876-bd20-e7ae4c2b82c9" x="327" y="125" width="313" height="20"/>
+				<reportElement uuid="2945bd2a-05ed-4876-bd20-e7ae4c2b82c9" x="320" y="125" width="313" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getNumberOfStaleReferences()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="e8aa605e-7ed5-4e5a-8c4a-c7a9ab60278c" x="329" y="40" width="311" height="20"/>
+				<reportElement uuid="e8aa605e-7ed5-4e5a-8c4a-c7a9ab60278c" x="320" y="40" width="311" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -124,7 +124,7 @@
 				<text><![CDATA[N° of stale references:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="5af08548-81c8-4fed-906f-c63c9fb470f8" x="329" y="68" width="311" height="20"/>
+				<reportElement uuid="5af08548-81c8-4fed-906f-c63c9fb470f8" x="320" y="68" width="311" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -139,21 +139,40 @@
 				<text><![CDATA[N° of bundles:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="4ac5cc80-5a20-4330-a2e4-8ba3f947990c" stretchType="RelativeToBandHeight" x="4" y="198" width="776" height="42" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="4ac5cc80-5a20-4330-a2e4-8ba3f947990c" stretchType="RelativeToBandHeight" x="4" y="231" width="776" height="42" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getLocations())]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="fd47b99b-67e2-47ce-861f-7653962880d1" mode="Opaque" x="4" y="166" width="776" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="fd47b99b-67e2-47ce-861f-7653962880d1" mode="Opaque" x="4" y="199" width="776" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Bundles Found]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="2c4c5570-f97d-4840-938e-4d23b1eb7366" x="320" y="155" width="453" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getRevision() != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getRevision()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5af79f3f-58a7-43de-b524-b1c99d340ee7" x="10" y="155" width="287" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getRevision() != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Revision:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="21">
+		<band height="22">
 			<staticText>
 				<reportElement uuid="09e400ca-7332-4a37-99d6-d37ac9a9f3f5" mode="Opaque" x="0" y="0" width="780" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
@@ -164,12 +183,12 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="179" splitType="Stretch">
+		<band height="192" splitType="Stretch">
 			<line>
 				<reportElement uuid="7246e5d5-0408-4288-8e5d-7c9c226f5736" x="0" y="0" width="780" height="3"/>
 			</line>
 			<staticText>
-				<reportElement uuid="d403666e-b744-4189-8436-be9e3abd519a" x="10" y="146" width="287" height="20"/>
+				<reportElement uuid="d403666e-b744-4189-8436-be9e3abd519a" x="10" y="168" width="287" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -177,7 +196,7 @@
 				<text><![CDATA[Activator:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="87063daa-f6e9-4706-ae43-f64a827c274c" x="10" y="76" width="287" height="20"/>
+				<reportElement uuid="87063daa-f6e9-4706-ae43-f64a827c274c" x="10" y="104" width="287" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -185,7 +204,7 @@
 				<text><![CDATA[Publishes interfaces:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5b567f8d-c65e-4216-a77b-06c6d8d295de" x="10" y="43" width="287" height="20"/>
+				<reportElement uuid="5b567f8d-c65e-4216-a77b-06c6d8d295de" x="10" y="73" width="287" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -193,28 +212,28 @@
 				<text><![CDATA[Lines of code:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="1ebe872e-e912-4147-baf9-a29ad2bdb194" x="341" y="146" width="301" height="20"/>
+				<reportElement uuid="1ebe872e-e912-4147-baf9-a29ad2bdb194" x="320" y="168" width="439" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getActivator() == null ? "No activator found" : ((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getActivator()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="4979785d-f347-4eb6-83c0-a31fe49f0385" x="339" y="43" width="301" height="20"/>
+				<reportElement uuid="4979785d-f347-4eb6-83c0-a31fe49f0385" x="320" y="73" width="301" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getLinesOfCode()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="9973d16f-de18-4942-84c7-178db86d4bdf" x="339" y="112" width="301" height="20"/>
+				<reportElement uuid="9973d16f-de18-4942-84c7-178db86d4bdf" x="318" y="137" width="301" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getUsesDeclarativeServices() == true ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1d7c4dd7-5842-448b-9670-6b1f7d12ac17" x="10" y="112" width="287" height="20"/>
+				<reportElement uuid="1d7c4dd7-5842-448b-9670-6b1f7d12ac17" x="10" y="137" width="287" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -222,7 +241,7 @@
 				<text><![CDATA[Uses Declarative services:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="79414690-3bbb-4138-899e-62906472a287" x="10" y="10" width="287" height="20"/>
+				<reportElement uuid="79414690-3bbb-4138-899e-62906472a287" x="10" y="13" width="287" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -230,18 +249,33 @@
 				<text><![CDATA[Name:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="9a3c0ea9-f18b-43e6-b077-5ff2f1abee4c" x="339" y="10" width="301" height="20"/>
+				<reportElement uuid="9a3c0ea9-f18b-43e6-b077-5ff2f1abee4c" x="320" y="13" width="441" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).toString()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="38a3e379-e72a-43f2-827a-62d4db22dc0d" x="339" y="76" width="301" height="20"/>
+				<reportElement uuid="38a3e379-e72a-43f2-827a-62d4db22dc0d" x="318" y="104" width="301" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getPublishesInterfaces() ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f49c2c3c-92f3-40f0-bfd2-b28b76b776d1" x="10" y="43" width="287" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Version:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0c44144c-f83c-43bd-987f-7cd5027f41f1" x="318" y="43" width="301" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getVersion()]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="47">
@@ -254,14 +288,14 @@
 				<text><![CDATA[Exported packages:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement uuid="b31ac9d2-0411-426b-849f-b5fcbdce03e7" x="343" y="15" width="297" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="b31ac9d2-0411-426b-849f-b5fcbdce03e7" x="318" y="15" width="297" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getExportedPackages())]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="44">
 			<subreport>
-				<reportElement uuid="4604b1f7-f700-4812-a859-ed7c66731c4e" x="345" y="11" width="295" height="31" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="4604b1f7-f700-4812-a859-ed7c66731c4e" x="318" y="11" width="295" height="31" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getImportedPackages())]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>
@@ -276,7 +310,7 @@
 		</band>
 		<band height="40">
 			<subreport>
-				<reportElement uuid="af0f21cb-4495-47f7-8df3-6036813415df" x="345" y="10" width="295" height="27" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="af0f21cb-4495-47f7-8df3-6036813415df" x="318" y="10" width="295" height="27" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getModuleDependencies(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module})))]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>
@@ -291,7 +325,7 @@
 		</band>
 		<band height="46">
 			<subreport>
-				<reportElement uuid="504ea652-7211-4647-ba31-9ef9e7c9f72b" x="343" y="9" width="297" height="29" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="504ea652-7211-4647-ba31-9ef9e7c9f72b" x="318" y="9" width="297" height="29" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO)$P{project}).getModuleStaleReferences(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module})))]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>

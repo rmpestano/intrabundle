@@ -1,10 +1,15 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
+import org.jboss.forge.maven.MavenCoreFacet;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rmpestano on 2/4/14.
@@ -23,6 +28,10 @@ public class OSGiProjectDTO implements Serializable {
     protected Map<String, List<String>> moduleStaleReferencesCache = new HashMap<String, List<String>>();
 
     protected Long numberOfStaleReferences;
+
+    protected String version;
+
+    protected String revision;
 
 
     public OSGiProjectDTO() {
@@ -80,6 +89,22 @@ public class OSGiProjectDTO implements Serializable {
             }
         }
         return numberOfStaleReferences;
+    }
+
+    public String getVersion() {
+        if(version == null && ((Project)project).hasFacet(MavenCoreFacet.class)) {
+            MavenCoreFacet mavenCoreFacet = ((Project)project).getFacet(MavenCoreFacet.class);
+            version = mavenCoreFacet.getMavenProject().getVersion();
+        }
+        return version;
+    }
+
+
+    public String getRevision() {
+        if(revision == null && (ProjectUtils.isGitProject((Project) project)))  {
+            revision = ProjectUtils.getProjectGitHeadRevision((Project) project);
+        }
+        return revision;
     }
 
     public OSGiProject getProject() {

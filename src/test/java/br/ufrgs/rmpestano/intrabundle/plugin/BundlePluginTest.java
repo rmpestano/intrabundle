@@ -76,6 +76,13 @@ public class BundlePluginTest extends BaseBundleTest {
     }
 
     @Test
+    public void shouldGetBundleVersion() throws Exception {
+        resetOutput();
+        getShell().execute("bundle version");
+        Assert.assertTrue(getOutput().startsWith("1.0.0.qualifier"));
+    }
+
+    @Test
     public void shouldGetExportedPackages() throws Exception {
         resetOutput();
         getShell().execute("bundle exportedPackages");

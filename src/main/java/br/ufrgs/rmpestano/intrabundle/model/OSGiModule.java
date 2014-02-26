@@ -84,4 +84,5 @@ public interface OSGiModule extends Serializable{
      */
     List<Resource<?>> getStaleReferences();
 
+    String getVersion();
 }

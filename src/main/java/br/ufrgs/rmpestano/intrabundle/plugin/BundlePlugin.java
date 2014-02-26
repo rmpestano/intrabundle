@@ -117,5 +117,10 @@ public class BundlePlugin implements Plugin {
         }
     }
 
+    @Command("version")
+    public void moduleVersion(PipeOut out){
+        out.println(bundle.getVersion());
+    }
+
 
 }

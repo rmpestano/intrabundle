@@ -44,6 +44,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
     private List<Resource<?>> staleReferences;
+    private String version;
 
 
     public OSGiModuleImpl() {
@@ -382,6 +383,29 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return staleReferencesVisitor.getNumGetServices() != staleReferencesVisitor.getNumUngetServices();
     }
 
+    private String findBundleVersion() {
+        version = new String();
+        try {
+            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
+                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (!"".equals(line)) {
+                        version = line.substring(line.indexOf(":") + 1).trim();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //TODO log ex
+            e.printStackTrace();
+        } finally {
+            return version;
+        }
+    }
+
+
 
     //getters
 
@@ -477,10 +501,18 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return staleReferences;
     }
 
+    @Override
+    public String getVersion() {
+        if(version == null){
+            version = findBundleVersion();
+        }
+        return version;
+    }
+
 
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
-            totalTestLoc = new Long(0L);
+            totalTestLoc = 0L;
             Resource<?> testPath = ProjectUtils.getProjectTestPath(projectRoot);
             if(testPath != null && testPath.exists()){
                 totalTestLoc = countModuleTestLines((DirectoryResource) testPath);

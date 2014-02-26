@@ -93,7 +93,7 @@ public class OsgiPlugin implements Plugin {
             for (int i = 0; i < project.getTestModules().size(); i++) {
                 long loti =  project.getTestModules().get(i).getLinesOfCode();
                 if(loti != 0){
-                    out.println( project.getTestModules().get(i).toString() + ":" + loti);
+                    out.println(project.getTestModules().get(i).toString() + ":" + loti);
                     total += loti;
                 }
             }
@@ -171,6 +171,7 @@ public class OsgiPlugin implements Plugin {
             }
         }
     }
+
 
     @Command("staleReferences")
     public void moduleStaleReferences(@PipeIn String in, PipeOut out) {

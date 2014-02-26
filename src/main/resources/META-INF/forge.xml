@@ -1,5 +1,6 @@
 <forge>
      <dependencies>
          <module name="org.eclipse.javaparser" />
+         <module name="org.jboss.forge.git" />
       </dependencies>
 </forge>
