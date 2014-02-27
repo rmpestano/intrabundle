@@ -163,6 +163,7 @@ public class JasperManager implements Serializable {
                 throw new RuntimeException("File " + path + " not found");
             }
             params.put("INITIAL_TIME",new Date());
+            params.put("SUBREPORT_DIR","/reports/");
             return JasperFillManager.fillReport(is, params, new JRBeanCollectionDataSource(data));
 		} catch (JRException e) {
 			throw new RuntimeException(e);
