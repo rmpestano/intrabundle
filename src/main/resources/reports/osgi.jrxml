@@ -8,7 +8,7 @@
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
 	<subDataset name="dataset2" uuid="d7b6b6d8-d637-4afa-8917-e54086fa6c53"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA["/home/rmpestano/projetos/intrabundle/src/main/resources/reports/"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["/"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="project" class="java.lang.Object" isForPrompting="false">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
