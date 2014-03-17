@@ -6,7 +6,7 @@ import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectDTO;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport;
 import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
@@ -303,7 +303,7 @@ public class OsgiPlugin implements Plugin {
     @Command(help = "Generate a .pdf file containing information about all bundles of the project")
     public void report() {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("project", new OSGiProjectDTO(project));
+        params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(),FileType.PDF);
         jasperManager.reportName("osgi").filename(project.toString()).type(type).data(getModulesToReport()).params(params).build();

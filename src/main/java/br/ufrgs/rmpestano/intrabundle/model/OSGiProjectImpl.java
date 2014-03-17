@@ -1,6 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
+import org.jboss.forge.maven.MavenCoreFacet;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -27,7 +28,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
     private Long linesOfCode;
     private Long linesOfTestCode;
-
+    protected String version;
+    protected String revision;
 
 
     public OSGiProjectImpl() {
@@ -186,5 +188,23 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
 
     public void setTestModules(List<OSGiModule> testModules) {
         this.testModules = testModules;
+    }
+
+    @Override
+    public String getVersion() {
+        if(version == null && ProjectUtils.isMavenProject(projectRoot)) {
+            MavenCoreFacet mavenCoreFacet = this.getFacet(MavenCoreFacet.class);
+            version = mavenCoreFacet.getMavenProject().getVersion();
+        }
+        return version;
+    }
+
+
+    @Override
+    public String getRevision() {
+        if(revision == null && (ProjectUtils.isGitProject(this)))  {
+            revision = ProjectUtils.getProjectGitHeadRevision(this);
+        }
+        return revision;
     }
 }

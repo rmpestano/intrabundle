@@ -87,38 +87,51 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return getProjectRoot().toString();
     }
 
-    private FileResource<?> findActivator() throws IOException {
-        RandomAccessFile randomAccessFile;
-        File f = new File(getManifest().getFullyQualifiedName());
-        randomAccessFile = new RandomAccessFile(f, "r");
-
-        String line;
-        while ((line = randomAccessFile.readLine()) != null) {
-            if (line.contains(Constants.Manifest.ACTIVATOR)) {
-                break;
+    private FileResource<?> findActivator() {
+        RandomAccessFile randomAccessFile = null;
+        Resource<?> activator = null;
+        try {
+            File f = new File(getManifest().getFullyQualifiedName());
+            randomAccessFile = new RandomAccessFile(f, "r");
+            String line;
+            while ((line = randomAccessFile.readLine()) != null) {
+                if (line.contains(Constants.Manifest.ACTIVATOR)) {
+                    break;
+                }
+            }
+            if (line == null) {
+                return null;//no activator
+            }
+            String actvatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
+            actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
+            if (!actvatorPath.startsWith("/")) {
+                actvatorPath = "/" + actvatorPath;
+            }
+            activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
+            if (activator == null || !activator.exists()) {
+                //try to infer activator path from projectRoot path
+                if (actvatorPath.contains(projectRoot.getName())) {
+                    String[] activatoPathTokens = actvatorPath.split("/");
+                    String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
+                    activator = resourceFactory.getResourceFrom(new File((projectRootPath + actvatorPath).replaceAll("//", "/").trim().concat(".java")));
+                }
+                if (activator == null || !activator.exists()) {
+                    throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        if (line == null) {
-            return null;//no activator
-        }
-        String actvatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
-        actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
-        if (!actvatorPath.startsWith("/")) {
-            actvatorPath = "/" + actvatorPath;
-        }
-        Resource<?> activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
-        if (activator == null || !activator.exists()) {
-            //try to infer activator path from projectRoot path
-            if(actvatorPath.contains(projectRoot.getName())){
-                String[] activatoPathTokens = actvatorPath.split("/");
-                String projectRootPath = projectRoot.getFullyQualifiedName().substring(0,projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
-                activator = resourceFactory.getResourceFrom(new File((projectRootPath+actvatorPath).replaceAll("//","/").trim().concat(".java")));
-            }
-            if(activator == null || !activator.exists()){
-                throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
-            }
-        }
-
         return (FileResource<?>) activator;
 
     }
@@ -172,14 +185,16 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         while ((line = file.readLine()) != null) {
             total++;
         }
+        file.close();
         return total;
     }
 
     private boolean usesDeclarativeServices() {
         Resource<?> manifest = getManifest();
         if (manifest != null && manifest.exists()) {
+            RandomAccessFile aFile = null;
             try {
-                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
+                aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
                 String line;
                 while ((line = aFile.readLine()) != null) {
                     if (line.contains(Constants.Manifest.DECLARATIVE_SERVICES)) {
@@ -190,6 +205,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (aFile != null) {
+                    try {
+                        aFile.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return false;
@@ -198,8 +221,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private boolean usesBlueprint() {
         Resource<?> manifest = getManifest();
         if (manifest != null && manifest.exists()) {
+            RandomAccessFile aFile = null;
             try {
-                RandomAccessFile aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
+                aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
                 String line;
                 while ((line = aFile.readLine()) != null) {
                     if (line.contains(Constants.Manifest.BLUE_PRINT)) {
@@ -210,6 +234,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (aFile != null) {
+                    try {
+                        aFile.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return false;
@@ -230,8 +262,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     private List<String> findExportedPackages() {
         exportedPackages = new ArrayList<String>();
+        RandomAccessFile file = null;
         try {
-            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
@@ -252,14 +285,22 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             //TODO log ex
             e.printStackTrace();
         } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return exportedPackages;
         }
     }
 
     private List<String> findImportedPackages() {
         importedPackages = new ArrayList<String>();
+        RandomAccessFile file = null;
         try {
-            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
@@ -280,14 +321,22 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             //TODO log ex
             e.printStackTrace();
         } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return importedPackages;
         }
     }
 
     private List<String> findRequiredBundles() {
         requiredBundles = new ArrayList<String>();
+        RandomAccessFile file = null;
         try {
-            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
@@ -308,6 +357,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             //TODO log ex
             e.printStackTrace();
         } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return requiredBundles;
         }
     }
@@ -385,8 +441,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     private String findBundleVersion() {
         version = new String();
+        RandomAccessFile file = null;
         try {
-            RandomAccessFile file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
+            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
@@ -401,10 +458,16 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             //TODO log ex
             e.printStackTrace();
         } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return version;
         }
     }
-
 
 
     //getters
@@ -426,11 +489,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     @Override
     public FileResource<?> getActivator() {
         if (activator == null) {
-            try {
-                activator = findActivator();
-            } catch (IOException e) {
-                throw new RuntimeException("Could not find activator class");
-            }
+            activator = findActivator();
         }
         return activator;
     }
@@ -448,7 +507,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         if (totalLoc == null) {
             totalLoc = new Long(0L);
             Resource<?> srcPath = ProjectUtils.getProjectSourcePath(projectRoot);
-            if(srcPath != null && srcPath.exists()){
+            if (srcPath != null && srcPath.exists()) {
                 totalLoc = countModuleLines((DirectoryResource) srcPath);
             }
         }
@@ -503,7 +562,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public String getVersion() {
-        if(version == null){
+        if (version == null) {
             version = findBundleVersion();
         }
         return version;
@@ -514,7 +573,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         if (totalTestLoc == null) {
             totalTestLoc = 0L;
             Resource<?> testPath = ProjectUtils.getProjectTestPath(projectRoot);
-            if(testPath != null && testPath.exists()){
+            if (testPath != null && testPath.exists()) {
                 totalTestLoc = countModuleTestLines((DirectoryResource) testPath);
             }
         }

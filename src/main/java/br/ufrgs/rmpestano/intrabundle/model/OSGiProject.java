@@ -23,4 +23,7 @@ public interface OSGiProject extends Serializable{
 
     Map<OSGiModule, List<OSGiModule>> getModulesDependencies();
 
+    String getRevision();
+
+    String getVersion();
 }

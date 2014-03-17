@@ -31,8 +31,9 @@ public class ProjectUtils implements Serializable {
         }
         Resource<?> pom = projectRoot.getChild("pom.xml");
         if (pom.exists()) {
+            RandomAccessFile file = null;
             try {
-                RandomAccessFile file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
+                 file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
                 String line;
                 while ((line = file.readLine()) != null) {
                     if (line.contains("<dependencies>")) {
@@ -42,6 +43,15 @@ public class ProjectUtils implements Serializable {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 //log ex
+            }
+            finally {
+                if(file != null){
+                    try {
+                        file.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return false;
@@ -108,7 +118,7 @@ public class ProjectUtils implements Serializable {
         if (manifest == null) {
             return false;
         }
-        RandomAccessFile randomAccessFile;
+        RandomAccessFile randomAccessFile = null;
         try {
             File f = new File(manifest.getFullyQualifiedName());
             randomAccessFile = new RandomAccessFile(f, "r");
@@ -116,6 +126,15 @@ public class ProjectUtils implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+        finally {
+            try {
+                if(randomAccessFile != null){
+                    randomAccessFile.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
