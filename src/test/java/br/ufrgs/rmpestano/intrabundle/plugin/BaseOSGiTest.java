@@ -60,6 +60,16 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    protected void initializeOSGiProjectWithTwoFolderLevels() throws IOException {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource level1 = root.getOrCreateChildDirectory("level1");
+        DirectoryResource level2 = level1.getOrCreateChildDirectory("level2");
+        addBundle(level2,"module1");
+        addBundle(level2,"module2");
+        addBundle(level2,"module3");
+        getShell().setCurrentResource(level1);
+    }
+
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
         if(!pom.exists()){

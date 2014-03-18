@@ -64,6 +64,10 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         return modules;
     }
 
+    public void setModules(List<OSGiModule> modules) {
+        this.modules = modules;
+    }
+
     private Map<OSGiModule,List<OSGiModule>> initalizeModulesDependencies() {
         Map<OSGiModule,List<OSGiModule>> dependencies = new HashMap<OSGiModule, List<OSGiModule>>();
         for (OSGiModule m1 : getModules()) {

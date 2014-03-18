@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="205"/>
-	<property name="ireport.y" value="514"/>
+	<property name="ireport.y" value="1106"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
@@ -328,6 +328,7 @@
 			</textField>
 		</band>
 		<band height="49">
+			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getExportedPackages()).isEmpty()]]></printWhenExpression>
 			<staticText>
 				<reportElement uuid="e653395a-8c1c-45c0-be3d-9ebc463e4e28" x="10" y="3" width="287" height="20"/>
 				<textElement textAlignment="Right">
@@ -343,6 +344,7 @@
 			</subreport>
 		</band>
 		<band height="48">
+			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getImportedPackages()).isEmpty()]]></printWhenExpression>
 			<subreport>
 				<reportElement uuid="4604b1f7-f700-4812-a859-ed7c66731c4e" x="318" y="4" width="295" height="31" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getImportedPackages())]]></dataSourceExpression>
@@ -358,6 +360,7 @@
 			</staticText>
 		</band>
 		<band height="54">
+			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getRequiredBundles()).isEmpty()]]></printWhenExpression>
 			<staticText>
 				<reportElement uuid="b1f603f2-ca2f-48c8-b86a-2a091260c745" x="10" y="3" width="287" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Right">
@@ -373,6 +376,7 @@
 			</subreport>
 		</band>
 		<band height="44">
+			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleDependencies(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}))).isEmpty()]]></printWhenExpression>
 			<subreport>
 				<reportElement uuid="af0f21cb-4495-47f7-8df3-6036813415df" x="318" y="3" width="295" height="27" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleDependencies(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module})))]]></dataSourceExpression>
@@ -388,8 +392,11 @@
 			</staticText>
 		</band>
 		<band height="55">
+			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleStaleReferences(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}))).isEmpty()]]></printWhenExpression>
 			<subreport>
-				<reportElement uuid="504ea652-7211-4647-ba31-9ef9e7c9f72b" x="318" y="8" width="297" height="29" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="504ea652-7211-4647-ba31-9ef9e7c9f72b" x="318" y="8" width="297" height="29" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleStaleReferences(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}))).isEmpty()]]></printWhenExpression>
+				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleStaleReferences(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module})))]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subreport.jasper"]]></subreportExpression>
 			</subreport>
@@ -411,7 +418,8 @@
 			<textField>
 				<reportElement uuid="c57b70e8-c1d0-4bfe-9e73-bcd817ad2940" mode="Opaque" x="4" y="4" width="776" height="13" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Execution Time(ms): "+ (new java.util.Date().getTime() - ((java.util.Date)$P{INITIAL_TIME}).getTime())]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Execution Time(sec): "+ ((new java.lang.Double(new java.lang.Long(new java.util.Date().getTime())) - new java.lang.Double(new java.lang.Long(((java.util.Date)$P{INITIAL_TIME}).getTime())))/1000)
+                                       ]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement uuid="1426c7ce-3c1f-4127-b5de-6ea1da8f200c" x="0" y="4" width="100" height="13"/>

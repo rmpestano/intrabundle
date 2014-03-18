@@ -2,7 +2,6 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
-import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
@@ -23,24 +22,28 @@ public class OsgiPluginTest extends BaseOSGiTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addClass(OsgiPlugin.class)
+                .addClass(OSGiScanPlugin.class)
                 .addClass(JasperManager.class)
-                .addClass(LocalePlugin.class)
-                .addClass(ProjectUtils.class);
+                .addClass(LocalePlugin.class);
         System.out.println(jar.toString(true));
         return jar;
+
     }
 
     @Inject
     MessageProvider provider;
 
     @Test
-    public void shouldExecuteDefaultCommand() throws Exception {
+    public void shouldExecuteOSGiScan() throws Exception {
         resetOutput();
-        getShell().execute("osgi");
-        Assert.assertTrue(getOutput().contains(provider.getMessage("osgi.defaultCommand")));
+        initializeOSGiProjectWithTwoFolderLevels();
+        queueInputLines("2");
+        queueInputLines("n");
+        getShell().execute("osgi-scan");
+        Assert.assertTrue(getOutput().contains(provider.getMessage("osgi.scan.bundlesFound", 3)));
     }
 
     @Test
@@ -122,8 +125,8 @@ public class OsgiPluginTest extends BaseOSGiTest {
     @Test
     public void shouldListModuleDependencies() throws Exception {
         resetOutput();
-        queueInputLines("1");
-        getShell().execute("osgi moduleDependencies");
+        queueInputLines("y");
+        getShell().execute("osgi dependencies");
         Assert.assertTrue(getOutput().contains("module3"));
     }
 

@@ -6,6 +6,7 @@ import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.jboss.forge.parser.JavaParser;
+import org.jboss.forge.parser.ParserException;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
@@ -116,7 +117,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                     activator = resourceFactory.getResourceFrom(new File((projectRootPath + actvatorPath).replaceAll("//", "/").trim().concat(".java")));
                 }
                 if (activator == null || !activator.exists()) {
-                    throw new RuntimeException("Could not find activator class at " + getProjectRoot() + actvatorPath);
+                    return null;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -421,7 +422,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             if (child instanceof DirectoryResource) {
                 searchStaleReferences(staleReferences, (DirectoryResource) child);
             } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
-                JavaSource source = JavaParser.parse(child.getResourceInputStream());
+                JavaSource source = null;
+                try{
+                    source = JavaParser.parse(child.getResourceInputStream());
+                }catch (ParserException e){
+                    //intentional
+                    continue;
+                }
                 if (source.hasImport("org.osgi.framework.ServiceReference") || source.hasImport("org.osgi.framework")) {
                     if (verifyStaleReference(source)) {
                         staleReferences.add(child);
