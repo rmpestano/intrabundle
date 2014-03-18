@@ -128,4 +128,33 @@ public class BundlePluginTest extends BaseBundleTest {
         Assert.assertTrue(getOutput().contains("HelloStaleManager.java"));
     }
 
+    @Test
+    public void shouldCountNumberOfClasses() throws Exception {
+        resetOutput();
+        getShell().execute("bundle nc");
+        Assert.assertTrue(getOutput().startsWith("3"));
+    }
+
+    @Test
+    public void shouldCountNumberOfAbstractClasses() throws Exception {
+        resetOutput();
+        getShell().execute("bundle na");
+        Assert.assertTrue(getOutput().startsWith("0"));
+    }
+
+    @Test
+    public void shouldCountNumberOfInterfaces() throws Exception {
+        resetOutput();
+        getShell().execute("bundle ni");
+        Assert.assertTrue(getOutput().startsWith("1"));
+    }
+
+    @Test
+    public void shouldCountNumberOfPackages() throws Exception {
+        resetOutput();
+        getShell().execute("bundle np");
+        Assert.assertTrue(getOutput().startsWith("3"));
+    }
+
+
 }

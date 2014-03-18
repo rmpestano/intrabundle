@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -39,6 +37,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Boolean usesBlueprint;
     private FileResource<?> activator;
     private FileResource<?> manifest;
+
     private List<String> exportedPackages;
     private List<String> importedPackages;
     private List<String> requiredBundles;
@@ -46,6 +45,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Boolean declaresPermissions;
     private List<Resource<?>> staleReferences;
     private String version;
+    private Set<String> packages;
+    private Integer numberOfClasses;
+    private Integer numberOfAbstractClasses;
+    private Integer numberOfInterfaces;
 
 
     public OSGiModuleImpl() {
@@ -423,9 +426,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 searchStaleReferences(staleReferences, (DirectoryResource) child);
             } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
                 JavaSource source = null;
-                try{
+                try {
                     source = JavaParser.parse(child.getResourceInputStream());
-                }catch (ParserException e){
+                } catch (ParserException e) {
                     //intentional
                     continue;
                 }
@@ -476,6 +479,87 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         }
     }
 
+    private Set<String> findPackages() {
+        Set<String> packagesFound = new HashSet<String>();
+        searchPackages(packagesFound, ProjectUtils.getProjectSourcePath(projectRoot));
+        return packagesFound;
+    }
+
+    private void searchPackages(Set<String> packagesFound, Resource<?> root) {
+        for (Resource<?> child : root.listResources()) {
+            if (child instanceof DirectoryResource) {
+                searchPackages(packagesFound, (DirectoryResource) child);
+            } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
+                JavaSource source = null;
+                try {
+                    source = JavaParser.parse(child.getResourceInputStream());
+                } catch (ParserException e) {
+                    //intentional
+                    continue;
+                }
+                packagesFound.add(source.getPackage());
+            }
+        }
+    }
+
+    private void calculateNumberOfClassesAndInterfaces() {
+        numberOfAbstractClasses = new Integer(0);
+        numberOfClasses = new Integer(0);
+        numberOfInterfaces = new Integer(0);
+        calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
+    }
+
+    private void calculateRecursively(Resource<?> root) {
+        for (Resource<?> child : root.listResources()) {
+            if (child instanceof DirectoryResource) {
+                calculateRecursively((DirectoryResource) child);
+            } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
+                JavaSource source = null;
+                try {
+                    source = JavaParser.parse(child.getResourceInputStream());
+                } catch (ParserException e) {
+                    //intentional
+                    continue;
+                }
+                if (source.isInterface()) {
+                    numberOfInterfaces++;
+                } else if (source.isClass()) {
+                    if (isAbstractClass(child)) {
+                        numberOfAbstractClasses++;
+                    } else {
+                        numberOfClasses++;
+                    }
+                }
+
+            }
+        }
+    }
+
+    private boolean isAbstractClass(Resource<?> aClass) {
+        RandomAccessFile aFile = null;
+        try {
+             aFile = new RandomAccessFile(new File(aClass.getFullyQualifiedName()),"r");
+            String line;
+            while((line = aFile.readLine())!=null){
+                if(line.contains("abstract class")){
+                    return true;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(aFile != null){
+                try {
+                    aFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+       return false;
+    }
 
     //getters
 
@@ -575,6 +659,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return version;
     }
 
+    @Override
+    public Set<String> getPackages() {
+        if (packages == null) {
+            packages = findPackages();
+        }
+        return packages;
+    }
+
 
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
@@ -585,5 +677,26 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             }
         }
         return totalTestLoc;
+    }
+
+    public Integer getNumberOfClasses() {
+        if (numberOfClasses == null) {
+            calculateNumberOfClassesAndInterfaces();
+        }
+        return numberOfClasses;
+    }
+
+    public Integer getNumberOfAbstractClasses() {
+        if (numberOfAbstractClasses == null) {
+            calculateNumberOfClassesAndInterfaces();
+        }
+        return numberOfAbstractClasses;
+    }
+
+    public Integer getNumberOfInterfaces() {
+        if (numberOfInterfaces == null) {
+            calculateNumberOfClassesAndInterfaces();
+        }
+        return numberOfInterfaces;
     }
 }

@@ -79,7 +79,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                getOrCreateChildDirectory("rmpestano").
                getOrCreateChildDirectory("api");
         FileResource<?> exportedInterface = (FileResource<?>)resource.getChild("ExportedClass.java");
-        exportedInterface.setContents("public interface Interface{}");
+        exportedInterface.setContents("package abcd;\n public interface Interface{}");
     }
 
 

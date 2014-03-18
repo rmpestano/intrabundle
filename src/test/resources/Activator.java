@@ -1,3 +1,4 @@
+package activator;
 import helloosgi.main.impl.HelloManager;
 
 import org.osgi.framework.BundleActivator;

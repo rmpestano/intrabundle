@@ -5,6 +5,7 @@ import org.jboss.forge.resources.Resource;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by rmpestano on 1/28/14.
@@ -84,5 +85,19 @@ public interface OSGiModule extends Serializable{
      */
     List<Resource<?>> getStaleReferences();
 
+    /**
+     *
+     * @return nundle version
+     */
     String getVersion();
+
+    Set<String> getPackages();
+
+    Integer getNumberOfClasses();
+
+    Integer getNumberOfAbstractClasses();
+
+    Integer getNumberOfInterfaces();
+
+
 }

@@ -122,5 +122,24 @@ public class BundlePlugin implements Plugin {
         out.println(bundle.getVersion());
     }
 
+    @Command(value = "np", help = "count number of packages")
+    public void numberOfPackages(PipeOut out){
+        out.println(""+bundle.getPackages().size());
+    }
+
+    @Command(value = "nc", help = "count number of classes")
+    public void numberOfClasses(PipeOut out){
+          out.println(""+bundle.getNumberOfClasses());
+    }
+
+    @Command(value = "na", help = "count number of abstract classes")
+    public void numberOfAbstractClasses(PipeOut out){
+        out.println(""+bundle.getNumberOfAbstractClasses());
+    }
+
+    @Command(value = "ni", help = "count number of interfaces")
+    public void numberOfInterfaces(PipeOut out){
+        out.println(""+bundle.getNumberOfInterfaces());
+    }
 
 }
