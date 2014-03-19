@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="205"/>
-	<property name="ireport.y" value="1106"/>
+	<property name="ireport.y" value="973"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
@@ -202,7 +202,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="261" splitType="Stretch">
+		<band height="358" splitType="Stretch">
 			<line>
 				<reportElement uuid="7246e5d5-0408-4288-8e5d-7c9c226f5736" x="0" y="0" width="780" height="3"/>
 			</line>
@@ -326,6 +326,51 @@
 				</textElement>
 				<textFieldExpression><![CDATA[((org.jboss.forge.project.Project)$F{module}).getProjectRoot().getFullyQualifiedName()]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e12fef94-5210-4e45-9360-e9f294a32b38" x="322" y="259" width="439" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((java.util.Set)((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getPackages()).size()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b5b99c49-84ca-4abd-964c-68d0a34d0303" x="10" y="259" width="287" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Number of packages:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8f55005b-33a2-4ea6-a89b-1d100cee98ba" x="10" y="290" width="287" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Number of classes:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="46dcfb51-2e05-4a59-ae2e-41d2493089d3" x="322" y="290" width="439" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfClasses()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="db398fbb-6339-4ab5-b37d-42c06dcd7fb7" x="10" y="322" width="287" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Number of interfaces/abstract classes:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e6f1903f-4b03-414c-92d1-5d33a4219e04" x="322" y="322" width="439" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfInterfaces() + ((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfAbstractClasses()]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="49">
 			<printWhenExpression><![CDATA[!((java.util.List)((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getExportedPackages()).isEmpty()]]></printWhenExpression>
@@ -418,8 +463,7 @@
 			<textField>
 				<reportElement uuid="c57b70e8-c1d0-4bfe-9e73-bcd817ad2940" mode="Opaque" x="4" y="4" width="776" height="13" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Execution Time(sec): "+ ((new java.lang.Double(new java.lang.Long(new java.util.Date().getTime())) - new java.lang.Double(new java.lang.Long(((java.util.Date)$P{INITIAL_TIME}).getTime())))/1000)
-                                       ]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Execution Time(sec): "+ ((new java.lang.Double(new java.lang.Long(new java.util.Date().getTime())) - new java.lang.Double(new java.lang.Long(((java.util.Date)$P{INITIAL_TIME}).getTime())))/1000)]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement uuid="1426c7ce-3c1f-4127-b5de-6ea1da8f200c" x="0" y="4" width="100" height="13"/>

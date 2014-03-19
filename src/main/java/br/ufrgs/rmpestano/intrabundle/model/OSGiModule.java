@@ -87,7 +87,7 @@ public interface OSGiModule extends Serializable{
 
     /**
      *
-     * @return nundle version
+     * @return bundle version
      */
     String getVersion();
 
