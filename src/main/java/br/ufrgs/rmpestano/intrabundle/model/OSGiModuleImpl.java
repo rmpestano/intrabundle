@@ -479,33 +479,13 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         }
     }
 
-    private Set<String> findPackages() {
-        Set<String> packagesFound = new HashSet<String>();
-        searchPackages(packagesFound, ProjectUtils.getProjectSourcePath(projectRoot));
-        return packagesFound;
-    }
 
-    private void searchPackages(Set<String> packagesFound, Resource<?> root) {
-        for (Resource<?> child : root.listResources()) {
-            if (child instanceof DirectoryResource) {
-                searchPackages(packagesFound, (DirectoryResource) child);
-            } else if (child instanceof FileResource && child.getName().endsWith(".java")) {
-                JavaSource source = null;
-                try {
-                    source = JavaParser.parse(child.getResourceInputStream());
-                } catch (ParserException e) {
-                    //intentional
-                    continue;
-                }
-                packagesFound.add(source.getPackage());
-            }
-        }
-    }
 
-    private void calculateNumberOfClassesAndInterfaces() {
+    private void calculateNumberOfPackagesClassesAndInterfaces() {
         numberOfAbstractClasses = new Integer(0);
         numberOfClasses = new Integer(0);
         numberOfInterfaces = new Integer(0);
+        packages = new HashSet<String>();
         calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
     }
 
@@ -521,6 +501,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                     //intentional
                     continue;
                 }
+                packages.add(source.getPackage());
                 if (source.isInterface()) {
                     numberOfInterfaces++;
                 } else if (source.isClass()) {
@@ -662,7 +643,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     @Override
     public Set<String> getPackages() {
         if (packages == null) {
-            packages = findPackages();
+            calculateNumberOfPackagesClassesAndInterfaces();
         }
         return packages;
     }
@@ -681,21 +662,21 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     public Integer getNumberOfClasses() {
         if (numberOfClasses == null) {
-            calculateNumberOfClassesAndInterfaces();
+            calculateNumberOfPackagesClassesAndInterfaces();
         }
         return numberOfClasses;
     }
 
     public Integer getNumberOfAbstractClasses() {
         if (numberOfAbstractClasses == null) {
-            calculateNumberOfClassesAndInterfaces();
+            calculateNumberOfPackagesClassesAndInterfaces();
         }
         return numberOfAbstractClasses;
     }
 
     public Integer getNumberOfInterfaces() {
         if (numberOfInterfaces == null) {
-            calculateNumberOfClassesAndInterfaces();
+            calculateNumberOfPackagesClassesAndInterfaces();
         }
         return numberOfInterfaces;
     }
