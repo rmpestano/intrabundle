@@ -62,7 +62,7 @@ public class ProjectUtils implements Serializable {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main") : null;
             Resource<?> resources = main != null && main.exists() ? main.getChild("resources") : null;
-            return resources != null && resources.exists() ? resources : null;
+            return resources != null && resources.exists() ? resources : projectRoot;
         } else {
             Resource<?> resources = projectRoot.getChild("resources");
             if (resources.exists()) {
