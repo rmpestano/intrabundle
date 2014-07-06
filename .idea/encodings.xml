@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$USER_HOME$/PROCERGS/apm-arq4-tfs" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/PROCERGS/chs" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/PROCERGS/javacolaborativo/apm-arq4/trunk/apm-arq4" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype" charset="UTF-8" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/main/java/org/conventions/archetype/rest/ApplicationRest.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/ft/BaseFT.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/ft/BasePage.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/ft/ScreenshotTestRule.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/it/BaseIT.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/it/UserIT.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/util/Deployments.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/util/TestMessageProvider.java" charset="ISO-8859-1" />
+    <file url="file://$USER_HOME$/arquillian-experience/conventions-archtype/src/test/java/org/conventions/archetype/test/util/TestResourceBundle.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/../conventions/archetype-openshift" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../conventions/bom" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../conventions/core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../conventions/showcase" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../conventions/showcase-openshift" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/dev-plugins" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/dist" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/event-bus-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/git-tools" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/git-tools-tests" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/javaee-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/javaee-impl" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/maven-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/parser-java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/parser-java-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/parser-xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/plugin-loader" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/project-model-maven" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/project-model-maven-tests" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffold-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffold-faces" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffold-plugins" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffoldx-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffoldx-faces" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/scaffoldx-plugins" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/shell" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/shell-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/test-harness" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/test-harness-web" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../forge/rmpestano-core/tracking" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
   </component>
 </project>

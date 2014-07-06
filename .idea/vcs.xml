@@ -2,6 +2,14 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$USER_HOME$/PROCERGS/chs" vcs="svn" />
+    <mapping directory="$USER_HOME$/PROCERGS/javacolaborativo/apm-arq4/trunk/apm-arq4" vcs="svn" />
+    <mapping directory="$USER_HOME$/arquillian-experience/conventions-archtype" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../conventions/archetype-openshift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../conventions/bom" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../conventions/core" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../conventions/showcase" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../conventions/showcase-openshift" vcs="Git" />
   </component>
 </project>
 

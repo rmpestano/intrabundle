@@ -22,10 +22,49 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="apm-arq4" />
+        <module name="archetype" />
+        <module name="conventions" />
+        <module name="conventions-core" />
         <module name="intrabundle" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="apm-arq4" target="1.7" />
+      <module name="archetype" target="1.7" />
+      <module name="archetype (1) (archetype)" target="1.7" />
+      <module name="chs" target="1.7" />
+      <module name="conventions" target="1.7" />
+      <module name="conventions-bom" target="1.5" />
+      <module name="conventions-core" target="1.6" />
+      <module name="conventions-showcase" target="1.6" />
+      <module name="forge-dev-plugins" target="1.6" />
+      <module name="forge-distribution" target="1.6" />
+      <module name="forge-event-bus" target="1.6" />
+      <module name="forge-git-tools" target="1.6" />
+      <module name="forge-git-tools-tests" target="1.6" />
+      <module name="forge-issue" target="1.6" />
+      <module name="forge-javaee-api" target="1.6" />
+      <module name="forge-javaee-impl" target="1.6" />
+      <module name="forge-maven-api" target="1.6" />
+      <module name="forge-parent" target="1.6" />
+      <module name="forge-parser-java" target="1.6" />
+      <module name="forge-parser-java-api" target="1.6" />
+      <module name="forge-parser-xml" target="1.6" />
+      <module name="forge-plugin-loader" target="1.6" />
+      <module name="forge-project-model-maven" target="1.6" />
+      <module name="forge-project-model-maven-tests" target="1.6" />
+      <module name="forge-scaffold-api" target="1.6" />
+      <module name="forge-scaffold-faces" target="1.6" />
+      <module name="forge-scaffold-plugins" target="1.6" />
+      <module name="forge-scaffoldx-api" target="1.6" />
+      <module name="forge-scaffoldx-faces" target="1.6" />
+      <module name="forge-scaffoldx-plugins" target="1.6" />
+      <module name="forge-shell" target="1.6" />
+      <module name="forge-shell-api" target="1.6" />
+      <module name="forge-test-harness" target="1.6" />
+      <module name="forge-test-harness-web" target="1.6" />
+      <module name="forge-tracking" target="1.6" />
       <module name="intrabundle" target="1.6" />
     </bytecodeTargetLevel>
   </component>

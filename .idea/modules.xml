@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/PROCERGS/javacolaborativo/apm-arq4/trunk/apm-arq4/apm-arq4.iml" filepath="$USER_HOME$/PROCERGS/javacolaborativo/apm-arq4/trunk/apm-arq4/apm-arq4.iml" />
+      <module fileurl="file://$USER_HOME$/arquillian-experience/conventions-archtype/archetype.iml" filepath="$USER_HOME$/arquillian-experience/conventions-archtype/archetype.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../conventions/core/conventions-core.iml" filepath="$PROJECT_DIR$/../conventions/core/conventions-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/intrabundle.iml" filepath="$PROJECT_DIR$/intrabundle.iml" />
     </modules>
   </component>

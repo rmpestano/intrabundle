@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="conventions:war exploded">
+    <output-path>$PROJECT_DIR$/../conventions/showcase-openshift/target/conventions-1.0</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="conventions/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="conventions" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
