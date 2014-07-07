@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.util;
 
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -9,11 +8,14 @@ import org.jboss.forge.git.GitFacet;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.Project;
+import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -23,9 +25,13 @@ import java.util.List;
 /**
  * Created by rmpestano on 2/3/14.
  */
+@Singleton
 public class ProjectUtils implements Serializable {
 
-    public static boolean isMavenProject(DirectoryResource projectRoot) {
+    @Inject
+    ResourceFactory resourceFactory;
+    
+    public boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
             return false;
         }
@@ -33,7 +39,7 @@ public class ProjectUtils implements Serializable {
         if (pom.exists()) {
             RandomAccessFile file = null;
             try {
-                 file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
+                file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
                 String line;
                 while ((line = file.readLine()) != null) {
                     if (line.contains("<artifactId>intrabundle</artifactId>")) {
@@ -43,9 +49,8 @@ public class ProjectUtils implements Serializable {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 //log ex
-            }
-            finally {
-                if(file != null){
+            } finally {
+                if (file != null) {
                     try {
                         file.close();
                     } catch (IOException e) {
@@ -57,7 +62,7 @@ public class ProjectUtils implements Serializable {
         return true;
     }
 
-    public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
+    public Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main") : null;
@@ -73,7 +78,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public static Resource<?> getProjectSourcePath(DirectoryResource projectRoot) {
+    public Resource<?> getProjectSourcePath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main") : null;
@@ -88,7 +93,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public static Resource<?> getProjectManifestFolder(DirectoryResource root) {
+    public Resource<?> getProjectManifestFolder(DirectoryResource root) {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
         if (resourcesPath != null && resourcesPath.getChild("META-INF").exists()) {
             return resourcesPath.getChild("META-INF");
@@ -97,13 +102,13 @@ public class ProjectUtils implements Serializable {
     }
 
 
-    public static boolean isInterface(FileResource<?> resource) {
+    public boolean isInterface(FileResource<?> resource) {
         JavaSource parser = JavaParser.parse(resource.getResourceInputStream());
         return parser.isInterface();
 
     }
 
-    public static Resource<?> getProjectTestPath(DirectoryResource root) {
+    public Resource<?> getProjectTestPath(DirectoryResource root) {
         if (isMavenProject(root)) {
             Resource<?> srcPath = root.getChild("src");
             Resource<?> testPath = srcPath.exists() ? srcPath.getChild("test") : null;
@@ -113,7 +118,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public static boolean isOsgiBundle(DirectoryResource projectRoot) {
+    public boolean isOsgiBundle(DirectoryResource projectRoot) {
         Resource<?> manifest = getBundleManifest(projectRoot);
         if (manifest == null) {
             return false;
@@ -126,10 +131,9 @@ public class ProjectUtils implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-        finally {
+        } finally {
             try {
-                if(randomAccessFile != null){
+                if (randomAccessFile != null) {
                     randomAccessFile.close();
                 }
             } catch (IOException e) {
@@ -139,8 +143,23 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    public static Resource<?> getBundleManifest(DirectoryResource projectRoot) {
-        Resource<?> manifestHome = ProjectUtils.getProjectManifestFolder(projectRoot);
+    public Resource<?> getBundleManifest(DirectoryResource projectRoot) {
+        if (isMavenBndProject(projectRoot)) {
+            Resource<?> manifest = null;
+            try {
+                manifest = createManifestFromMavenBundlePlugin(projectRoot);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Problem creating manifest from maven bundle plugin from project:" + projectRoot);
+            }
+            if (manifest != null && manifest.exists()) {
+                return manifest;
+            } else {
+                throw new RuntimeException("Problem creating manifest from maven bundle plugin from project:" + projectRoot);
+            }
+
+        }
+        Resource<?> manifestHome = this.getProjectManifestFolder(projectRoot);
         if (manifestHome == null || !manifestHome.exists()) {
             return null;
         }
@@ -161,7 +180,20 @@ public class ProjectUtils implements Serializable {
         return null;
     }
 
-    public static boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
+    private Resource<?> createManifestFromMavenBundlePlugin(DirectoryResource projectRoot) throws IOException {
+        Resource<?> pom = projectRoot.getChild("pom.xml");
+        if(pom == null || !pom.exists()){
+            throw new RuntimeException("Pom file with maven bundle plugin must exist to create manifest from maven bnd in project:" + projectRoot);
+        }
+        String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
+        File manifest = new File(name);
+        if(!manifest.exists()){
+            manifest.createNewFile();
+        }
+        return resourceFactory.getResourceFrom(manifest);
+    }
+
+    public boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
         String line;
         while ((line = aFile.readLine()) != null) {
             if (line.contains("Bundle-Version")) {
@@ -171,12 +203,50 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public static boolean isGitProject(Project project){
-        assert(project != null);
+    public boolean isGitProject(Project project) {
+        assert (project != null);
         return project.hasFacet(GitFacet.class);
     }
 
-    public static String getProjectGitHeadRevision(Project project) {
+    /**
+     * verifies if project contains maven bundle plugin in pom.xml
+     */
+    private boolean isMavenBndProject(DirectoryResource root) {
+
+        return isMavenProject(root) && hasMavenBundlePlugin(root.getChild("pom.xml"));
+
+    }
+
+    private boolean hasMavenBundlePlugin(Resource<?> child) {
+        if (!child.exists()) {
+            return false;
+        }
+
+        RandomAccessFile pom = null;
+
+        try {
+            pom = new RandomAccessFile(new File(child.getFullyQualifiedName()), "r");
+            String line = "";
+            while ((line = pom.readLine()) != null) {
+                if (line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pom != null) {
+                try {
+                    pom.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    public String getProjectGitHeadRevision(Project project) {
         assert (project != null);
         DirectoryResource root = project.getProjectRoot();
         RevCommit commit = null;
@@ -184,9 +254,9 @@ public class ProjectUtils implements Serializable {
             FileRepositoryBuilder repoBuilder = new FileRepositoryBuilder();
             Repository repository = repoBuilder.setGitDir(new File(root.getChildDirectory(".git").getFullyQualifiedName())).readEnvironment().build();
             RevWalk walk = new RevWalk(repository);
-            commit = walk.parseCommit(repository.resolve(Constants.HEAD));
+            commit = walk.parseCommit(repository.resolve(org.eclipse.jgit.lib.Constants.HEAD));
         } catch (Exception e) {
-             throw new RuntimeException("Problem getting git head revision from project:"+project,e);
+            throw new RuntimeException("Problem getting git head revision from project:" + project, e);
         }
         return commit.getId().toString();
     }

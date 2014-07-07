@@ -24,6 +24,9 @@ public class BundleFinder implements Serializable {
     @Inject
     private ResourceFactory resourceFactory;
 
+    @Inject
+    private ProjectUtils projectUtils;
+
 
     public OSGiProject scan(DirectoryResource root, Integer levels) {
 
@@ -33,7 +36,7 @@ public class BundleFinder implements Serializable {
         if (modules == null || modules.isEmpty()) {
             return null;
         } else {
-            OSGiProjectImpl project = new OSGiProjectImpl(null, resourceFactory, root);
+            OSGiProjectImpl project = new OSGiProjectImpl(null, resourceFactory, root,projectUtils);
             project.setModules(modules);
             return project;
         }
@@ -56,8 +59,8 @@ public class BundleFinder implements Serializable {
         if (children != null && !children.isEmpty()) {
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
-                if (directoryResource != null && ProjectUtils.isOsgiBundle(directoryResource)) {
-                    modules.add(new OSGiModuleImpl(null, resourceFactory, directoryResource));
+                if (directoryResource != null && projectUtils.isOsgiBundle(directoryResource)) {
+                    modules.add(new OSGiModuleImpl(null, resourceFactory, directoryResource,projectUtils));
                 } else {
                     findModulesRecursively(child, modules, level);
                 }

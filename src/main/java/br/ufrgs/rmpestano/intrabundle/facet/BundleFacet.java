@@ -5,6 +5,7 @@ import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.facets.BaseFacet;
 
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -12,6 +13,10 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class BundleFacet extends BaseFacet {
+
+
+    @Inject
+    ProjectUtils projectUtils;
 
 
     @Override
@@ -22,7 +27,7 @@ public class BundleFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-         return project != null && ProjectUtils.isOsgiBundle(project.getProjectRoot());
+         return project != null && projectUtils.isOsgiBundle(project.getProjectRoot());
     }
 
 

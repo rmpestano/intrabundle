@@ -30,17 +30,20 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private Long linesOfTestCode;
     protected String version;
     protected String revision;
+    protected ProjectUtils projectUtils;
 
 
     public OSGiProjectImpl() {
         factory = null;
         resourceFactory = null;
+        projectRoot = null;
     }
 
-    public OSGiProjectImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
+    public OSGiProjectImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir, ProjectUtils projectUtils) {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
+        this.projectUtils = projectUtils;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     public List<OSGiModule> getModules() {
         if (modules == null) {
             modules = new ArrayList<OSGiModule>();
-            Resource<?> srcDir = ProjectUtils.getProjectSourcePath(getProjectRoot());
+            Resource<?> srcDir = projectUtils.getProjectSourcePath(getProjectRoot());
             if(srcDir != null && srcDir.exists()){
                initalizeModules(modules,(DirectoryResource)srcDir);
             }
@@ -117,8 +120,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         if(children != null && !children.isEmpty()){
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
-                if(directoryResource != null && ProjectUtils.isOsgiBundle(directoryResource)){
-                    result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource));
+                if(directoryResource != null && projectUtils.isOsgiBundle(directoryResource)){
+                    result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource,projectUtils));
                 }
                 else{
                     result.addAll(findModulesRecursively(child));
@@ -154,7 +157,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     public List<OSGiModule> getTestModules() {
         if(testModules == null){
             testModules = new ArrayList<OSGiModule>();
-            Resource<?> testDir = ProjectUtils.getProjectTestPath(projectRoot);
+            Resource<?> testDir = projectUtils.getProjectTestPath(projectRoot);
             if(testDir != null && testDir.exists()){
                 initalizeModules(testModules,(DirectoryResource)testDir);
             }
@@ -196,7 +199,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
 
     @Override
     public String getVersion() {
-        if(version == null && ProjectUtils.isMavenProject(projectRoot)) {
+        if(version == null && projectUtils.isMavenProject(projectRoot)) {
             MavenCoreFacet mavenCoreFacet = this.getFacet(MavenCoreFacet.class);
             version = mavenCoreFacet.getMavenProject().getVersion();
         }
@@ -206,8 +209,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
 
     @Override
     public String getRevision() {
-        if(revision == null && (ProjectUtils.isGitProject(this)))  {
-            revision = ProjectUtils.getProjectGitHeadRevision(this);
+        if(revision == null && (projectUtils.isGitProject(this)))  {
+            revision = projectUtils.getProjectGitHeadRevision(this);
         }
         return revision;
     }

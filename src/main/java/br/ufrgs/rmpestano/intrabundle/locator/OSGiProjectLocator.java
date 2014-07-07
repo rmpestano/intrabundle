@@ -4,6 +4,7 @@ import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectImpl;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.locator.ProjectLocator;
 import org.jboss.forge.project.services.ProjectFactory;
@@ -36,6 +37,9 @@ public class OSGiProjectLocator implements ProjectLocator {
     @Inject
     Shell shell;
 
+    @Inject
+    ProjectUtils projectUtils;
+
 
     @Inject
     public OSGiProjectLocator(final ProjectFactory factory, ResourceFactory resourceFactory, @Any final Instance<OSGiFacet> osgiFacet) {
@@ -47,7 +51,7 @@ public class OSGiProjectLocator implements ProjectLocator {
     @Override
     public Project createProject(DirectoryResource directoryResource) {
         OSGiFacet osgi = osgiFacetInstance.get();
-        OSGiProjectImpl result = new OSGiProjectImpl(factory,resourceFactory, directoryResource);
+        OSGiProjectImpl result = new OSGiProjectImpl(factory,resourceFactory, directoryResource,projectUtils);
         osgi.setProject(result);
         /* we are not going to install OSGi projects, only inspect existing ones
         if (!osgi.isInstalled()) {

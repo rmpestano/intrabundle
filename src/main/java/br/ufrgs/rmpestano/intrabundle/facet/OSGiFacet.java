@@ -23,6 +23,9 @@ public class OSGiFacet extends BaseFacet {
     @Inject
     protected Instance<BundleFacet> bundleFacet;
 
+    @Inject
+    protected ProjectUtils projectUtils;
+
     @Override
     public boolean install() {
 
@@ -57,7 +60,7 @@ public class OSGiFacet extends BaseFacet {
         for (Resource<?> child : projectRoot.listResources()) {
             DirectoryResource directoryResource = child.reify(DirectoryResource.class);
             if(directoryResource != null){
-                if(ProjectUtils.isOsgiBundle(directoryResource)){
+                if(projectUtils.isOsgiBundle(directoryResource)){
                     return true;
                 }
             }
@@ -90,7 +93,7 @@ public class OSGiFacet extends BaseFacet {
         if(children != null && !children.isEmpty()){
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
-                if(directoryResource != null  && ProjectUtils.isOsgiBundle(directoryResource)){
+                if(directoryResource != null  && projectUtils.isOsgiBundle(directoryResource)){
                     result = true;
                     break;
                 }
@@ -107,7 +110,7 @@ public class OSGiFacet extends BaseFacet {
 
         for (Resource<?> resource : child.listResources()) {
             DirectoryResource dir = child.reify(DirectoryResource.class);
-            if(dir != null && ProjectUtils.isOsgiBundle(dir)){
+            if(dir != null && projectUtils.isOsgiBundle(dir)){
                 return true;
             }
             else return childContainsOsgiBundle(child);

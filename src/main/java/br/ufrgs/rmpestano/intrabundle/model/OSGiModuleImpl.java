@@ -49,17 +49,20 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Integer numberOfClasses;
     private Integer numberOfAbstractClasses;
     private Integer numberOfInterfaces;
+    private ProjectUtils projectUtils;
 
 
     public OSGiModuleImpl() {
         factory = null;
         resourceFactory = null;
+        projectUtils = null;
     }
 
-    public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
+    public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir, ProjectUtils projectUtils) {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
+        this.projectUtils = projectUtils;
     }
 
     @Override
@@ -111,7 +114,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             if (!actvatorPath.startsWith("/")) {
                 actvatorPath = "/" + actvatorPath;
             }
-            activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
+            activator = projectUtils.getProjectSourcePath(projectRoot) != null ? projectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
             if (activator == null || !activator.exists()) {
                 //try to infer activator path from projectRoot path
                 if (actvatorPath.contains(projectRoot.getName())) {
@@ -252,12 +255,12 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     private Boolean declaresPermissions() {
-        Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
+        Resource<?> OSGiInf = projectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("permissions.perm").exists();
     }
 
     private FileResource<?> findManifest() {
-        Resource<?> manifest = ProjectUtils.getBundleManifest(projectRoot);
+        Resource<?> manifest = projectUtils.getBundleManifest(projectRoot);
         if (manifest == null || !manifest.exists()) {
             throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
@@ -388,7 +391,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             }
             try {
                 //get .java files under exported packages
-                List<Resource<?>> resources = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+                List<Resource<?>> resources = projectUtils.getProjectSourcePath(projectRoot) != null ? projectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
                     @Override
                     public boolean accept(Resource<?> resource) {
                         return resource.getName().endsWith(".java");
@@ -397,7 +400,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
                 if (resources != null && !resources.isEmpty()) {
                     for (Resource<?> resource : resources) {
-                        if (!ProjectUtils.isInterface((FileResource<?>) resource)) {
+                        if (!projectUtils.isInterface((FileResource<?>) resource)) {
                             return false;
                         }
                     }
@@ -415,7 +418,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public List<Resource<?>> findStaleReferences() {
         staleReferences = new ArrayList<Resource<?>>();
 
-        searchStaleReferences(staleReferences, (DirectoryResource) ProjectUtils.getProjectSourcePath(projectRoot));
+        searchStaleReferences(staleReferences, (DirectoryResource) projectUtils.getProjectSourcePath(projectRoot));
 
         return staleReferences;
     }
@@ -486,7 +489,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         numberOfClasses = new Integer(0);
         numberOfInterfaces = new Integer(0);
         packages = new HashSet<String>();
-        calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
+        calculateRecursively(projectUtils.getProjectSourcePath(projectRoot));
     }
 
     private void calculateRecursively(Resource<?> root) {
@@ -578,7 +581,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfCode() {
         if (totalLoc == null) {
             totalLoc = new Long(0L);
-            Resource<?> srcPath = ProjectUtils.getProjectSourcePath(projectRoot);
+            Resource<?> srcPath = projectUtils.getProjectSourcePath(projectRoot);
             if (srcPath != null && srcPath.exists()) {
                 totalLoc = countModuleLines((DirectoryResource) srcPath);
             }
@@ -652,7 +655,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
             totalTestLoc = 0L;
-            Resource<?> testPath = ProjectUtils.getProjectTestPath(projectRoot);
+            Resource<?> testPath = projectUtils.getProjectTestPath(projectRoot);
             if (testPath != null && testPath.exists()) {
                 totalTestLoc = countModuleTestLines((DirectoryResource) testPath);
             }

@@ -15,7 +15,10 @@ import java.io.IOException;
 public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
 
-
+    /**
+     * creates an eclipse based OSGi project with a main folder
+     * and 3 sub folders inside which are OSGi bundles
+     */
     public Project initializeOSGiProject() throws Exception
     {
         DirectoryResource root = createTempFolder();
@@ -27,6 +30,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    /**
+     *  creates an OSGi maven based project where we have a master module
+     *  that aggregates sub modules(also maven projects) that are OSGi bundles
+     */
     public Project initializeOSGiMavenProject() throws Exception
     {
         DirectoryResource root = createTempFolder();
@@ -39,6 +46,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    /**
+     * create an OSGi project where bundles are separared by packages.
+     * A real example of that is the Jitsi project:https://github.com/jitsi/jitsi
+     */
     public Project initializeOSGiProjectWithBundlesInSourceCode() throws IOException {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
@@ -60,6 +71,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    /**
+     * OSGi project with 2 folder levels and inside 3 OSGi modules
+     */
     protected void initializeOSGiProjectWithTwoFolderLevels() throws IOException {
         DirectoryResource root = createTempFolder();
         DirectoryResource level1 = root.getOrCreateChildDirectory("level1");
@@ -69,6 +83,22 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         addBundle(level2,"module3");
         getShell().setCurrentResource(level1);
     }
+
+    /**
+     * creates an eclipse OSGi project based on BND tools
+     * which has 3 sub folders inside which are OSGi bundles
+     */
+    public Project initializeOSGiBNDProject() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        addBundle(main,"module1");
+        addBundle(main,"module2");
+        addBundle(main,"module3");
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
 
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");

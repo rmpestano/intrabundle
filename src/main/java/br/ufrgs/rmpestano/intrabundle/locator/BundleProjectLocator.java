@@ -36,6 +36,9 @@ public class BundleProjectLocator implements ProjectLocator {
     @Inject
     Shell shell;
 
+    @Inject
+    ProjectUtils projectUtils;
+
 
     @Inject
     public BundleProjectLocator(final ProjectFactory factory, final ResourceFactory resourceFactory, @Any final Instance<BundleFacet> bundleFacet) {
@@ -47,7 +50,7 @@ public class BundleProjectLocator implements ProjectLocator {
     @Override
     public Project createProject(DirectoryResource directoryResource) {
         BundleFacet bundle = bundleFacetInstance.get();
-        OSGiModuleImpl result = new OSGiModuleImpl(factory,resourceFactory, directoryResource);
+        OSGiModuleImpl result = new OSGiModuleImpl(factory,resourceFactory, directoryResource,projectUtils);
         bundle.setProject(result);
         /* we are not going to install OSGi projects, only inspect existing ones
         if (!osgi.isInstalled()) {
@@ -69,6 +72,6 @@ public class BundleProjectLocator implements ProjectLocator {
 
     @Override
     public boolean containsProject(DirectoryResource directoryResource) {
-        return ProjectUtils.isOsgiBundle(directoryResource);
+        return projectUtils.isOsgiBundle(directoryResource);
     }
 }
