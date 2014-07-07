@@ -36,8 +36,8 @@ public class ProjectUtils implements Serializable {
                  file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
                 String line;
                 while ((line = file.readLine()) != null) {
-                    if (line.contains("<dependencies>")) {
-                        return true;//minimal pom added to non maven projects doest have 'dependencies' section
+                    if (line.contains("<artifactId>intrabundle</artifactId>")) {
+                        return false;//minimal pom added to non maven projects has artifactId = 'intrabundle' and so is not a maven project
                     }
                 }
             } catch (Exception ex) {
@@ -54,7 +54,7 @@ public class ProjectUtils implements Serializable {
                 }
             }
         }
-        return false;
+        return true;
     }
 
     public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
