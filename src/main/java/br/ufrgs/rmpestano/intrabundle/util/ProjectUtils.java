@@ -95,10 +95,21 @@ public class ProjectUtils implements Serializable {
 
     public Resource<?> getProjectManifestFolder(DirectoryResource root) {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
-        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists()) {
+        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasManifest(resourcesPath.getChild("META-INF"))) {
             return resourcesPath.getChild("META-INF");
+        } else if(root.getChild("META-INF").exists() && this.hasManifest(root.getChild("META-INF"))){
+            return root.getChild("META-INF");
         }
         return root;
+    }
+
+    private boolean hasManifest(Resource<?> root) {
+        return root.listResources(new ResourceFilter() {
+            @Override
+            public boolean accept(Resource<?> resource) {
+                return resource.getName().toLowerCase().endsWith(".mf");
+            }
+        }).size() > 0;
     }
 
 
@@ -188,7 +199,26 @@ public class ProjectUtils implements Serializable {
         String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
         File manifest = new File(name);
         if(!manifest.exists()){
-            manifest.createNewFile();
+            RandomAccessFile manifestCreated = null;
+            RandomAccessFile pomXml = null;
+            try {
+                manifest.createNewFile();
+                manifestCreated = new RandomAccessFile(manifest, "rw");
+                 pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
+                String line = "";
+                while ((line = pomXml.readLine()) != null){
+                    if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
+                        //TODO
+                    }
+                }
+            }finally {
+                if(pomXml != null){
+                    pomXml.close();
+                }
+                if(manifestCreated != null){
+                    manifestCreated.close();
+                }
+            }
         }
         return resourceFactory.getResourceFrom(manifest);
     }

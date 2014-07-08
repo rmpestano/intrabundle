@@ -28,7 +28,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
                 .addClass(OSGiScanPlugin.class)
                 .addClass(JasperManager.class)
                 .addClass(LocalePlugin.class);
-        System.out.println(jar.toString(true));
+        //System.out.println(jar.toString(true));
         return jar;
 
     }

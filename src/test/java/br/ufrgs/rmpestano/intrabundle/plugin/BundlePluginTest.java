@@ -32,7 +32,7 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addClass(BundlePlugin.class).
                 addClass(LocalePlugin.class).
                 addClass(BundleProjectLocator.class);
-        System.out.println(jar.toString(true));
+        //System.out.println(jar.toString(true));
         return jar;
     }
 
