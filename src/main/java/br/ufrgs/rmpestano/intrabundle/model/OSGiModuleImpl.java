@@ -417,8 +417,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     public List<Resource<?>> findStaleReferences() {
         staleReferences = new ArrayList<Resource<?>>();
-
-        searchStaleReferences(staleReferences, (DirectoryResource) projectUtils.getProjectSourcePath(projectRoot));
+        if(projectUtils.getProjectSourcePath(projectRoot) instanceof DirectoryResource){
+            searchStaleReferences(staleReferences, (DirectoryResource) projectUtils.getProjectSourcePath(projectRoot));
+        }
 
         return staleReferences;
     }
