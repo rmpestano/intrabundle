@@ -8,18 +8,17 @@ import org.jboss.forge.git.GitFacet;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.Project;
+import org.jboss.forge.project.build.ProjectBuilder;
 import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -30,7 +29,11 @@ public class ProjectUtils implements Serializable {
 
     @Inject
     ResourceFactory resourceFactory;
-    
+
+    @Inject
+    Instance<ProjectBuilder> projectBuilder;
+
+
     public boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
             return false;
@@ -97,7 +100,7 @@ public class ProjectUtils implements Serializable {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
         if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasManifest(resourcesPath.getChild("META-INF"))) {
             return resourcesPath.getChild("META-INF");
-        } else if(root.getChild("META-INF").exists() && this.hasManifest(root.getChild("META-INF"))){
+        } else if (root.getChild("META-INF").exists() && this.hasManifest(root.getChild("META-INF"))) {
             return root.getChild("META-INF");
         }
         return root;
@@ -193,34 +196,62 @@ public class ProjectUtils implements Serializable {
 
     private Resource<?> createManifestFromMavenBundlePlugin(DirectoryResource projectRoot) throws IOException {
         Resource<?> pom = projectRoot.getChild("pom.xml");
-        if(pom == null || !pom.exists()){
+        if (pom == null || !pom.exists()) {
             throw new RuntimeException("Pom file with maven bundle plugin must exist to create manifest from maven bnd in project:" + projectRoot);
         }
         String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
-        File manifest = new File(name);
-        if(!manifest.exists()){
-            RandomAccessFile manifestCreated = null;
-            RandomAccessFile pomXml = null;
-            try {
-                manifest.createNewFile();
-                manifestCreated = new RandomAccessFile(manifest, "rw");
-                 pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
-                String line = "";
-                while ((line = pomXml.readLine()) != null){
-                    if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
-                        //TODO
-                    }
-                }
-            }finally {
-                if(pomXml != null){
-                    pomXml.close();
-                }
-                if(manifestCreated != null){
-                    manifestCreated.close();
-                }
+        File manifest = null;
+        FileOutputStream fout = null;
+        PrintStream stream = null;
+        stream.println("Bundle-Version:1.0.0.qualifier");
+        stream.flush();
+        stream.close();
+        try {
+            manifest = new File(name);
+            fout = new FileOutputStream(manifest);
+            stream = new PrintStream(fout);
+            stream.flush();
+        }catch (Exception e){}finally {
+            if (fout != null) {
+                fout.close();
+            }
+            if (stream != null) {
+                stream.close();
             }
         }
-        return resourceFactory.getResourceFrom(manifest);
+        if(manifest.exists()){
+            return resourceFactory.getResourceFrom(manifest);
+        }else{
+            return null;
+        }
+
+
+        /** INITIAL IDEA READ FROM POM.XML bundle plugin
+         *  if(!manifest.exists()){
+         RandomAccessFile manifestCreated = null;
+         RandomAccessFile pomXml = null;
+         try {
+         manifest.createNewFile();
+         manifestCreated = new RandomAccessFile(manifest, "rw");
+         pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
+         String line = "";
+         while ((line = pomXml.readLine()) != null){
+         if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
+
+         //TODO
+         }
+         }
+         }finally {
+         if(pomXml != null){
+         pomXml.close();
+         }
+         if(manifestCreated != null){
+         manifestCreated.close();
+         }
+         }
+         }
+         */
+
     }
 
     public boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
