@@ -4,6 +4,7 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.shell.util.OSUtils;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.junit.Before;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
  */
 public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
+    public String newLine;
 
     /**
      * creates an eclipse based OSGi project with a main folder
@@ -165,4 +167,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         }
     }
 
+  public String getNewLine() {
+    if(newLine == null ){
+      newLine = OSUtils.isWindows() ? "\r\n":"\n";
+    }
+    return newLine;
+  }
 }

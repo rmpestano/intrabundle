@@ -57,7 +57,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void shouldListBundles() throws Exception {
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
     }
 
     /**
@@ -69,7 +69,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProjectWithBundlesInSourceCode();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
 
     }
 
@@ -78,7 +78,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1\nmodule2\nmodule3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine()+ "module3"));
     }
 
 
