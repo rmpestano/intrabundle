@@ -267,18 +267,18 @@ public class ManifestMetadata implements Serializable {
             activator = null;//no activator
             return;
         }
-        String actvatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
-        actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
-        if (!actvatorPath.startsWith("/")) {
-            actvatorPath = "/" + actvatorPath;
+        String activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
+        activatorPath = activatorPath.trim().replaceAll("\\.", "/");
+        if (!activatorPath.startsWith("/")) {
+            activatorPath = "/" + activatorPath;
         }
-        activator = projectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) projectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
+        activator = projectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) projectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
         if (activator == null || !activator.exists()) {
             //try to infer activator path from projectRoot path
-            if (actvatorPath.contains(projectRoot.getName())) {
-                String[] activatoPathTokens = actvatorPath.split("/");
+            if (activatorPath.contains(projectRoot.getName())) {
+                String[] activatoPathTokens = activatorPath.split("/");
                 String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
-                activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + actvatorPath).replaceAll("//", "/").trim().concat(".java")));
+                activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
             }
         }
     }

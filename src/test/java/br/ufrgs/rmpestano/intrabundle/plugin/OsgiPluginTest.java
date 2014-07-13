@@ -130,5 +130,18 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().contains("module3"));
     }
 
+    /**
+     * test listBundles command in eclipse bnd tools based OSGi project
+     */
+    @Test
+    public void shouldListBundlesInBndProject() throws Exception {
+        resetOutput();
+        initializeOSGiBNDProject();
+        resetOutput();
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+
+    }
+
 
 }

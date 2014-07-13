@@ -94,9 +94,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBundle(main,"module1");
-        addBundle(main,"module2");
-        addBundle(main,"module3");
+        addBndBundle(main,"module1");
+        addBndBundle(main,"module2");
+        addBndBundle(main,"module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -122,6 +122,11 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
         addMavenActivator(bundle);
         addPom(bundle);
+    }
+
+    protected void addBndBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addManifest(bundle, "/bnd.bnd");
     }
 
     private void addMetaInfWithManifest(DirectoryResource root, String manifestName) {

@@ -19,6 +19,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,15 +38,19 @@ public class ProjectUtils implements Serializable {
     public static final ResourceFilter BND_FILTER = new ResourceFilter() {
         @Override
         public boolean accept(Resource<?> resource) {
-            return resource.getName().toLowerCase().endsWith(".bnd");
+            return (resource instanceof DirectoryResource == false) && resource.getName().toLowerCase().endsWith(".bnd");
         }
     };
 
     public static final ResourceFilter MANIFEST_FILTER = new ResourceFilter() {
         @Override
         public boolean accept(Resource<?> resource) {
-            return resource.getName().toLowerCase().endsWith(".mf");
+            return (resource instanceof DirectoryResource == false) && resource.getName().toLowerCase().endsWith(".mf");
         }
+    };
+    private static final List<String> ignoredDirectories = new ArrayList<String>(){
+        {
+            add("cnf");add(".git");add(".svn");}
     };
 
     public boolean isMavenProject(DirectoryResource projectRoot) {
@@ -123,6 +128,9 @@ public class ProjectUtils implements Serializable {
     }
 
     private boolean hasOSGiManifest(Resource<?> root) {
+        if(ignoredDirectories.contains(root.getName().toLowerCase())){
+            return false;
+        }
         List<Resource<?>> candidates = root.listResources(MANIFEST_FILTER);
         if (!candidates.isEmpty()) {
             for (Resource<?> candidate : candidates) {
@@ -133,7 +141,8 @@ public class ProjectUtils implements Serializable {
         }
 
         //if has bnd file then it has osgiManfest
-        if (hasBndFile(root)) {
+        if (hasBndFile(root) &&
+                hasOsgiConfig(findBndFile((DirectoryResource) root))) {
             return true;
         }
         return false;
@@ -225,37 +234,6 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    private Resource<?> createManifestFromMavenBundlePlugin(DirectoryResource projectRoot) throws IOException {
-        Resource<?> pom = projectRoot.getChild("pom.xml");
-        if (pom == null || !pom.exists()) {
-            throw new RuntimeException("Pom file with maven bundle plugin must exist to create manifest from maven bnd in project:" + projectRoot);
-        }
-        String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
-        File manifest = null;
-        FileOutputStream fout = null;
-        PrintStream stream = null;
-        stream.println("Bundle-Version:1.0.0.qualifier");
-        try {
-            manifest = new File(name);
-            fout = new FileOutputStream(manifest);
-            stream = new PrintStream(fout);
-            stream.flush();
-        } catch (Exception e) {
-        } finally {
-            if (fout != null) {
-                fout.close();
-            }
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        if (manifest.exists()) {
-            return resourceFactory.getResourceFrom(manifest);
-        } else {
-            return null;
-        }
-
-
         /** INITIAL IDEA READ FROM POM.XML bundle plugin
          *  if(!manifest.exists()){
          RandomAccessFile manifestCreated = null;
@@ -282,7 +260,6 @@ public class ProjectUtils implements Serializable {
          }
          */
 
-    }
 
     public boolean hasOsgiConfig(Resource<?> resource)  {
         RandomAccessFile randomAccessFile = null;
@@ -291,7 +268,7 @@ public class ProjectUtils implements Serializable {
             randomAccessFile = new RandomAccessFile(f, "r");
             String line;
             while ((line = randomAccessFile.readLine()) != null) {
-                if (line.contains("Bundle-Version")) {
+                if (line.contains("Bundle-Version") || line.contains("Exported-Package") || line.contains("Imported-Package") || line.contains("Private-Package") || line.contains("-buildpath")) {
                     return true;
                 }
             }
