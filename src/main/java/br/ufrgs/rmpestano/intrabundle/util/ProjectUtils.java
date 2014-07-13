@@ -48,9 +48,12 @@ public class ProjectUtils implements Serializable {
             return (resource instanceof DirectoryResource == false) && resource.getName().toLowerCase().endsWith(".mf");
         }
     };
-    private static final List<String> ignoredDirectories = new ArrayList<String>(){
+    private static final List<String> ignoredDirectories = new ArrayList<String>() {
         {
-            add("cnf");add(".git");add(".svn");}
+            add("cnf");
+            add(".git");
+            add(".svn");
+        }
     };
 
     public boolean isMavenProject(DirectoryResource projectRoot) {
@@ -128,7 +131,7 @@ public class ProjectUtils implements Serializable {
     }
 
     private boolean hasOSGiManifest(Resource<?> root) {
-        if(ignoredDirectories.contains(root.getName().toLowerCase())){
+        if (ignoredDirectories.contains(root.getName().toLowerCase())) {
             return false;
         }
         List<Resource<?>> candidates = root.listResources(MANIFEST_FILTER);
@@ -177,6 +180,7 @@ public class ProjectUtils implements Serializable {
     /**
      * return file containing OSGi manifest data such as MANIFEST.MF, file.bnd or pom.xml
      * containing maven-bundle-plugin
+     *
      * @param projectRoot
      * @return
      */
@@ -184,7 +188,7 @@ public class ProjectUtils implements Serializable {
         if (isMavenBndProject(projectRoot)) {
             Resource<?> manifest = null;
             try {
-               manifest = projectRoot.getChild("pom.xml");
+                manifest = projectRoot.getChild("pom.xml");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Problem creating manifest from maven bundle plugin from project:" + projectRoot);
@@ -197,7 +201,7 @@ public class ProjectUtils implements Serializable {
 
         }
         if (isEclipseBndProject(projectRoot)) {
-                return findBndFile(projectRoot);
+            return findBndFile(projectRoot);
         }
 
         Resource<?> manifestHome = this.getProjectManifestFolder(projectRoot);
@@ -218,50 +222,58 @@ public class ProjectUtils implements Serializable {
 
 
     private boolean isEclipseBndProject(DirectoryResource projectRoot) {
-        return hasBndFile(projectRoot);
+        return hasBndFile(projectRoot) || hasBndFile(getProjectManifestFolder(projectRoot)) || hasBndFile(getProjectResourcesPath(projectRoot));
     }
 
     private Resource<?> findBndFile(DirectoryResource projectRoot) {
+        //look for .bnd in project root
         List<Resource<?>> candidates = projectRoot.listResources(BND_FILTER);
 
         if (candidates == null || candidates.isEmpty()) {
             //try to find bnd file in resources dir
             candidates = getProjectResourcesPath(projectRoot).listResources(BND_FILTER);
-            return candidates == null || candidates.isEmpty() ? null : candidates.get(0);
+            if (candidates == null || candidates.isEmpty()) {
+                //try to finf bnd in META-INF
+                candidates = getProjectManifestFolder(projectRoot).listResources(BND_FILTER);
+                return candidates == null || candidates.isEmpty() ? null : candidates.get(0);//.bnd in meta-inf
+            } else {
+                return candidates.get(0);//.bnd in resources folder
+            }
         }
 
-        return candidates.get(0);
+        return candidates.get(0);//.bnd in root
 
     }
 
-        /** INITIAL IDEA READ FROM POM.XML bundle plugin
-         *  if(!manifest.exists()){
-         RandomAccessFile manifestCreated = null;
-         RandomAccessFile pomXml = null;
-         try {
-         manifest.createNewFile();
-         manifestCreated = new RandomAccessFile(manifest, "rw");
-         pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
-         String line = "";
-         while ((line = pomXml.readLine()) != null){
-         if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
+    /**
+     * INITIAL IDEA READ FROM POM.XML bundle plugin
+     * if(!manifest.exists()){
+     * RandomAccessFile manifestCreated = null;
+     * RandomAccessFile pomXml = null;
+     * try {
+     * manifest.createNewFile();
+     * manifestCreated = new RandomAccessFile(manifest, "rw");
+     * pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
+     * String line = "";
+     * while ((line = pomXml.readLine()) != null){
+     * if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
+     * <p/>
+     * //TODO
+     * }
+     * }
+     * }finally {
+     * if(pomXml != null){
+     * pomXml.close();
+     * }
+     * if(manifestCreated != null){
+     * manifestCreated.close();
+     * }
+     * }
+     * }
+     */
 
-         //TODO
-         }
-         }
-         }finally {
-         if(pomXml != null){
-         pomXml.close();
-         }
-         if(manifestCreated != null){
-         manifestCreated.close();
-         }
-         }
-         }
-         */
 
-
-    public boolean hasOsgiConfig(Resource<?> resource)  {
+    public boolean hasOsgiConfig(Resource<?> resource) {
         RandomAccessFile randomAccessFile = null;
         try {
             File f = new File(resource.getFullyQualifiedName());
