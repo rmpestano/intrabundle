@@ -34,6 +34,13 @@ public class ProjectUtils implements Serializable {
     Instance<ProjectBuilder> projectBuilder;
 
 
+    public static final ResourceFilter BND_FILTER = new ResourceFilter() {
+        @Override
+        public boolean accept(Resource<?> resource) {
+            return resource.getName().toLowerCase().endsWith(".bnd");
+        }
+    };
+
     public boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
             return false;
@@ -173,6 +180,15 @@ public class ProjectUtils implements Serializable {
             }
 
         }
+        if(isEclipseBndProject(projectRoot)){
+
+            try {
+                return createManifestFromEclipseBndProject(projectRoot);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         Resource<?> manifestHome = this.getProjectManifestFolder(projectRoot);
         if (manifestHome == null || !manifestHome.exists()) {
             return null;
@@ -187,11 +203,60 @@ public class ProjectUtils implements Serializable {
             return null;
         }
         Resource<?> manifest = manifestCandidate.get(0);
-        if (manifest.exists()) {
+        if (manifest != null && manifest.exists()) {
             return manifest;
         }
 
         return null;
+    }
+
+    private Resource<?> createManifestFromEclipseBndProject(DirectoryResource projectRoot) throws IOException {
+
+        Resource<?> bnd = findBndFile(projectRoot);
+        if(bnd == null){
+            throw new RuntimeException("Could not find bnd file for project:" + projectRoot);
+        }
+
+        String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
+        File manifest = null;
+        FileOutputStream fout = null;
+        PrintStream stream = null;
+        try {
+            manifest = new File(name);
+            fout = new FileOutputStream(manifest);
+            stream = new PrintStream(fout);
+            stream.println("Bundle-Version:1.0.0.qualifier");
+            stream.flush();
+        }catch (Exception e){}finally {
+            if (fout != null) {
+                fout.close();
+            }
+            if (stream != null) {
+                stream.close();
+            }
+        }
+        if(manifest.exists()){
+            return resourceFactory.getResourceFrom(manifest);
+        }else{
+            return null;
+        }
+    }
+
+    private boolean isEclipseBndProject(DirectoryResource projectRoot) {
+        return findBndFile(projectRoot) != null;
+    }
+
+    private Resource<?> findBndFile(DirectoryResource projectRoot) {
+        List<Resource<?>> candidates =  projectRoot.listResources();
+
+        if(candidates == null || candidates.isEmpty()){
+            //try to find bnd file in resources dir
+            candidates = getProjectResourcesPath(projectRoot).listResources(BND_FILTER);
+            return candidates == null || candidates.isEmpty() ? null : candidates.get(0);
+        }
+
+        return candidates.get(0);
+
     }
 
     private Resource<?> createManifestFromMavenBundlePlugin(DirectoryResource projectRoot) throws IOException {
@@ -204,8 +269,6 @@ public class ProjectUtils implements Serializable {
         FileOutputStream fout = null;
         PrintStream stream = null;
         stream.println("Bundle-Version:1.0.0.qualifier");
-        stream.flush();
-        stream.close();
         try {
             manifest = new File(name);
             fout = new FileOutputStream(manifest);
