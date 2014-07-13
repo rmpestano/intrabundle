@@ -41,6 +41,13 @@ public class ProjectUtils implements Serializable {
         }
     };
 
+    public static final ResourceFilter MANIFEST_FILTER = new ResourceFilter() {
+        @Override
+        public boolean accept(Resource<?> resource) {
+            return resource.getName().toLowerCase().endsWith(".mf");
+        }
+    };
+
     public boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
             return false;
@@ -105,21 +112,35 @@ public class ProjectUtils implements Serializable {
 
     public Resource<?> getProjectManifestFolder(DirectoryResource root) {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
-        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasManifest(resourcesPath.getChild("META-INF"))) {
+        //manifest in resources folder
+        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasOSGiManifest(resourcesPath.getChild("META-INF"))) {
             return resourcesPath.getChild("META-INF");
-        } else if (root.getChild("META-INF").exists() && this.hasManifest(root.getChild("META-INF"))) {
+            //manifest in META_INF folder
+        } else if (root.getChild("META-INF").exists() && this.hasOSGiManifest(root.getChild("META-INF"))) {
             return root.getChild("META-INF");
         }
         return root;
     }
 
-    private boolean hasManifest(Resource<?> root) {
-        return root.listResources(new ResourceFilter() {
-            @Override
-            public boolean accept(Resource<?> resource) {
-                return resource.getName().toLowerCase().endsWith(".mf");
+    private boolean hasOSGiManifest(Resource<?> root) {
+        List<Resource<?>> candidates = root.listResources(MANIFEST_FILTER);
+        if (!candidates.isEmpty()) {
+            for (Resource<?> candidate : candidates) {
+                if (hasOsgiConfig(candidate)) {
+                    return true;
+                }
             }
-        }).size() > 0;
+        }
+
+        //if has bnd file then it has osgiManfest
+        if (hasBndFile(root)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasBndFile(Resource<?> root) {
+        return root.listResources(BND_FILTER).size() > 0;
     }
 
 
@@ -140,35 +161,21 @@ public class ProjectUtils implements Serializable {
     }
 
     public boolean isOsgiBundle(DirectoryResource projectRoot) {
-        Resource<?> manifest = getBundleManifest(projectRoot);
-        if (manifest == null) {
-            return false;
-        }
-        RandomAccessFile randomAccessFile = null;
-        try {
-            File f = new File(manifest.getFullyQualifiedName());
-            randomAccessFile = new RandomAccessFile(f, "r");
-            return hasOsgiConfig(randomAccessFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (randomAccessFile != null) {
-                    randomAccessFile.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        return hasOSGiManifest(getProjectManifestFolder(projectRoot));
 
     }
 
-    public Resource<?> getBundleManifest(DirectoryResource projectRoot) {
+    /**
+     * return file containing OSGi manifest data such as MANIFEST.MF, file.bnd or pom.xml
+     * containing maven-bundle-plugin
+     * @param projectRoot
+     * @return
+     */
+    public Resource<?> getBundleManifestSource(DirectoryResource projectRoot) {
         if (isMavenBndProject(projectRoot)) {
             Resource<?> manifest = null;
             try {
-                manifest = createManifestFromMavenBundlePlugin(projectRoot);
+               manifest = projectRoot.getChild("pom.xml");
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Problem creating manifest from maven bundle plugin from project:" + projectRoot);
@@ -180,25 +187,15 @@ public class ProjectUtils implements Serializable {
             }
 
         }
-        if(isEclipseBndProject(projectRoot)){
-
-            try {
-                return createManifestFromEclipseBndProject(projectRoot);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
+        if (isEclipseBndProject(projectRoot)) {
+                return findBndFile(projectRoot);
         }
+
         Resource<?> manifestHome = this.getProjectManifestFolder(projectRoot);
         if (manifestHome == null || !manifestHome.exists()) {
             return null;
         }
-        List<Resource<?>> manifestCandidate = manifestHome.listResources(new ResourceFilter() {
-            @Override
-            public boolean accept(Resource<?> resource) {
-                return resource.getName().toLowerCase().endsWith(".mf");
-            }
-        });
+        List<Resource<?>> manifestCandidate = manifestHome.listResources(MANIFEST_FILTER);
         if (manifestCandidate == null || manifestCandidate.isEmpty()) {
             return null;
         }
@@ -210,46 +207,15 @@ public class ProjectUtils implements Serializable {
         return null;
     }
 
-    private Resource<?> createManifestFromEclipseBndProject(DirectoryResource projectRoot) throws IOException {
-
-        Resource<?> bnd = findBndFile(projectRoot);
-        if(bnd == null){
-            throw new RuntimeException("Could not find bnd file for project:" + projectRoot);
-        }
-
-        String name = projectRoot.getFullyQualifiedName() + File.separator + "MANIFEST.MF";
-        File manifest = null;
-        FileOutputStream fout = null;
-        PrintStream stream = null;
-        try {
-            manifest = new File(name);
-            fout = new FileOutputStream(manifest);
-            stream = new PrintStream(fout);
-            stream.println("Bundle-Version:1.0.0.qualifier");
-            stream.flush();
-        }catch (Exception e){}finally {
-            if (fout != null) {
-                fout.close();
-            }
-            if (stream != null) {
-                stream.close();
-            }
-        }
-        if(manifest.exists()){
-            return resourceFactory.getResourceFrom(manifest);
-        }else{
-            return null;
-        }
-    }
 
     private boolean isEclipseBndProject(DirectoryResource projectRoot) {
-        return findBndFile(projectRoot) != null;
+        return hasBndFile(projectRoot);
     }
 
     private Resource<?> findBndFile(DirectoryResource projectRoot) {
-        List<Resource<?>> candidates =  projectRoot.listResources();
+        List<Resource<?>> candidates = projectRoot.listResources(BND_FILTER);
 
-        if(candidates == null || candidates.isEmpty()){
+        if (candidates == null || candidates.isEmpty()) {
             //try to find bnd file in resources dir
             candidates = getProjectResourcesPath(projectRoot).listResources(BND_FILTER);
             return candidates == null || candidates.isEmpty() ? null : candidates.get(0);
@@ -274,7 +240,8 @@ public class ProjectUtils implements Serializable {
             fout = new FileOutputStream(manifest);
             stream = new PrintStream(fout);
             stream.flush();
-        }catch (Exception e){}finally {
+        } catch (Exception e) {
+        } finally {
             if (fout != null) {
                 fout.close();
             }
@@ -282,9 +249,9 @@ public class ProjectUtils implements Serializable {
                 stream.close();
             }
         }
-        if(manifest.exists()){
+        if (manifest.exists()) {
             return resourceFactory.getResourceFrom(manifest);
-        }else{
+        } else {
             return null;
         }
 
@@ -317,13 +284,30 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    public boolean hasOsgiConfig(RandomAccessFile aFile) throws IOException {
-        String line;
-        while ((line = aFile.readLine()) != null) {
-            if (line.contains("Bundle-Version")) {
-                return true;
+    public boolean hasOsgiConfig(Resource<?> resource)  {
+        RandomAccessFile randomAccessFile = null;
+        try {
+            File f = new File(resource.getFullyQualifiedName());
+            randomAccessFile = new RandomAccessFile(f, "r");
+            String line;
+            while ((line = randomAccessFile.readLine()) != null) {
+                if (line.contains("Bundle-Version")) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (randomAccessFile != null) {
+                    randomAccessFile.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+
         return false;
     }
 

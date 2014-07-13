@@ -38,9 +38,9 @@ public interface OSGiModule extends Serializable{
 
     /**
      *
-     * @return bundle MANIFEST.MF file
+     * @return object representing bundle MANIFEST.MF  or .bnd or pom.xml with maven-bundle-plugin
      */
-    FileResource<?> getManifest();
+    ManifestMetadata getManifestMetadata();
 
     /**
      *

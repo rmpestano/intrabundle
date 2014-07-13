@@ -2,7 +2,6 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
-import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.jboss.forge.parser.JavaParser;
@@ -21,7 +20,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -35,22 +37,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Long totalTestLoc;//test lines of code
     private Boolean usesDeclarativeServices;
     private Boolean usesBlueprint;
-    private FileResource<?> activator;
-    private FileResource<?> manifest;
-
-    private List<String> exportedPackages;
-    private List<String> importedPackages;
-    private List<String> requiredBundles;
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
     private List<Resource<?>> staleReferences;
-    private String version;
     private Set<String> packages;
     private Integer numberOfClasses;
     private Integer numberOfAbstractClasses;
     private Integer numberOfInterfaces;
     private ProjectUtils projectUtils;
-
+    private ManifestMetadata manifestMetadata;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -63,6 +58,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
         this.projectUtils = projectUtils;
+        this.manifestMetadata = createManifestMetada();
     }
 
     @Override
@@ -94,54 +90,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return getProjectRoot().toString();
     }
 
-    private FileResource<?> findActivator() {
-        RandomAccessFile randomAccessFile = null;
-        Resource<?> activator = null;
-        try {
-            File f = new File(getManifest().getFullyQualifiedName());
-            randomAccessFile = new RandomAccessFile(f, "r");
-            String line;
-            while ((line = randomAccessFile.readLine()) != null) {
-                if (line.contains(Constants.Manifest.ACTIVATOR)) {
-                    break;
-                }
-            }
-            if (line == null) {
-                return null;//no activator
-            }
-            String actvatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
-            actvatorPath = actvatorPath.trim().replaceAll("\\.", "/");
-            if (!actvatorPath.startsWith("/")) {
-                actvatorPath = "/" + actvatorPath;
-            }
-            activator = projectUtils.getProjectSourcePath(projectRoot) != null ? projectUtils.getProjectSourcePath(projectRoot).getChild(actvatorPath.concat(".java")) : null;
-            if (activator == null || !activator.exists()) {
-                //try to infer activator path from projectRoot path
-                if (actvatorPath.contains(projectRoot.getName())) {
-                    String[] activatoPathTokens = actvatorPath.split("/");
-                    String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
-                    activator = resourceFactory.getResourceFrom(new File((projectRootPath + actvatorPath).replaceAll("//", "/").trim().concat(".java")));
-                }
-                if (activator == null || !activator.exists()) {
-                    return null;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return (FileResource<?>) activator;
-
-    }
 
     /**
      * count lines of .java files under src folder
@@ -196,183 +144,17 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return total;
     }
 
-    private boolean usesDeclarativeServices() {
-        Resource<?> manifest = getManifest();
-        if (manifest != null && manifest.exists()) {
-            RandomAccessFile aFile = null;
-            try {
-                aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
-                String line;
-                while ((line = aFile.readLine()) != null) {
-                    if (line.contains(Constants.Manifest.DECLARATIVE_SERVICES)) {
-                        return true;
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (aFile != null) {
-                    try {
-                        aFile.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean usesBlueprint() {
-        Resource<?> manifest = getManifest();
-        if (manifest != null && manifest.exists()) {
-            RandomAccessFile aFile = null;
-            try {
-                aFile = new RandomAccessFile(new File(manifest.getFullyQualifiedName()), "r");
-                String line;
-                while ((line = aFile.readLine()) != null) {
-                    if (line.contains(Constants.Manifest.BLUE_PRINT)) {
-                        return true;
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (aFile != null) {
-                    try {
-                        aFile.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     private Boolean declaresPermissions() {
         Resource<?> OSGiInf = projectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("permissions.perm").exists();
     }
 
-    private FileResource<?> findManifest() {
-        Resource<?> manifest = projectUtils.getBundleManifest(projectRoot);
+    private ManifestMetadata createManifestMetada() {
+        Resource<?> manifest = projectUtils.getBundleManifestSource(projectRoot);
         if (manifest == null || !manifest.exists()) {
             throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
-        return (FileResource<?>) manifest;
-    }
-
-    private List<String> findExportedPackages() {
-        exportedPackages = new ArrayList<String>();
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        exportedPackages.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get packages from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                    }
-                    break;
-
-                }
-            }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return exportedPackages;
-        }
-    }
-
-    private List<String> findImportedPackages() {
-        importedPackages = new ArrayList<String>();
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        importedPackages.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get packages from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                    }
-                    break;
-
-                }
-            }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return importedPackages;
-        }
-    }
-
-    private List<String> findRequiredBundles() {
-        requiredBundles = new ArrayList<String>();
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        requiredBundles.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get required bundles from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
-                    }
-                    break;
-
-                }
-            }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return requiredBundles;
-        }
+        return new ManifestMetadata((FileResource<?>)manifest,projectRoot,resourceFactory,projectUtils);
     }
 
     /**
@@ -453,37 +235,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return staleReferencesVisitor.getNumGetServices() != staleReferencesVisitor.getNumUngetServices();
     }
 
-    private String findBundleVersion() {
-        version = new String();
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(new File(getManifest().getFullyQualifiedName()), "r");
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        version = line.substring(line.indexOf(":") + 1).trim();
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return version;
-        }
-    }
-
-
 
     private void calculateNumberOfPackagesClassesAndInterfaces() {
         numberOfAbstractClasses = new Integer(0);
@@ -549,34 +300,22 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     //getters
 
     public Boolean getUsesDeclarativeServices() {
-        if (usesDeclarativeServices == null) {
-            usesDeclarativeServices = usesDeclarativeServices();
-        }
-        return usesDeclarativeServices;
+        return manifestMetadata.getUsesDeclarativeServices();
     }
 
     public Boolean getUsesBlueprint() {
-        if (usesBlueprint == null) {
-            usesBlueprint = usesBlueprint();
-        }
-        return usesBlueprint;
+        return manifestMetadata.getUsesBlueprint();
+    }
+
+    public ManifestMetadata getManifestMetadata() {
+        return manifestMetadata;
     }
 
     @Override
     public FileResource<?> getActivator() {
-        if (activator == null) {
-            activator = findActivator();
-        }
-        return activator;
+        return manifestMetadata.getActivator();
     }
 
-    @Override
-    public FileResource<?> getManifest() {
-        if (manifest == null) {
-            manifest = findManifest();
-        }
-        return manifest;
-    }
 
 
     public Long getLinesOfCode() {
@@ -591,26 +330,17 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     public List<String> getExportedPackages() {
-        if (exportedPackages == null) {
-            exportedPackages = findExportedPackages();
-        }
-        return exportedPackages;
+        return manifestMetadata.getExportedPackages();
     }
 
     @Override
     public List<String> getRequiredBundles() {
-        if (requiredBundles == null) {
-            requiredBundles = findRequiredBundles();
-        }
-        return requiredBundles;
+        return manifestMetadata.getRequiredBundles();
     }
 
 
     public List<String> getImportedPackages() {
-        if (importedPackages == null) {
-            importedPackages = findImportedPackages();
-        }
-        return importedPackages;
+        return manifestMetadata.getImportedPackages();
     }
 
     public Boolean getPublishesInterfaces() {
@@ -638,10 +368,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public String getVersion() {
-        if (version == null) {
-            version = findBundleVersion();
-        }
-        return version;
+        return manifestMetadata.getVersion();
     }
 
     @Override
