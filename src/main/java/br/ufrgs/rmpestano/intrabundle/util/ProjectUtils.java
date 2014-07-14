@@ -119,6 +119,9 @@ public class ProjectUtils implements Serializable {
     }
 
     public Resource<?> getProjectManifestFolder(DirectoryResource root) {
+        if (isMavenBndProject(root)) {
+            return root;
+        }
         Resource<?> resourcesPath = getProjectResourcesPath(root);
         //manifest in resources folder
         if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasOSGiManifest(resourcesPath.getChild("META-INF"))) {
@@ -143,9 +146,12 @@ public class ProjectUtils implements Serializable {
             }
         }
 
-        //if has bnd file then it has osgiManfest
         if (hasBndFile(root) &&
-                hasOsgiConfig(findBndFile((DirectoryResource) root))) {
+                hasOsgiConfig(findBndFile(root.reify(DirectoryResource.class)))) {
+            return true;
+        }
+
+        if (isMavenBndProject(root.reify(DirectoryResource.class)) && hasOsgiConfigInMavenBundlePlugin(root.getChild("pom.xml"))) {
             return true;
         }
         return false;
@@ -245,33 +251,6 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    /**
-     * INITIAL IDEA READ FROM POM.XML bundle plugin
-     * if(!manifest.exists()){
-     * RandomAccessFile manifestCreated = null;
-     * RandomAccessFile pomXml = null;
-     * try {
-     * manifest.createNewFile();
-     * manifestCreated = new RandomAccessFile(manifest, "rw");
-     * pomXml = new RandomAccessFile(pom.getFullyQualifiedName(), "r");
-     * String line = "";
-     * while ((line = pomXml.readLine()) != null){
-     * if(line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)){
-     * <p/>
-     * //TODO
-     * }
-     * }
-     * }finally {
-     * if(pomXml != null){
-     * pomXml.close();
-     * }
-     * if(manifestCreated != null){
-     * manifestCreated.close();
-     * }
-     * }
-     * }
-     */
-
 
     public boolean hasOsgiConfig(Resource<?> resource) {
         RandomAccessFile randomAccessFile = null;
@@ -300,6 +279,38 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
+    public boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> resource) {
+        RandomAccessFile randomAccessFile = null;
+        try {
+            File f = new File(resource.getFullyQualifiedName());
+            randomAccessFile = new RandomAccessFile(f, "r");
+            String line;
+            while ((line = randomAccessFile.readLine()) != null) {
+                if (line.contains("<instructions>")) {
+                    String insctruction;
+                    while ((insctruction = randomAccessFile.readLine()) != null && !insctruction.contains("</instructions>")) {
+                        if (insctruction.contains("<Bundle-Version>") || insctruction.contains("<Exported-Package>") || insctruction.contains("<Imported-Package>") || insctruction.contains("<Private-Package>")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (randomAccessFile != null) {
+                    randomAccessFile.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
+    }
+
     public boolean isGitProject(Project project) {
         assert (project != null);
         return project.hasFacet(GitFacet.class);
@@ -308,7 +319,7 @@ public class ProjectUtils implements Serializable {
     /**
      * verifies if project contains maven bundle plugin in pom.xml
      */
-    private boolean isMavenBndProject(DirectoryResource root) {
+    public boolean isMavenBndProject(DirectoryResource root) {
 
         return isMavenProject(root) && hasMavenBundlePlugin(root.getChild("pom.xml"));
 

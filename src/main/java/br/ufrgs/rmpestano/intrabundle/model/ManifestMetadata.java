@@ -46,9 +46,7 @@ public class ManifestMetadata implements Serializable {
         this.resourceFactory = resourceFactory;
         this.projectRoot = projectRoot;
 
-        if (manifestSource.getName().toLowerCase().endsWith(".mf")) {
-            this.readManifest(manifestSource);
-        }
+        this.readManifest(manifestSource);
 
 
     }
@@ -118,7 +116,7 @@ public class ManifestMetadata implements Serializable {
         try {
             //look into stardard location
             Resource<?> resourcesDir = projectUtils.getProjectResourcesPath(projectRoot);
-            if(resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() && resourcesDir.getChild("OSGI-INF").getChild("services.xml").exists()){
+            if (resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() && resourcesDir.getChild("OSGI-INF").getChild("services.xml").exists()) {
                 usesDeclarativeServices = Boolean.TRUE;
                 return;
             }
@@ -138,25 +136,25 @@ public class ManifestMetadata implements Serializable {
     }
 
     private void initBluePrint(RandomAccessFile manifest) {
-            try {
-                //look into stardard location
-                Resource<?> resourcesDir = projectUtils.getProjectResourcesPath(projectRoot);
-                if(resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() &&  resourcesDir.getChild("OSGI-INF").getChild("blueprint").exists()){
+        try {
+            //look into stardard location
+            Resource<?> resourcesDir = projectUtils.getProjectResourcesPath(projectRoot);
+            if (resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() && resourcesDir.getChild("OSGI-INF").getChild("blueprint").exists()) {
+                usesBlueprint = Boolean.TRUE;
+                return;
+            }
+            String line;
+            while ((line = manifest.readLine()) != null) {
+                if (line.contains(BLUE_PRINT)) {
                     usesBlueprint = Boolean.TRUE;
                     return;
                 }
-                String line;
-                while ((line = manifest.readLine()) != null) {
-                    if (line.contains(BLUE_PRINT)) {
-                        usesBlueprint = Boolean.TRUE;
-                        return;
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         usesBlueprint = Boolean.FALSE;
     }
 
@@ -210,16 +208,28 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(IMPORT_PACKAGE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                        line = file.readLine().trim();
+                    } else {
+                        line = line.substring(line.indexOf(":") + 1).trim();
+                    }
                     if (!"".equals(line)) {
                         importedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Import-Package>")) {
+                            importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        break;
+                    } else {
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                            importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        break;
                     }
-                    break;
 
                 }
             }
@@ -236,16 +246,28 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(EXPORT_PACKAGE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
+                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                        line = file.readLine();
+                    } else {
+                        line = line.substring(line.indexOf(":") + 1).trim();
+                    }
                     if (!"".equals(line)) {
                         exportedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Export-Package>")) {
+                            exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        break;
+                    } else {
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                            exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        break;
                     }
-                    break;
 
                 }
             }
@@ -259,15 +281,27 @@ public class ManifestMetadata implements Serializable {
     private void initActivator(RandomAccessFile randomAccessFile) throws IOException {
         String line;
         while ((line = randomAccessFile.readLine()) != null) {
-            if (line.contains(ACTIVATOR)) {
-                break;
+            if (projectUtils.isMavenBndProject(projectRoot)) {
+                if (line.contains("<" + ACTIVATOR + ">")) {
+                    line = randomAccessFile.readLine();//in mavenBundlePlugin activator is in next line
+                    break;
+                }
+            } else {
+                if (line.contains(ACTIVATOR)) {
+                    break;
+                }
             }
         }
         if (line == null) {
             activator = null;//no activator
             return;
         }
-        String activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
+        String activatorPath = null;
+        if (projectUtils.isMavenBndProject(projectRoot)) {
+            activatorPath = line.trim();
+        } else {
+            activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
+        }
         activatorPath = activatorPath.trim().replaceAll("\\.", "/");
         if (!activatorPath.startsWith("/")) {
             activatorPath = "/" + activatorPath;
