@@ -279,41 +279,50 @@ public class ManifestMetadata implements Serializable {
     }
 
     private void initActivator(RandomAccessFile randomAccessFile) throws IOException {
-        String line;
-        while ((line = randomAccessFile.readLine()) != null) {
+        try {
+            String line;
+            while ((line = randomAccessFile.readLine()) != null) {
+                if (projectUtils.isMavenBndProject(projectRoot)) {
+                    if (line.contains("<" + ACTIVATOR + ">") && !line.contains("${")) {
+                        while ((line += randomAccessFile.readLine()) != null && !line.contains("</" + ACTIVATOR + ">")) {
+
+                        }
+                        line = line.substring(line.indexOf(">") + 1, line.indexOf("</"));
+                        break;
+                    }
+                } else {
+                    if (line.contains(ACTIVATOR)) {
+                        break;
+                    }
+                }
+            }
+            if (line == null) {
+                activator = null;//no activator
+                return;
+            }
+            String activatorPath = null;
             if (projectUtils.isMavenBndProject(projectRoot)) {
-                if (line.contains("<" + ACTIVATOR + ">")) {
-                    line = randomAccessFile.readLine();//in mavenBundlePlugin activator is in next line
-                    break;
-                }
+                activatorPath = line.trim();
             } else {
-                if (line.contains(ACTIVATOR)) {
-                    break;
+                activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
+            }
+            activatorPath = activatorPath.trim().replaceAll("\\.", "/");
+            if (!activatorPath.startsWith("/")) {
+                activatorPath = "/" + activatorPath;
+            }
+            activator = projectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) projectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
+            if (activator == null || !activator.exists()) {
+                //try to infer activator path from projectRoot path
+                if (activatorPath.contains(projectRoot.getName())) {
+                    String[] activatoPathTokens = activatorPath.split("/");
+                    String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
+                    activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
+
                 }
             }
-        }
-        if (line == null) {
-            activator = null;//no activator
-            return;
-        }
-        String activatorPath = null;
-        if (projectUtils.isMavenBndProject(projectRoot)) {
-            activatorPath = line.trim();
-        } else {
-            activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
-        }
-        activatorPath = activatorPath.trim().replaceAll("\\.", "/");
-        if (!activatorPath.startsWith("/")) {
-            activatorPath = "/" + activatorPath;
-        }
-        activator = projectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) projectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
-        if (activator == null || !activator.exists()) {
-            //try to infer activator path from projectRoot path
-            if (activatorPath.contains(projectRoot.getName())) {
-                String[] activatoPathTokens = activatorPath.split("/");
-                String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
-                activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
-            }
+        } catch (Exception e) {
+            activator = null;
+            System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
         }
     }
 

@@ -289,7 +289,7 @@ public class ProjectUtils implements Serializable {
                 if (line.contains("<instructions>")) {
                     String insctruction;
                     while ((insctruction = randomAccessFile.readLine()) != null && !insctruction.contains("</instructions>")) {
-                        if (insctruction.contains("<Bundle-Version>") || insctruction.contains("<Exported-Package>") || insctruction.contains("<Imported-Package>") || insctruction.contains("<Private-Package>")) {
+                        if (insctruction.contains("<Bundle-Version>") || insctruction.contains("<Exported-Package>") || insctruction.contains("<Imported-Package>") || insctruction.contains("<Private-Package>") || insctruction.contains("<Bundle-Activator>")) {
                             return true;
                         }
                     }
