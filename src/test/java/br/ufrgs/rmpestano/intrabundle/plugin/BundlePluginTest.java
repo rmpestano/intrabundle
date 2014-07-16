@@ -26,12 +26,13 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.annotation")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addClass(ProjectUtils.class)
                 .addClass(BundlePlugin.class).
                 addClass(LocalePlugin.class).
-                addClass(BundleProjectLocator.class);
+                addClass(BundleProjectLocator.class)
+                ;
         //System.out.println(jar.toString(true));
         return jar;
     }
@@ -156,5 +157,17 @@ public class BundlePluginTest extends BaseBundleTest {
         Assert.assertTrue(getOutput().startsWith("3"));
     }
 
+
+    /**
+     * test listBundles command in maven bnd tools(maven bundle plugin) based OSGi project
+     */
+    @Test
+    public void shouldFindActivatorInBndProject() throws Exception {
+        resetOutput();
+        initializeOSGiBNDProject();
+        resetOutput();
+        getShell().execute("bundle activator");
+        Assert.assertTrue(getOutput().contains("/module1/br/ufrgs/rmpestano/activator/Activator.java"));
+    }
 
 }

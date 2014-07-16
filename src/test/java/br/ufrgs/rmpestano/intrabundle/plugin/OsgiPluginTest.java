@@ -150,10 +150,20 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         initializeMavenOSGiBNDProject();
         resetOutput();
+        getShell().execute("osgi countBundles");
+        Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
+        resetOutput();
         getShell().execute("osgi listBundles");
         Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
-
     }
 
+    @Test
+    public void shouldCountBundlesInMavebBndProject() throws Exception {
+        resetOutput();
+        initializeMavenOSGiBNDProject();
+        resetOutput();
+        getShell().execute("osgi countBundles");
+        Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
+    }
 
 }

@@ -109,8 +109,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addMavenBndBundle(main,"module1");
         addMavenBndBundle(main,"module2");
+        addMavenBndBundle(main,"module1");
         addMavenBndBundle(main,"module3");
         getShell().setCurrentResource(main);
         return getProject();

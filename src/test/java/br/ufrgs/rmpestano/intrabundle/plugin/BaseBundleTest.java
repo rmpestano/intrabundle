@@ -92,4 +92,64 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         }
     }
 
+    /**
+     * creates an maven OSGi project based on BND tools(maven bundle plugin)
+     */
+    public Project initializeMavenOSGiBNDProject() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        getShell().setCurrentResource(addMavenBndBundle(root, "module1"));
+        return getProject();
+    }
+
+    /**
+     * creates an eclipse OSGi project based on BND tools
+     */
+    public Project initializeOSGiBNDProject() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        getShell().setCurrentResource(addBndBundle(root, "module1"));
+        return getProject();
+    }
+
+    protected DirectoryResource addMavenBndBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addMavenActivator(bundle);
+        addBndPom(bundle);
+        return bundle;
+    }
+
+    protected DirectoryResource addBndBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addActivator(bundle);
+        addBnd(bundle);
+        return bundle;
+    }
+
+    private void addMavenActivator(DirectoryResource root){
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("main").getOrCreateChildDirectory("java").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").
+                getOrCreateChildDirectory("activator");
+        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
+        activator.setContents("public class Activator{}");
+    }
+
+    private void addBndPom(DirectoryResource root) {
+        FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
+        if(!pom.exists()){
+            pom.setContents(getClass().getResourceAsStream("/pom_bnd.xml"));
+        }
+    }
+
+    private void addBnd(DirectoryResource root) {
+        FileResource<?> bnd = (FileResource<?>) root.getChild("bnd.bnd");
+        if(!bnd.exists()){
+            bnd.setContents(getClass().getResourceAsStream("/bnd.bnd"));
+        }
+    }
+
+
 }

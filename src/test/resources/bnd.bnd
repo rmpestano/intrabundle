@@ -6,6 +6,6 @@
 	
 Private-Package: org.eclipsecon.masterosgi.orderentry
 Service-Component: *
-
+Bundle-Activator: br.ufrgs.rmpestano.activator.Activator
 Include-Resource: help.txt
 Require-Capability: osgi.extender; filter:="(osgi.extender=helper)"; effective:=active
