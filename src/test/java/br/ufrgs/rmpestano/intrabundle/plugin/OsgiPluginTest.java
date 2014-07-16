@@ -140,6 +140,18 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi listBundles");
         Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+    }
+
+    /**
+     * test listBundles command in maven bnd tools(maven bundle plugin) based OSGi project
+     */
+    @Test
+    public void shouldListBundlesInMavebBndProject() throws Exception {
+        resetOutput();
+        initializeMavenOSGiBNDProject();
+        resetOutput();
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
 
     }
 

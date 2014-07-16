@@ -101,11 +101,32 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    /**
+     * creates a maven OSGi project based on BND tools(maven bundle plugin)
+     * which has 3 sub folders inside which are OSGi bundles
+     */
+    public Project initializeMavenOSGiBNDProject() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        addMavenBndBundle(main,"module1");
+        addMavenBndBundle(main,"module2");
+        addMavenBndBundle(main,"module3");
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
 
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
         if(!pom.exists()){
             pom.setContents(getClass().getResourceAsStream("/pomWithDependencies.xml"));
+        }
+    }
+
+    private void addBndPom(DirectoryResource root) {
+        FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
+        if(!pom.exists()){
+            pom.setContents(getClass().getResourceAsStream("/pom_bnd.xml"));
         }
     }
 
@@ -122,6 +143,12 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
         addMavenActivator(bundle);
         addPom(bundle);
+    }
+
+    protected void addMavenBndBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addMavenActivator(bundle);
+        addBndPom(bundle);
     }
 
     protected void addBndBundle(DirectoryResource dir, String module) {
