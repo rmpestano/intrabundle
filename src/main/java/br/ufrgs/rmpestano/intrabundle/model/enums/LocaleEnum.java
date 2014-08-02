@@ -1,4 +1,4 @@
-package br.ufrgs.rmpestano.intrabundle.model;
+package br.ufrgs.rmpestano.intrabundle.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;

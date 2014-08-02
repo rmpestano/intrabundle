@@ -3,7 +3,7 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.annotation.CurrentLocale;
 import br.ufrgs.rmpestano.intrabundle.event.LocaleChangeEvent;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.model.LocaleEnum;
+import br.ufrgs.rmpestano.intrabundle.model.enums.LocaleEnum;
 import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;

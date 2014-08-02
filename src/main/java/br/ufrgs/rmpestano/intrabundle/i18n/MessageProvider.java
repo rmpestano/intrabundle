@@ -7,8 +7,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 @Singleton
 public class MessageProvider implements Serializable {
@@ -25,15 +26,16 @@ public class MessageProvider implements Serializable {
     }
 
     public String getMessage(String key, Object... params) {
-        return getCurrentBundle().getString(key, params);
+        return MessageFormat.format(getCurrentBundle().getString(key), params);
     }
 
     public ResourceBundle getCurrentBundle() {
         if (currentBundle == null) {
             try {
-                currentBundle = new ResourceBundle(getClass().getResourceAsStream("/messages_"+ localeLanguage.get()+".properties"));
-            } catch (IOException e) {
+                currentBundle = ResourceBundle.getBundle("messages_"+ localeLanguage.get());
+            } catch (Exception e) {
                 e.printStackTrace();
+                throw new RuntimeException("Could not find bundle:"+"messages_"+ localeLanguage.get()+".properties");
             }
         }
         return currentBundle;

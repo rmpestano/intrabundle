@@ -182,12 +182,6 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.arquillian.extension</groupId>
-                    <artifactId>arquillian-jacoco</artifactId>
-                    <version>1.0.0.Alpha6</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
                     <groupId>org.jacoco</groupId>
                     <artifactId>org.jacoco.core</artifactId>
                     <version>${jacoco.version}</version>
@@ -203,6 +197,8 @@
                         <configuration>
                             <excludes>
                                 <exclude>br/ufrgs/rmpestano/intrabundle/model/enums/*.class</exclude>
+                                <exclude>br/ufrgs/rmpestano/intrabundle/model/OSGiProjectReport.class</exclude>
+                                <exclude>br/ufrgs/rmpestano/intrabundle/model/ModuleDTO.class</exclude>
                                 <exclude>br/ufrgs/rmpestano/intrabundle/jasper/*.class</exclude>
                             </excludes>
                         </configuration>
