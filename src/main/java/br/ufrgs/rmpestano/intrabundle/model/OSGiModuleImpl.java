@@ -101,7 +101,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         for (Resource<?> resource : projectRoot.listResources()) {
             if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
                 try {
-                    this.totalLoc += countFileLines((FileResource<?>) resource);
+                    this.totalLoc += projectUtils.countFileLines((FileResource<?>) resource);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -113,7 +113,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     /**
-     * count lines of .java files under test folder
+     * count lines of .java files that import test related classes
      *
      * @param projectRoot
      * @return
@@ -122,7 +122,20 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         for (Resource<?> resource : projectRoot.listResources()) {
             if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
                 try {
-                    this.totalTestLoc += countFileLines((FileResource<?>) resource);
+                    JavaSource source = null;
+                    try {
+                        source = JavaParser.parse(resource.getResourceInputStream());
+                    } catch (ParserException e) {
+                        //intentional
+                        continue;
+                    }
+                    if( source.hasImport("junit.framework") || source.hasImport("junit.framework.Assert")
+                            ||  source.hasImport("org.junit")  || source.hasImport("org.junit.Assert")
+                            ||  source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
+                            ||  source.hasImport("org.testng.Assert")|| source.hasImport("org.testng.annotations")
+                            ) {
+                        this.totalTestLoc += projectUtils.countFileLines((FileResource<?>) resource);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -133,16 +146,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         return totalTestLoc;
     }
 
-    private Long countFileLines(FileResource<?> resource) throws IOException {
-        RandomAccessFile file = new RandomAccessFile(new File(resource.getFullyQualifiedName()), "r");
-        Long total = new Long(0);
-        String line;
-        while ((line = file.readLine()) != null) {
-            total++;
-        }
-        file.close();
-        return total;
-    }
 
     private Boolean declaresPermissions() {
         Resource<?> OSGiInf = projectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
@@ -383,10 +386,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfTestCode() {
         if (totalTestLoc == null) {
             totalTestLoc = 0L;
-            Resource<?> testPath = projectUtils.getProjectTestPath(projectRoot);
-            if (testPath != null && testPath.exists()) {
-                totalTestLoc = countModuleTestLines((DirectoryResource) testPath);
-            }
+            totalTestLoc = countModuleTestLines(projectRoot);
         }
         return totalTestLoc;
     }

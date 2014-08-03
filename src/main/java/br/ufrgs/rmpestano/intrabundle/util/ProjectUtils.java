@@ -18,7 +18,10 @@ import org.jboss.forge.resources.ResourceFilter;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +74,7 @@ public class ProjectUtils implements Serializable {
                         return false;//minimal pom added to non maven projects has artifactId = 'intrabundle' and so is not a maven project
                     }
                 }
+                return true;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 //log ex
@@ -84,7 +88,7 @@ public class ProjectUtils implements Serializable {
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
@@ -367,5 +371,17 @@ public class ProjectUtils implements Serializable {
             throw new RuntimeException("Problem getting git head revision from project:" + project, e);
         }
         return commit.getId().toString();
+    }
+
+
+    public Long countFileLines(FileResource<?> resource) throws IOException {
+        RandomAccessFile file = new RandomAccessFile(new File(resource.getFullyQualifiedName()), "r");
+        Long total = new Long(0);
+        String line;
+        while ((line = file.readLine()) != null) {
+            total++;
+        }
+        file.close();
+        return total;
     }
 }

@@ -69,7 +69,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("ufrgs").
                 getOrCreateChildDirectory("rmpestano");
         FileResource<?> testClass = (FileResource<?>) resource.getChild("TestClass.java");
-        testClass.setContents("test class content");
+        testClass.setContents("import org.junit.*; test class content");
     }
 
     private void addExportedPackage(DirectoryResource root){

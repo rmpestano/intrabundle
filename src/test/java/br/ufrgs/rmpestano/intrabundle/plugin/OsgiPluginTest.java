@@ -12,6 +12,8 @@ import org.junit.Test;
 import javax.inject.Inject;
 import java.io.File;
 
+import static org.junit.Assert.assertTrue;
+
 public class OsgiPluginTest extends BaseOSGiTest {
 
     @Deployment
@@ -105,21 +107,46 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
-    public void shouldListExportedPackages() throws Exception {
+    public void shouldListExportedPackagesInModule1() throws Exception {
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi exportedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.module1"));
+        Assert.assertTrue(!getOutput().contains("br.ufrgs.rmpestano.module3"));
+    }
+
+    @Test
+    public void shouldListExportedPackagesInAllModules() throws Exception {
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
         getShell().execute("osgi exportedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package1"));
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package2"));
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.module3"));
     }
 
     @Test
-    public void shouldListImportedPackages() throws Exception {
+    public void shouldListImportedPackagesInAllModules() throws Exception {
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
         getShell().execute("osgi importedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.module3"));
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package4"));
+    }
+
+    @Test
+    public void shouldListImportedPackagesInModule1() throws Exception {
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi importedPackages");
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.module3"));
+        Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.package3"));
+        Assert.assertFalse(getOutput().contains("br.ufrgs.rmpestano.package4"));
     }
 
     @Test
@@ -164,6 +191,37 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi countBundles");
         Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
+    }
+
+    @Test
+    public void shouldCountLinesOfCode() throws Exception {
+        resetOutput();
+        getShell().execute("osgi loc");
+        assertTrue(getOutput().contains("Total lines of code:3"));
+    }
+
+    /**
+     * count lines of test code inside each bundle in test source
+     * @throws Exception
+     */
+    @Test
+    public void shouldCountLinesOfTestCode() throws Exception {
+        initializeOSGiProjectWithTestCodeInsideBundles();
+        resetOutput();
+        getShell().execute("osgi lot");
+        assertTrue(getOutput().contains("Total lines of test code:4"));
+    }
+
+    /**
+     * count lines of test code inside test folder(separated folder/project for tests)
+     * @throws Exception
+     */
+    @Test
+    public void shouldCountLinesOfTestCodeInsideTestBundles() throws Exception {
+        initializeOSGiProjectWithTestBundles();
+        resetOutput();
+        getShell().execute("osgi lot");
+        assertTrue(getOutput().contains("Total lines of test code:2"));
     }
 
 }

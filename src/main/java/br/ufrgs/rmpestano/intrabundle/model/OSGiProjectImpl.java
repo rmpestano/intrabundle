@@ -2,6 +2,9 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.maven.MavenCoreFacet;
+import org.jboss.forge.parser.JavaParser;
+import org.jboss.forge.parser.ParserException;
+import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
 import org.jboss.forge.project.Project;
@@ -9,6 +12,7 @@ import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
+import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
@@ -24,7 +28,6 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     private final ProjectFactory factory;
     private final ResourceFactory resourceFactory;
     private List<OSGiModule> modules;
-    private List<OSGiModule> testModules;//in case of separeted test modules
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
     private Long linesOfCode;
     private Long linesOfTestCode;
@@ -154,17 +157,6 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
         return moduleDependenciesMap;
     }
 
-    public List<OSGiModule> getTestModules() {
-        if(testModules == null){
-            testModules = new ArrayList<OSGiModule>();
-            Resource<?> testDir = projectUtils.getProjectTestPath(projectRoot);
-            if(testDir != null && testDir.exists()){
-                initalizeModules(testModules,(DirectoryResource)testDir);
-            }
-        }
-        return testModules;
-    }
-
     @Override
     public Long getLinesOfCode() {
         if(linesOfCode == null){
@@ -180,22 +172,45 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
     public Long getLinesOfTestCode() {
         if(linesOfTestCode == null){
             linesOfTestCode = new Long(0);
-            for (OSGiModule module : modules) {
-                linesOfTestCode +=module.getLinesOfTestCode();
-            }
+            linesOfTestCode = countProjectTestLines(projectRoot);
+        }
+        return linesOfTestCode;
+    }
 
-            if(getTestModules() != null){
-                for (OSGiModule testModule : testModules) {
-                    linesOfTestCode+=testModule.getLinesOfCode();
+    /**
+     * count lines of .java files that import test related classes
+     *
+     * @param projectRoot
+     * @return
+     */
+    private Long countProjectTestLines(DirectoryResource projectRoot) {
+        for (Resource<?> resource : projectRoot.listResources()) {
+            if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
+                try {
+                    JavaSource source = null;
+                    try {
+                        source = JavaParser.parse(resource.getResourceInputStream());
+                    } catch (ParserException e) {
+                        //intentional
+                        continue;
+                    }
+                    if( source.hasImport("junit.framework") || source.hasImport("junit.framework.Assert")
+                    ||  source.hasImport("org.junit")  || source.hasImport("org.junit.Assert")
+                    ||  source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
+                    ||  source.hasImport("org.testng.Assert")|| source.hasImport("org.testng.annotations")
+                            ) {
+                        this.linesOfTestCode += projectUtils.countFileLines((FileResource<?>) resource);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            } else if (resource instanceof DirectoryResource) {
+                this.linesOfTestCode = countProjectTestLines((DirectoryResource) resource);
             }
         }
         return linesOfTestCode;
     }
 
-    public void setTestModules(List<OSGiModule> testModules) {
-        this.testModules = testModules;
-    }
 
     @Override
     public String getVersion() {

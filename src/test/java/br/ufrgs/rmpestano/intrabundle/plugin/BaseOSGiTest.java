@@ -116,6 +116,26 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+
+    public Project initializeOSGiProjectWithTestBundles() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        addTestBundle(main,"module1");
+        addTestBundle(main,"module2");
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
+    public Project initializeOSGiProjectWithTestCodeInsideBundles() throws Exception{
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        addTestInsideBundle(main,"module1");
+        addTestInsideBundle(main,"module2");
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
         if(!pom.exists()){
@@ -135,6 +155,43 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
         addActivator(bundle);
+    }
+
+    /**
+     * test code in dedicated test folder
+     * @param dir
+     * @param module
+     */
+    protected void addTestBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
+        addActivator(bundle);
+        DirectoryResource testFolder = dir.getChildDirectory("test");
+        addMetaInfWithManifest(testFolder, "/MANIFEST-" + module + ".MF");
+        DirectoryResource aPackage = testFolder.getChildDirectory("package");
+        FileResource<?> test1 = (FileResource<?>) aPackage.getChild("TestClass1.java");
+        test1.setContents("import junit.framework.Assert; public class TestClass {@Test public void aTest{}}");
+
+        FileResource<?> test2 = (FileResource<?>) aPackage.getChild("TestClass2.java");
+        test2.setContents("import org.testng.Assert; public class TestClass {@Test public void aTest{}}");
+    }
+
+    /**
+     * test code inside bundle
+     * @param dir
+     * @param module
+     */
+    protected void addTestInsideBundle(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
+        addActivator(bundle);
+        DirectoryResource testFolder = bundle.getChildDirectory("test");
+        DirectoryResource aPackage = testFolder.getChildDirectory("package");
+        FileResource<?> test1 = (FileResource<?>) aPackage.getChild("TestClass1.java");
+        test1.setContents("import junit.framework.Assert; public class TestClass {@Test public void aTest{}}");
+
+        FileResource<?> test2 = (FileResource<?>) aPackage.getChild("TestClass2.java");
+        test2.setContents("import org.testng.Assert; public class TestClass {@Test public void aTest{}}");
     }
 
     protected void addMavenBundle(DirectoryResource dir, String module) {

@@ -11,12 +11,6 @@ public interface OSGiProject extends Serializable{
 
     List<OSGiModule> getModules();
 
-    /**
-     * some OSGi projects have separeted OSGi bundles to test code
-     * @return
-     */
-    List<OSGiModule> getTestModules();
-
     Long getLinesOfCode();
 
     Long getLinesOfTestCode();
