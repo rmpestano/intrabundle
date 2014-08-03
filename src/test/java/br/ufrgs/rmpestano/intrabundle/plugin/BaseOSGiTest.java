@@ -26,6 +26,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
         addBundle(main,"module1");
+        addHelloManager((DirectoryResource) main.getChild("module1"));
+        addPermissions((DirectoryResource) main.getChild("module1"));
         addBundle(main,"module2");
         addBundle(main,"module3");
         getShell().setCurrentResource(main);
@@ -130,8 +132,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiProjectWithTestCodeInsideBundles() throws Exception{
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addTestInsideBundle(main,"module1");
-        addTestInsideBundle(main,"module2");
+        addTestInsideBundle(main, "module1");
+        addTestInsideBundle(main, "module2");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -245,6 +247,24 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
         activator.setContents("activator content");
+    }
+
+    private void addHelloManager(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").
+                getOrCreateChildDirectory("manager");
+        FileResource<?> manager = (FileResource<?>) resource.getChild("HelloManager.java");
+        manager.setContents(getClass().getResourceAsStream("/HelloManager.java"));
+        FileResource<?> staleManager = (FileResource<?>) resource.getChild("HelloStaleManager.java");
+        staleManager.setContents(getClass().getResourceAsStream("/HelloStaleManager.java"));
+    }
+
+    private void addPermissions(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
+        FileResource<?> permissions = (FileResource<?>) resource.getChild("permissions.perm");
+        permissions.setContents("permissions content");
     }
 
     @Before

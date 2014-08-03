@@ -175,6 +175,9 @@ public class OsgiPlugin implements Plugin {
                if(!module.getStaleReferences().isEmpty()){
                    out.println(++staleReferencesModules+" - "+module);
                }
+               else{
+                   out.println(provider.getMessage("bundle.noStaleReferences"));
+               }
             }
         }
     }

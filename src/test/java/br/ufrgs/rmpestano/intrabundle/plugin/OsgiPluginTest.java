@@ -157,6 +157,69 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().contains("module3"));
     }
 
+    @Test
+    public void shouldListModuleDependenciesInModule1() throws Exception {
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi dependencies");
+        Assert.assertTrue(getOutput().contains("module3"));
+    }
+
+    @Test
+    public void shouldListRequiredBundles() throws Exception {
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi requiredBundles");
+        Assert.assertTrue(getOutput().contains("org.eclipse.core.runtime"));
+        Assert.assertTrue(getOutput().contains("org.eclipse.osee.vaadin.widgets"));
+    }
+
+    @Test
+    public void shouldListRequiredBundlesInModule2() throws Exception {
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("2");
+        getShell().execute("osgi requiredBundles");
+        Assert.assertTrue(getOutput().contains("org.eclipse.osee.vaadin.widgets"));
+    }
+
+    @Test
+    public void shouldListStaleReferences() throws Exception {
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi staleReferences");
+        assertTrue(getOutput().contains("module1"));
+        assertTrue(getOutput().contains("module2"));
+    }
+
+    @Test
+    public void shouldListStaleReferencesInModule1() throws Exception {
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi staleReferences");
+        assertTrue(getOutput().contains("HelloStaleManager.java"));
+    }
+
+    @Test
+    public void shouldListModulesThatPublishesOnlyInterfaces() throws Exception {
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi publishInterfaces");
+        assertTrue(getOutput().contains("module1"));
+        assertTrue(getOutput().contains("module2"));
+        assertTrue(getOutput().contains("module3"));
+    }
+
+    @Test
+    public void shouldListModulesThatDeclaresPermission() throws Exception {
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi declaresPermissions");
+        assertTrue(getOutput().startsWith("Listing modules that declares permissions:" + getNewLine()+"module1"));
+    }
+
     /**
      * test listBundles command in eclipse bnd tools based OSGi project
      */
@@ -197,7 +260,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     public void shouldCountLinesOfCode() throws Exception {
         resetOutput();
         getShell().execute("osgi loc");
-        assertTrue(getOutput().contains("Total lines of code:3"));
+        assertTrue(getOutput().startsWith("module1:214"));
     }
 
     /**
