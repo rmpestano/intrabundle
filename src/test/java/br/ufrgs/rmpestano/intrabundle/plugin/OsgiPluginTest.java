@@ -40,6 +40,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldExecuteOSGiScan() throws Exception {
+        System.out.println("shouldExecuteOSGiScan");
         resetOutput();
         initializeOSGiProjectWithTwoFolderLevels();
         queueInputLines("2");
@@ -151,6 +152,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListModuleDependencies() throws Exception {
+        System.out.println("shouldListModuleDependencies");
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi dependencies");

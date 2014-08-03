@@ -87,6 +87,18 @@
             <artifactId>forge-test-harness</artifactId>
             <version>${forge.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                     <groupId>junit</groupId>
+                     <artifactId>junit</artifactId>
+                </exclusion>
+	     </exclusions>
+        </dependency>
+        <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <version>4.11</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.forge</groupId>
@@ -101,12 +113,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>JBOSS_NEXUS</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -114,10 +120,22 @@
                 <version>2.3.2</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+	       <artifactId>maven-surefire-plugin</artifactId>
+	       <version>2.17</version>
+	       <configuration>
+		   <skipTests>false</skipTests>
+		   <runOrder>alphabetical</runOrder>
+                   <!--parallel>classes</parallel-->
+                   <!--useUnlimitedThreads>true</useUnlimitedThreads-->
+ 	           <!--threadCount>4</threadCount-->
+		</configuration>
+            </plugin> 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jasperreports-maven-plugin</artifactId>
