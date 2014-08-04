@@ -114,25 +114,6 @@
         </dependency>
     </dependencies>
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.16</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-junit47</artifactId>
-                            <version>2.16</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <argLine>${jacoco.agent.argLine}</argLine>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -216,12 +197,12 @@
                         <version>2.17</version>
                         <configuration>
                             <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256m ${argLine}</argLine>
-                            <!--<forkMode>never</forkMode>-->
+                            <forkCount>1</forkCount>
                             <skipTests>false</skipTests>
                             <runOrder>alphabetical</runOrder>
-                            <!--parallel>classes</parallel-->
+                            <!--<parallel>classes</parallel>-->
                             <!--useUnlimitedThreads>true</useUnlimitedThreads-->
-                            <!--threadCount>4</threadCount-->
+                            <!--<threadCount>4</threadCount>-->
                         </configuration>
                     </plugin>
                 </plugins>
@@ -240,9 +221,6 @@
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
-                                <configuration>
-                                    <skip>${jacoco.skip}</skip>
-                                </configuration>
                             </execution>
                             <execution>
                                 <id>report</id>
@@ -250,9 +228,6 @@
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
-                                <configuration>
-                                    <skip>${jacoco.skip}</skip>
-                                </configuration>
                             </execution>
                         </executions>
                         <configuration>
