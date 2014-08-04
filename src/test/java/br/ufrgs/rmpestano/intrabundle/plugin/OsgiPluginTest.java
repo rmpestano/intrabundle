@@ -40,7 +40,6 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldExecuteOSGiScan() throws Exception {
-        System.out.println("shouldExecuteOSGiScan");
         resetOutput();
         initializeOSGiProjectWithTwoFolderLevels();
         queueInputLines("2");
