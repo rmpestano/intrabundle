@@ -167,7 +167,8 @@ public class BundlePluginTest extends BaseBundleTest {
         initializeOSGiBNDProject();
         resetOutput();
         getShell().execute("bundle activator");
-        Assert.assertTrue(getOutput().contains("/module1/src/br/ufrgs/rmpestano/activator/Activator.java"));
+        String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
+        Assert.assertTrue(getOutput().contains(expected));
     }
 
 
