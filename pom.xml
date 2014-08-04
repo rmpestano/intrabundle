@@ -228,6 +228,9 @@
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
+                                <configuration>
+                                    <propertyName>surefire.argLine</propertyName>
+                                </configuration>
                             </execution>
                         </executions>
                         <configuration>
