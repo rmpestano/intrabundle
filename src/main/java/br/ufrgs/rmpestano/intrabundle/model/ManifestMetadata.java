@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
@@ -17,14 +18,6 @@ import java.util.List;
  * gather information from Manifest or BND file
  */
 public class ManifestMetadata implements Serializable {
-
-    public static final String DECLARATIVE_SERVICES = "Service-Component";
-    public static final String BLUE_PRINT = "Bundle-Blueprint";
-    public static final String EXPORT_PACKAGE = "Export-Package";
-    public static final String IMPORT_PACKAGE = "Import-Package";
-    public static final String REQUIRE_BUNDLE = "Require-Bundle";
-    public static final String ACTIVATOR = "Bundle-Activator";
-    public static final String BUNDLE_VERSION = "Bundle-Version";
 
     private List<String> importedPackages;
     private List<String> exportedPackages;
@@ -122,7 +115,7 @@ public class ManifestMetadata implements Serializable {
             }
             String line;
             while ((line = manifest.readLine()) != null) {
-                if (line.contains(DECLARATIVE_SERVICES)) {
+                if (line.contains(Constants.Manifest.DECLARATIVE_SERVICES)) {
                     usesDeclarativeServices = Boolean.TRUE;
                     return;
                 }
@@ -145,7 +138,7 @@ public class ManifestMetadata implements Serializable {
             }
             String line;
             while ((line = manifest.readLine()) != null) {
-                if (line.contains(BLUE_PRINT)) {
+                if (line.contains(Constants.Manifest.BLUE_PRINT)) {
                     usesBlueprint = Boolean.TRUE;
                     return;
                 }
@@ -163,7 +156,7 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(BUNDLE_VERSION)) {
+                if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
                     line = line.substring(line.indexOf(":") + 1).trim();
                     if (!"".equals(line)) {
                         version = line.substring(line.indexOf(":") + 1).trim();
@@ -182,7 +175,7 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(REQUIRE_BUNDLE)) {
+                if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
                     line = line.substring(line.indexOf(":") + 1).trim();
                     if (!"".equals(line)) {
                         requiredBundles.addAll(Arrays.asList(line.split(",")));
@@ -207,7 +200,7 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(IMPORT_PACKAGE)) {
+                if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
                     if (projectUtils.isMavenBndProject(projectRoot)) {
                         line = file.readLine().trim();
                     } else {
@@ -245,7 +238,7 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(EXPORT_PACKAGE)) {
+                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
                     if (projectUtils.isMavenBndProject(projectRoot)) {
                         line = file.readLine();
                     } else {
@@ -283,15 +276,15 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = randomAccessFile.readLine()) != null) {
                 if (projectUtils.isMavenBndProject(projectRoot)) {
-                    if (line.contains("<" + ACTIVATOR + ">") && !line.contains("${")) {
-                        while ((line += randomAccessFile.readLine()) != null && !line.contains("</" + ACTIVATOR + ">")) {
+                    if (line.contains("<" + Constants.Manifest.ACTIVATOR + ">") && !line.contains("${")) {
+                        while ((line += randomAccessFile.readLine()) != null && !line.contains("</" + Constants.Manifest.ACTIVATOR + ">")) {
 
                         }
                         line = line.substring(line.indexOf(">") + 1, line.indexOf("</"));
                         break;
                     }
                 } else {
-                    if (line.contains(ACTIVATOR)) {
+                    if (line.contains(Constants.Manifest.ACTIVATOR)) {
                         break;
                     }
                 }
@@ -304,7 +297,7 @@ public class ManifestMetadata implements Serializable {
             if (projectUtils.isMavenBndProject(projectRoot)) {
                 activatorPath = line.trim();
             } else {
-                activatorPath = line.trim().substring(line.indexOf(ACTIVATOR) + 18);
+                activatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
             }
             activatorPath = activatorPath.trim().replaceAll("\\.", "/");
             if (!activatorPath.startsWith("/")) {
