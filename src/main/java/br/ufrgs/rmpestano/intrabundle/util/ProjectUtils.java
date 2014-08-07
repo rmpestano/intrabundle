@@ -263,7 +263,7 @@ public class ProjectUtils implements Serializable {
             randomAccessFile = new RandomAccessFile(f, "r");
             String line;
             while ((line = randomAccessFile.readLine()) != null) {
-                if (line.contains("Bundle-Version") || line.contains("Exported-Package") || line.contains("Imported-Package") || line.contains("Private-Package") || line.contains("-buildpath")) {
+                if (line.contains(Constants.Manifest.BUNDLE_VERSION) || line.contains(Constants.Manifest.EXPORT_PACKAGE) || line.contains(Constants.Manifest.IMPORT_PACKAGE) || line.contains(Constants.Manifest.PRIVATE_PACKAGE) || line.contains("-buildpath")) {
                     return true;
                 }
             }
@@ -293,7 +293,7 @@ public class ProjectUtils implements Serializable {
                 if (line.contains("<instructions>")) {
                     String insctruction;
                     while ((insctruction = randomAccessFile.readLine()) != null && !insctruction.contains("</instructions>")) {
-                        if (insctruction.contains("<Bundle-Version>") || insctruction.contains("<Exported-Package>") || insctruction.contains("<Imported-Package>") || insctruction.contains("<Private-Package>") || insctruction.contains("<Bundle-Activator>")) {
+                        if (insctruction.contains(Constants.Manifest.BUNDLE_VERSION) || insctruction.contains(Constants.Manifest.EXPORT_PACKAGE) || insctruction.contains(Constants.Manifest.IMPORT_PACKAGE) || insctruction.contains(Constants.Manifest.PRIVATE_PACKAGE) || insctruction.contains(Constants.Manifest.ACTIVATOR) || insctruction.contains(Constants.Manifest.SYMBOLIC_NAME)) {
                             return true;
                         }
                     }

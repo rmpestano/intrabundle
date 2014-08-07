@@ -89,8 +89,8 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -278,6 +278,4 @@
             </build>
         </profile>
     </profiles>
-
-
 </project>
