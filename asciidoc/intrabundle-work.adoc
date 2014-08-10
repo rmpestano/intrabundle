@@ -111,7 +111,7 @@ Above metrics are already been collected from OSGi project, basically these are 
 . _bundle dependencies_(calculated at OSGi project level by looking at imported and exported packages of bundles in same project)
 . _required bundles_ (bad practice cause you depend direct on other bundles and also import the implementation)
 
-The above metrics are already beeing collected from some real OSGi projects, you can see them at footnote:[rmpestano.github.io/intrabundle/#reports].
+The above metrics are already beeing collected from some real OSGi projects, you can see them at footnote:[http://rmpestano.github.io/intrabundle/#reports].
 
 == Schedule(for 2014)
 
