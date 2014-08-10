@@ -55,7 +55,7 @@ Maven plugin is limited to maven projects.
 
 So i started to work on Forge, basically created two plugins(forge is based on plugins like eclipse), one for getting information from OSGi projects(basically folders holding multiple OSGi bundles) which i named _OSGiPlugin_ and other plugin for inspecting OSGi bundles which i named _BundlePlugin_.
 
-Our tool source code is available at github.com at footnoteref:[intrabundle,https://github.com/rmpestano/intrabundle].
+Our tool source code is available at github.com at footnoteref:[intrabundle, http://github.com/rmpestano/intrabundle].
 
 Forge plugins are sensible to the context so for example they can be enabled or disabled depending on certain condition, in our case OSGi plugin should be enable when user navigate to an OSGi project, i had described this process on my blog in a very simplified way at footnote:[http://rpestano.wordpress.com/2014/01/30/my-forge-experience-pt1/].
 
