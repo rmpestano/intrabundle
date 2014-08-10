@@ -1,0 +1,130 @@
+:toc: right
+= OSGi Quality Analisys
+
+
+== Work done and design decisions
+
+I've met Geyer and he asked me to summarize everything i did until now on our work, so here is what
+i noted down(chronologically):
+
+Didier proposed the work and shared in drive lots of resource on the subject, see footnote:[https://docs.google.com/document/d/1n34Xby3qelfQgxTw5LmvjPLD28UNV1e07LYe1aTgaCc/].
+
+I have studied OSGi by reading Manning OSGi in Action footnote:[http://www.manning.com/hall/], Kiev service coroner paper footnote:[http://dl.acm.org/citation.cfm?id=1495249] and lots of examples on internet.
+
+With the help of João Americo i've defined some initial metrics like loc, stale references, number of import/export packages.
+
+Talking with João i've decided to focus only on static code analisys and rely on open sourced projects to avoid byte code manipulation.
+
+As a part of the work consists in building a tool to get the metrics i have researched on how i
+would collect useful information from OSGi projects. My decision was based on the following aspects:
+
+. The solution should be based on Java platform so i could leverage my knowlegde on the language;
+. The tool should be lightweight cause it would analyze real, complex and huge OSGi projects;
+. as the tool will most of the time being navigating throught OSGi projects source code it must use a good API for this job.
+
+
+After researching on how i would implement the tool i've came to the following ideas:
+
+. build a javaFX application footnote:[http://docs.oracle.com/javafx/]
+. create an eclipse plugin footnote:[http://www.vogella.com/tutorials/EclipsePlugIn/article.html]
+. create a maven plugin(restricted to maven projects)
+. build the tool on top of Jboss Forge footnote:[http://forge.jboss.org/1.x/]
+
+I've chosen in favor of *Forge*.
+
+Forge has the following advantages over others:
+
+. works inside and outside eclipse
+. as its a command line tool its very lightweight and can analise multiple OSGi projects
+at the same time(in fact you can go to your OS root and scan all OSGi projects you have in your machine);
+. The programing model is based on top of the so called CDI footnote:[http://docs.jboss.org/weld/reference/1.0.0/en-US/html/] so managing Objects lifecycle and event is handled by CDI automatically;
+. Has a very good file system manipulation API(based on java.io);
+. it's modular, based on Jboss modules footnote:[https://docs.jboss.org/author/display/MODULES/Introduction] so eg: each plugin has its own classloader;
+. I had previous knowledge on Forge platform
+
+Eclipse plugin would need eclipse IDE running to work which is not as light as forge runtime which is based on CLI,
+also eclipse would require to open the OSGi projects on it before getting the metrics which would consume lots of resources
+and finally i don't have experience in eclipse platform.
+
+JavaFX would require use standard Java file system manipulation api(java.io) which has lots of caveats/pitfalls so for example its easy to create a memory leak or too many files opens error.
+Also with JavaFX i would have to implement the interface/GUI which i have for free in Eclipse or Forge.
+
+Maven plugin is limited to maven projects.
+
+== Implementation details
+
+So i started to work on Forge, basically created two plugins(forge is based on plugins like eclipse), one for getting information from OSGi projects(basically folders holding multiple OSGi bundles) which i named _OSGiPlugin_ and other plugin for inspecting OSGi bundles which i named _BundlePlugin_.
+
+Our tool source code is available at github.com at footnoteref:[intrabundle,https://github.com/rmpestano/intrabundle].
+
+Forge plugins are sensible to the context so for example they can be enabled or disabled depending on certain condition, in our case OSGi plugin should be enable when user navigate to an OSGi project, i had described this process on my blog in a very simplified way at footnote:[http://rpestano.wordpress.com/2014/01/30/my-forge-experience-pt1/].
+
+So i had to find a way to tell Forge that user had entered a folder(remember, its a command line tool and user has to navigate through folders) with OSGi project or bundle. The identification of OSGi projects and bundles +++<u>is one of the key features of our tool</u>+++ and the algorithm is described below:
+
+. user enters in a filesystem directory called ROOT;
+. our tools verifies if ROOT has a subfolder which is an OSGi bundle;
+. if ROOT has at least one directory with one level of depth (eg: ROOT/bundle1) which is an OSGi bundle then ROOT is considered
+an OSGi project and then forge must enable +++<u>OSGi project</u>+++ related commands, an example of command could be 'osgi listBundle' which will list
+all bundles inside ROOT;
+. To consider a folder an OSGi bundle our tool verifies:
+.. if the folder has a manifest file with OSGi metadata inside META-INF;
+.. OR if its maven project and has manifest with OSGI metada inside src/main/resources/META-INF;
+.. OR if its maven projecs and uses maven bundle plugin;
+.. OR if its a BND tools based project (.bnd file);
+.. OR finaly it has bundles on each package(jitsi project layout);
+. if user navigate to an +++<u>OSGi bundle</u>+++  directory then our plugin must enable bundle related commands which are similar to OSGi *project* plugin commands but applying to single bundle eg: bundle staleReferences command will list classes which possibly have stale services references.
+
+Instead of user navigating from folder to folder i've created a command which can be executed from any filesystem directory which is 'osgi scan'
+that takes an integer parameter which is the depth of directories our tool will scan for OSGi bundles, so for example _'osgi scan 3'_ will apply all rules described before to 3 level of folder depth.
+
+I have made a video showing the tool in action here: http://rmpestano.github.io/intrabundle/video/intrabundle-demo.ogv. In the video i first download our +++<u>modified forge distribution</u>+++, start forge via command line and begin to navigate through filesystem after OSGi projects.
+
+The forge distribution i have created, available for download at footnote:[intrabunble forge distribution http://sourceforge.net/projects/intrabundle/files/intrabundle-forge-distribution-1.4.5.zip/download] is same as original forge distribution footnote:[http://forge.jboss.org/1.x/docs/using/] with the following modifications:
+
+. As soon users start forge in our distribution our tool plugins are downloaded and installed from our plugin github repository(forge distribution comes only with forge plugins and other plugins must be installed on forge runtime);
+. in this customized distribution i've made a command to update our tool based on github source code footnoteref:[intrabundle] code which, the command is _forge intrabundle-update_
+. i've solved a classloding issue described here http://lists.jboss.org/pipermail/forge-dev/2014-February/003692.html (it was not fixed in forge cause forge team is focused on forge 2) basically i needed to use an api which was "hidden" by another forge plugin.
+
+Well enough of implementation details.
+
+Didier shared the refcar "Patterns of Modular Architecture" footnote:[http://refcardz.dzone.com/refcardz/patterns-modular-architecture] where i could identify lots of metrics.
+
+Although i have been collecting useful information from OSGi projects i have not calculated the impact
+of these data on the project quality. I have just proposed a metric calculation based on quality points where each metric would
+add points to the bundle like eg imports few packages means adds 100 points, imports more packages means less points and so on, the draft of quality calculation proposition is on a email with title _'OSGi Quality analisys - quality metrics calculation'_.
+
+
+== Metrics or useful information already been collected
+
+Above metrics are already been collected from OSGi project, basically these are our Forge plugin available commands:
+
+. _loc_: lines of code
+. _lot_: lines of test code
+. uses _declarative services_
+. has _staleReferences_
+. uses _blue print_
+. _publishes interfaces_ - if bundle exports only its api to others bundles
+. _declares permition_ (OSGI-INF with permissions.perm file - taken from Architecting software with security patterns)
+. _number of classes_
+. _number of interfaces_
+. _number of abstract classes_
+. _bundle dependencies_(calculated at OSGi project level by looking at imported and exported packages of bundles in same project)
+. _required bundles_ (bad practice cause you depend direct on other bundles and also import the implementation)
+
+== Schedule(for 2014)
+
+* 05/07 - 13/07: BND tools based OSGi projects support (ok)
+* 13/07 - 20/07: week off, i will give a workshop and need this week to prepare it
+* 21/07 - 27/07: investigate sonar integration(ok)
+* 27/07 - 03/08: add new metrics(nok)
+* 03/08 - 10/08: apply metrics calculation(nok)
+* 10/08 - 21/08: finish the tool, revisit metrics calculation
+* 21/08 - 31/08: apply metrics calculation on at least 10 real OSGi projects and analyse the result
+* September: write the paper(started)
+* October and November: write the thesis
+* December: present the thesis
+
+== Current work
+
+. researching about paper writing, basically Latex syntax
+. implementing metrics calculation
