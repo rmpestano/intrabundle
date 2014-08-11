@@ -199,12 +199,15 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
-                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                        line = file.readLine().trim();
-                    } else {
+                    if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
+                        line = line.substring(line.indexOf(">")+1);
+                    } else if(line.contains(":")) {
                         line = line.substring(line.indexOf(":") + 1).trim();
                     }
                     if (!"".equals(line)) {
+                        if(line.contains("</")){
+                            line = line.substring(0,line.indexOf("</"));
+                        }
                         importedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
@@ -212,6 +215,9 @@ public class ManifestMetadata implements Serializable {
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Import-Package>")) {
                             importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        if(nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")){
+                            importedPackages.addAll(Arrays.asList(nextLine.trim().substring(0,nextLine.trim().indexOf("</")).split(",")));
                         }
                         break;
                     } else {
