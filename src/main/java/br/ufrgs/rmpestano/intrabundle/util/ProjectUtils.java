@@ -8,16 +8,11 @@ import org.jboss.forge.git.GitFacet;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.Project;
-import org.jboss.forge.project.build.ProjectBuilder;
-import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -28,14 +23,7 @@ import java.util.List;
 /**
  * Created by rmpestano on 2/3/14.
  */
-@Singleton
 public class ProjectUtils implements Serializable {
-
-    @Inject
-    ResourceFactory resourceFactory;
-
-    @Inject
-    Instance<ProjectBuilder> projectBuilder;
 
 
     public static final ResourceFilter BND_FILTER = new ResourceFilter() {
@@ -59,7 +47,7 @@ public class ProjectUtils implements Serializable {
         }
     };
 
-    public boolean isMavenProject(DirectoryResource projectRoot) {
+    public static boolean isMavenProject(DirectoryResource projectRoot) {
         if (projectRoot == null) {
             return false;
         }
@@ -91,7 +79,7 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
+    public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main") : null;
@@ -107,7 +95,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public Resource<?> getProjectSourcePath(DirectoryResource projectRoot) {
+    public static Resource<?> getProjectSourcePath(DirectoryResource projectRoot) {
         if (isMavenProject(projectRoot)) {
             Resource<?> src = projectRoot.getChild("src");
             Resource<?> main = src.exists() ? src.getChild("main") : null;
@@ -122,7 +110,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public Resource<?> getProjectManifestFolder(DirectoryResource root) {
+    public static Resource<?> getProjectManifestFolder(DirectoryResource root) {
         if (isMavenBndProject(root)) {
             return root;
         }
@@ -140,7 +128,7 @@ public class ProjectUtils implements Serializable {
         return root;
     }
 
-    private boolean hasOSGiManifest(Resource<?> root) {
+    private static boolean hasOSGiManifest(Resource<?> root) {
         if (ignoredDirectories.contains(root.getName().toLowerCase())) {
             return false;
         }
@@ -164,18 +152,18 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    private boolean hasBndFile(Resource<?> root) {
+    private static boolean hasBndFile(Resource<?> root) {
         return root.listResources(BND_FILTER).size() > 0;
     }
 
 
-    public boolean isInterface(FileResource<?> resource) {
+    public static boolean isInterface(FileResource<?> resource) {
         JavaSource parser = JavaParser.parse(resource.getResourceInputStream());
         return parser.isInterface();
 
     }
 
-    public Resource<?> getProjectTestPath(DirectoryResource root) {
+    public static Resource<?> getProjectTestPath(DirectoryResource root) {
         if (isMavenProject(root)) {
             Resource<?> srcPath = root.getChild("src");
             Resource<?> testPath = srcPath.exists() ? srcPath.getChild("test") : null;
@@ -185,7 +173,7 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public boolean isOsgiBundle(DirectoryResource projectRoot) {
+    public static boolean isOsgiBundle(DirectoryResource projectRoot) {
         return hasOSGiManifest(getProjectManifestFolder(projectRoot));
 
     }
@@ -197,7 +185,7 @@ public class ProjectUtils implements Serializable {
      * @param projectRoot
      * @return
      */
-    public Resource<?> getBundleManifestSource(DirectoryResource projectRoot) {
+    public static Resource<?> getBundleManifestSource(DirectoryResource projectRoot) {
         if (isMavenBndProject(projectRoot)) {
             Resource<?> manifest = null;
             try {
@@ -217,7 +205,7 @@ public class ProjectUtils implements Serializable {
             return findBndFile(projectRoot);
         }
 
-        Resource<?> manifestHome = this.getProjectManifestFolder(projectRoot);
+        Resource<?> manifestHome = getProjectManifestFolder(projectRoot);
         if (manifestHome == null || !manifestHome.exists()) {
             return null;
         }
@@ -234,11 +222,11 @@ public class ProjectUtils implements Serializable {
     }
 
 
-    private boolean isEclipseBndProject(DirectoryResource projectRoot) {
+    private static boolean isEclipseBndProject(DirectoryResource projectRoot) {
         return hasBndFile(projectRoot) || hasBndFile(getProjectManifestFolder(projectRoot)) || hasBndFile(getProjectResourcesPath(projectRoot));
     }
 
-    private Resource<?> findBndFile(DirectoryResource projectRoot) {
+    private static Resource<?> findBndFile(DirectoryResource projectRoot) {
         //look for .bnd in project root
         List<Resource<?>> candidates = projectRoot.listResources(BND_FILTER);
 
@@ -259,7 +247,7 @@ public class ProjectUtils implements Serializable {
     }
 
 
-    public boolean hasOsgiConfig(Resource<?> resource) {
+    public static boolean hasOsgiConfig(Resource<?> resource) {
         RandomAccessFile randomAccessFile = null;
         try {
             File f = new File(resource.getFullyQualifiedName());
@@ -286,7 +274,7 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> resource) {
+    public static boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> resource) {
         RandomAccessFile randomAccessFile = null;
         try {
             File f = new File(resource.getFullyQualifiedName());
@@ -318,7 +306,7 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public boolean isGitProject(Project project) {
+    public static boolean isGitProject(Project project) {
         assert (project != null);
         return project.hasFacet(GitFacet.class);
     }
@@ -326,13 +314,13 @@ public class ProjectUtils implements Serializable {
     /**
      * verifies if project contains maven bundle plugin in pom.xml
      */
-    public boolean isMavenBndProject(DirectoryResource root) {
+    public static boolean isMavenBndProject(DirectoryResource root) {
 
         return isMavenProject(root) && hasMavenBundlePlugin(root.getChild("pom.xml"));
 
     }
 
-    private boolean hasMavenBundlePlugin(Resource<?> child) {
+    private static boolean hasMavenBundlePlugin(Resource<?> child) {
         if (!child.exists()) {
             return false;
         }
@@ -361,7 +349,7 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public String getProjectGitHeadRevision(Project project) {
+    public static String getProjectGitHeadRevision(Project project) {
         assert (project != null);
         DirectoryResource root = project.getProjectRoot();
         RevCommit commit = null;
@@ -377,7 +365,7 @@ public class ProjectUtils implements Serializable {
     }
 
 
-    public Long countFileLines(FileResource<?> resource) throws IOException {
+    public static Long countFileLines(FileResource<?> resource) throws IOException {
         RandomAccessFile file = new RandomAccessFile(new File(resource.getFullyQualifiedName()), "r");
         Long total = new Long(0);
         String line;

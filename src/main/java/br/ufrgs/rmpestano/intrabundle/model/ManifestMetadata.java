@@ -26,16 +26,14 @@ public class ManifestMetadata implements Serializable {
     private String version;
     private DirectoryResource projectRoot;
     private ResourceFactory resourceFactory;
-    private ProjectUtils projectUtils;
     private Boolean usesBlueprint;
     private Boolean usesDeclarativeServices;
 
 
-    public ManifestMetadata(FileResource<?> manifestSource, DirectoryResource projectRoot, ResourceFactory resourceFactory, ProjectUtils projectUtils) {
+    public ManifestMetadata(FileResource<?> manifestSource, DirectoryResource projectRoot, ResourceFactory resourceFactory) {
         if (manifestSource == null) {
             throw new RuntimeException("provide source of manifest metadata such as manisfest or bnd file");
         }
-        this.projectUtils = projectUtils;
         this.resourceFactory = resourceFactory;
         this.projectRoot = projectRoot;
 
@@ -108,7 +106,7 @@ public class ManifestMetadata implements Serializable {
     private void initDeclarativeServices(RandomAccessFile manifest) {
         try {
             //look into stardard location
-            Resource<?> resourcesDir = projectUtils.getProjectResourcesPath(projectRoot);
+            Resource<?> resourcesDir = ProjectUtils.getProjectResourcesPath(projectRoot);
             if (resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() && resourcesDir.getChild("OSGI-INF").getChild("services.xml").exists()) {
                 usesDeclarativeServices = Boolean.TRUE;
                 return;
@@ -131,7 +129,7 @@ public class ManifestMetadata implements Serializable {
     private void initBluePrint(RandomAccessFile manifest) {
         try {
             //look into stardard location
-            Resource<?> resourcesDir = projectUtils.getProjectResourcesPath(projectRoot);
+            Resource<?> resourcesDir = ProjectUtils.getProjectResourcesPath(projectRoot);
             if (resourcesDir != null && resourcesDir.getChild("OSGI-INF").exists() && resourcesDir.getChild("OSGI-INF").getChild("blueprint").exists()) {
                 usesBlueprint = Boolean.TRUE;
                 return;
@@ -201,7 +199,7 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
-                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
                         line = file.readLine().trim();
                     } else {
                         line = line.substring(line.indexOf(":") + 1).trim();
@@ -210,7 +208,7 @@ public class ManifestMetadata implements Serializable {
                         importedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
-                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Import-Package>")) {
                             importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
@@ -239,7 +237,7 @@ public class ManifestMetadata implements Serializable {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
                         line = file.readLine();
                     } else {
                         line = line.substring(line.indexOf(":") + 1).trim();
@@ -248,7 +246,7 @@ public class ManifestMetadata implements Serializable {
                         exportedPackages.addAll(Arrays.asList(line.split(",")));
                     }
                     //try to get packages from next lines
-                    if (projectUtils.isMavenBndProject(projectRoot)) {
+                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Export-Package>")) {
                             exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
@@ -275,7 +273,7 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = randomAccessFile.readLine()) != null) {
-                if (projectUtils.isMavenBndProject(projectRoot)) {
+                if (ProjectUtils.isMavenBndProject(projectRoot)) {
                     if (line.contains("<" + Constants.Manifest.ACTIVATOR + ">") && !line.contains("${")) {
                         while ((line += randomAccessFile.readLine()) != null && !line.contains("</" + Constants.Manifest.ACTIVATOR + ">")) {
 
@@ -294,7 +292,7 @@ public class ManifestMetadata implements Serializable {
                 return;
             }
             String activatorPath = null;
-            if (projectUtils.isMavenBndProject(projectRoot)) {
+            if (ProjectUtils.isMavenBndProject(projectRoot)) {
                 activatorPath = line.trim();
             } else {
                 activatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
@@ -303,7 +301,7 @@ public class ManifestMetadata implements Serializable {
             if (!activatorPath.startsWith("/")) {
                 activatorPath = "/" + activatorPath;
             }
-            activator = projectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) projectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
+            activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) ProjectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
             if (activator == null || !activator.exists()) {
                 //try to infer activator path from projectRoot path
                 if (activatorPath.contains(projectRoot.getName())) {

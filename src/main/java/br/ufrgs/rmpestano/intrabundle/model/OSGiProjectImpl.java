@@ -124,7 +124,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
                 if(directoryResource != null && projectUtils.isOsgiBundle(directoryResource)){
-                    result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource,projectUtils));
+                    result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource));
                 }
                 else{
                     result.addAll(findModulesRecursively(child));

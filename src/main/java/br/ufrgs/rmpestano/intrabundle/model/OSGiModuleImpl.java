@@ -44,20 +44,17 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Integer numberOfClasses;
     private Integer numberOfAbstractClasses;
     private Integer numberOfInterfaces;
-    private ProjectUtils projectUtils;
     private ManifestMetadata manifestMetadata;
 
     public OSGiModuleImpl() {
         factory = null;
         resourceFactory = null;
-        projectUtils = null;
     }
 
-    public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir, ProjectUtils projectUtils) {
+    public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
-        this.projectUtils = projectUtils;
         this.manifestMetadata = createManifestMetada();
     }
 
@@ -101,7 +98,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         for (Resource<?> resource : projectRoot.listResources()) {
             if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
                 try {
-                    this.totalLoc += projectUtils.countFileLines((FileResource<?>) resource);
+                    this.totalLoc += ProjectUtils.countFileLines((FileResource<?>) resource);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -134,7 +131,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                             ||  source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
                             ||  source.hasImport("org.testng.Assert")|| source.hasImport("org.testng.annotations")
                             ) {
-                        this.totalTestLoc += projectUtils.countFileLines((FileResource<?>) resource);
+                        this.totalTestLoc += ProjectUtils.countFileLines((FileResource<?>) resource);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -148,16 +145,16 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
 
     private Boolean declaresPermissions() {
-        Resource<?> OSGiInf = projectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
+        Resource<?> OSGiInf = ProjectUtils.getProjectResourcesPath(projectRoot).getChild("OSGI-INF");
         return OSGiInf.exists() && OSGiInf.getChild("permissions.perm").exists();
     }
 
     private ManifestMetadata createManifestMetada() {
-        Resource<?> manifest = projectUtils.getBundleManifestSource(projectRoot);
+        Resource<?> manifest = ProjectUtils.getBundleManifestSource(projectRoot);
         if (manifest == null || !manifest.exists()) {
             throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
-        return new ManifestMetadata((FileResource<?>)manifest,projectRoot,resourceFactory,projectUtils);
+        return new ManifestMetadata((FileResource<?>)manifest,projectRoot,resourceFactory);
     }
 
     /**
@@ -176,7 +173,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
             }
             try {
                 //get .java files under exported packages
-                List<Resource<?>> resources = projectUtils.getProjectSourcePath(projectRoot) != null ? projectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
+                List<Resource<?>> resources = ProjectUtils.getProjectSourcePath(projectRoot) != null ? ProjectUtils.getProjectSourcePath(projectRoot).getChild(exportedPackagePath).listResources(new ResourceFilter() {
                     @Override
                     public boolean accept(Resource<?> resource) {
                         return resource.getName().endsWith(".java");
@@ -185,7 +182,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
                 if (resources != null && !resources.isEmpty()) {
                     for (Resource<?> resource : resources) {
-                        if (!projectUtils.isInterface((FileResource<?>) resource)) {
+                        if (!ProjectUtils.isInterface((FileResource<?>) resource)) {
                             return false;
                         }
                     }
@@ -202,8 +199,8 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     public List<Resource<?>> findStaleReferences() {
         staleReferences = new ArrayList<Resource<?>>();
-        if(projectUtils.getProjectSourcePath(projectRoot) instanceof DirectoryResource){
-            searchStaleReferences(staleReferences, (DirectoryResource) projectUtils.getProjectSourcePath(projectRoot));
+        if(ProjectUtils.getProjectSourcePath(projectRoot) instanceof DirectoryResource){
+            searchStaleReferences(staleReferences, (DirectoryResource) ProjectUtils.getProjectSourcePath(projectRoot));
         }
 
         return staleReferences;
@@ -244,7 +241,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         numberOfClasses = new Integer(0);
         numberOfInterfaces = new Integer(0);
         packages = new HashSet<String>();
-        calculateRecursively(projectUtils.getProjectSourcePath(projectRoot));
+        calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
     }
 
     private void calculateRecursively(Resource<?> root) {
@@ -324,7 +321,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public Long getLinesOfCode() {
         if (totalLoc == null) {
             totalLoc = new Long(0L);
-            Resource<?> srcPath = projectUtils.getProjectSourcePath(projectRoot);
+            Resource<?> srcPath = ProjectUtils.getProjectSourcePath(projectRoot);
             if (srcPath != null && srcPath.exists()) {
                 totalLoc = countModuleLines((DirectoryResource) srcPath);
             }
