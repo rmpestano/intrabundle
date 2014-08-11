@@ -127,13 +127,16 @@ public class ProjectUtils implements Serializable {
             return root;
         }
         Resource<?> resourcesPath = getProjectResourcesPath(root);
-        //manifest in resources folder
-        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && this.hasOSGiManifest(resourcesPath.getChild("META-INF"))) {
+        //META-INF in resource folder
+        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists()) {
             return resourcesPath.getChild("META-INF");
-            //manifest in META_INF folder
-        } else if (root.getChild("META-INF").exists() && this.hasOSGiManifest(root.getChild("META-INF"))) {
+        } else if (root.getChild("META-INF").exists()) {
             return root.getChild("META-INF");
+          //META-INF in source folder
+        } else if(getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists()){
+            return getProjectSourcePath(root).getChild("META-INF");
         }
+
         return root;
     }
 
