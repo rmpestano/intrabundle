@@ -163,16 +163,6 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    public static Resource<?> getProjectTestPath(DirectoryResource root) {
-        if (isMavenProject(root)) {
-            Resource<?> srcPath = root.getChild("src");
-            Resource<?> testPath = srcPath.exists() ? srcPath.getChild("test") : null;
-            return testPath != null && testPath.exists() ? testPath.getChild("java") : null;
-        } else {
-            return root.getChild("test");
-        }
-    }
-
     public static boolean isOsgiBundle(DirectoryResource projectRoot) {
         return hasOSGiManifest(getProjectManifestFolder(projectRoot));
 
