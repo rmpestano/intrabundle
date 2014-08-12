@@ -112,6 +112,16 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    /**
+     * creates an eclipse OSGi project based on BND tools where bnd file is in resources folder
+     */
+    public Project initializeOSGiBNDProjectWithBndInResources() throws Exception
+    {
+        DirectoryResource root = createTempFolder();
+        getShell().setCurrentResource(addBndBundleInResources(root, "module1"));
+        return getProject();
+    }
+
     protected DirectoryResource addMavenBndBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMavenActivator(bundle);
@@ -125,6 +135,15 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         addBnd(bundle);
         return bundle;
     }
+
+    protected DirectoryResource addBndBundleInResources(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        DirectoryResource resources = bundle.getOrCreateChildDirectory("resources");
+        addActivator(bundle);
+        addBnd(resources);
+        return bundle;
+    }
+
 
     private void addMavenActivator(DirectoryResource root){
         DirectoryResource resource = root.getOrCreateChildDirectory("src").

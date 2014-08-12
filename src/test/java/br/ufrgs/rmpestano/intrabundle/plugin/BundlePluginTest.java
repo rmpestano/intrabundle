@@ -159,7 +159,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
 
     /**
-     * test listBundles command in maven bnd tools(maven bundle plugin) based OSGi project
+     * test find activator command in eclipse bnd tools based OSGi project
      */
     @Test
     public void shouldFindActivatorInBndProject() throws Exception {
@@ -170,6 +170,20 @@ public class BundlePluginTest extends BaseBundleTest {
         String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
         Assert.assertTrue(getOutput().contains(expected));
     }
+
+    /**
+     * test find activator command in eclipse bnd tools based OSGi project with bnd file in resources folder
+     */
+    @Test
+    public void shouldFindActivatorInBndProjectWithResources() throws Exception {
+        resetOutput();
+        initializeOSGiBNDProjectWithBndInResources();
+        resetOutput();
+        getShell().execute("bundle activator");
+        String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
+        Assert.assertTrue(getOutput().contains(expected));
+    }
+
 
 
 }

@@ -115,6 +115,7 @@ public class ProjectUtils implements Serializable {
             return root;
         }
         Resource<?> resourcesPath = getProjectResourcesPath(root);
+
         //META-INF in resource folder
         if (resourcesPath != null && resourcesPath.getChild("META-INF").exists()) {
             return resourcesPath.getChild("META-INF");
@@ -141,8 +142,7 @@ public class ProjectUtils implements Serializable {
             }
         }
 
-        if (hasBndFile(root) &&
-                hasOsgiConfig(findBndFile(root.reify(DirectoryResource.class)))) {
+        if (hasOsgiConfig(findBndFile(root.reify(DirectoryResource.class)))) {
             return true;
         }
 
@@ -224,7 +224,7 @@ public class ProjectUtils implements Serializable {
             //try to find bnd file in resources dir
             candidates = getProjectResourcesPath(projectRoot).listResources(BND_FILTER);
             if (candidates == null || candidates.isEmpty()) {
-                //try to finf bnd in META-INF
+                //try to find bnd in META-INF
                 candidates = getProjectManifestFolder(projectRoot).listResources(BND_FILTER);
                 return candidates == null || candidates.isEmpty() ? null : candidates.get(0);//.bnd in meta-inf
             } else {
@@ -233,7 +233,6 @@ public class ProjectUtils implements Serializable {
         }
 
         return candidates.get(0);//.bnd in root
-
     }
 
 
@@ -249,7 +248,6 @@ public class ProjectUtils implements Serializable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         } finally {
             try {
