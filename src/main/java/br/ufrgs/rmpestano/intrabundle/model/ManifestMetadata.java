@@ -173,19 +173,48 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        requiredBundles.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get required bundles from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
-                    }
-                    break;
 
+                if (ProjectUtils.isMavenBndProject(projectRoot)) {
+                    //read OSGi metadata from pom.xml in maven bundle plugin
+                    if (line.trim().startsWith(Constants.BND.REQUIRE_BUNDLE)) {
+                        line = line.substring(line.indexOf(">") + 1);
+                        if (line.contains("</")) {
+                            line = line.substring(0, line.indexOf("</"));
+                        }
+                        if (!"".equals(line)) {
+                            requiredBundles.addAll(Arrays.asList(line.split(",")));
+                        }
+                        String nextLine;
+                        //try to get packages from next lines
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Required-Bundle>")) {
+                            requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
+                            requiredBundles.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
+                        }
+                        break;
+                    }
+                } else { //read OSGi metadata from MANIFEST.MF
+
+                    if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
+                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
+
+                        } else if (line.contains(":")) {
+                            line = line.substring(line.indexOf(":") + 1).trim();
+                        }
+                        if (!"".equals(line)) {
+                            requiredBundles.addAll(Arrays.asList(line.split(",")));
+                        }
+                        //try to get packages from next lines
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                            requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        }
+                        break;
+
+                    }
                 }
+
             }
         } catch (Exception e) {
             //TODO log ex
@@ -198,37 +227,48 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
-                    if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
-                        line = line.substring(line.indexOf(">")+1);
-                    } else if(line.contains(":")) {
-                        line = line.substring(line.indexOf(":") + 1).trim();
-                    }
-                    if (!"".equals(line)) {
-                        if(line.contains("</")){
-                            line = line.substring(0,line.indexOf("</"));
+
+                if (ProjectUtils.isMavenBndProject(projectRoot)) {
+                    //read OSGi metadata from pom.xml in maven bundle plugin
+                    if (line.trim().startsWith(Constants.BND.IMPORT_PACKAGE)) {
+                        line = line.substring(line.indexOf(">") + 1);
+                        if (line.contains("</")) {
+                            line = line.substring(0, line.indexOf("</"));
                         }
-                        importedPackages.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get packages from next lines
-                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
+                        if (!"".equals(line)) {
+                            importedPackages.addAll(Arrays.asList(line.split(",")));
+                        }
                         String nextLine;
+                        //try to get packages from next lines
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Import-Package>")) {
                             importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                         }
-                        if(nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")){
-                            importedPackages.addAll(Arrays.asList(nextLine.trim().substring(0,nextLine.trim().indexOf("</")).split(",")));
+                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
+                            importedPackages.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
                         }
                         break;
-                    } else {
+                    }
+                } else { //read OSGi metadata from MANIFEST.MF
+
+                    if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
+                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
+
+                        } else if (line.contains(":")) {
+                            line = line.substring(line.indexOf(":") + 1).trim();
+                        }
+                        if (!"".equals(line)) {
+                            importedPackages.addAll(Arrays.asList(line.split(",")));
+                        }
+                        //try to get packages from next lines
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
                             importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                         }
                         break;
-                    }
 
+                    }
                 }
+
             }
         } catch (Exception e) {
             //TODO log ex
@@ -242,37 +282,53 @@ public class ManifestMetadata implements Serializable {
         try {
             String line;
             while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                        line = file.readLine();
-                    } else {
-                        line = line.substring(line.indexOf(":") + 1).trim();
-                    }
-                    if (!"".equals(line)) {
-                        exportedPackages.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get packages from next lines
-                    if (ProjectUtils.isMavenBndProject(projectRoot)) {
+
+                if (ProjectUtils.isMavenBndProject(projectRoot)) {
+                    //read OSGi metadata from pom.xml in maven bundle plugin
+                    if (line.trim().startsWith(Constants.BND.EXPORT_PACKAGE)) {
+                        line = line.substring(line.indexOf(">") + 1);
+                        if (line.contains("</")) {
+                            line = line.substring(0, line.indexOf("</"));
+                        }
+                        if (!"".equals(line)) {
+                            exportedPackages.addAll(Arrays.asList(line.split(",")));
+                        }
                         String nextLine;
+                        //try to get packages from next lines
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Export-Package>")) {
                             exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                         }
+                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
+                            exportedPackages.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
+                        }
                         break;
-                    } else {
+                    }
+                } else { //read OSGi metadata from MANIFEST.MF
+
+                    if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
+                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
+
+                        } else if (line.contains(":")) {
+                            line = line.substring(line.indexOf(":") + 1).trim();
+                        }
+                        if (!"".equals(line)) {
+                            exportedPackages.addAll(Arrays.asList(line.split(",")));
+                        }
+                        //try to get packages from next lines
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
                             exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                         }
                         break;
-                    }
 
+                    }
                 }
+
             }
         } catch (Exception e) {
             //TODO log ex
             e.printStackTrace();
         }
-
     }
 
     private void initActivator(RandomAccessFile randomAccessFile) throws IOException {

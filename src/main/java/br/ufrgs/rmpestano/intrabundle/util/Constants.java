@@ -20,5 +20,8 @@ public interface Constants {
 
     public static interface BND {
         public static final String MAVEN_BUNDLE_PLUGIN = "<artifactId>maven-bundle-plugin</artifactId>";
+        public static final String EXPORT_PACKAGE = "<Export-Package>";
+        public static final String IMPORT_PACKAGE = "<Import-Package>";
+        public static final String REQUIRE_BUNDLE = "<Require-Bundle>";
     }
 }
