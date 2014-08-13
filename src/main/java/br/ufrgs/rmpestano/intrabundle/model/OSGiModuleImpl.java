@@ -2,6 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.jboss.forge.parser.JavaParser;
@@ -35,10 +36,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private final ResourceFactory resourceFactory;
     private Long totalLoc;
     private Long totalTestLoc;//test lines of code
-    private Boolean usesDeclarativeServices;
-    private Boolean usesBlueprint;
     private Boolean publishesInterfaces;
     private Boolean declaresPermissions;
+    private Integer numberOfIpojoComponents;
     private List<Resource<?>> staleReferences;
     private Set<String> packages;
     private Integer numberOfClasses;
@@ -56,6 +56,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
         this.manifestMetadata = createManifestMetada();
+        visitAllClasses();//calculates number of packages,interfaces, classes etc...
     }
 
     @Override
@@ -126,10 +127,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                         //intentional
                         continue;
                     }
-                    if( source.hasImport("junit.framework") || source.hasImport("junit.framework.Assert")
-                            ||  source.hasImport("org.junit")  || source.hasImport("org.junit.Assert")
-                            ||  source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
-                            ||  source.hasImport("org.testng.Assert")|| source.hasImport("org.testng.annotations")
+                    if (source.hasImport("junit.framework") || source.hasImport("junit.framework.Assert")
+                            || source.hasImport("org.junit") || source.hasImport("org.junit.Assert")
+                            || source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
+                            || source.hasImport("org.testng.Assert") || source.hasImport("org.testng.annotations")
                             ) {
                         this.totalTestLoc += ProjectUtils.countFileLines((FileResource<?>) resource);
                     }
@@ -154,7 +155,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         if (manifest == null || !manifest.exists()) {
             throw new RuntimeException("OSGi bundle(" + getProjectRoot().getFullyQualifiedName() + ") without META-INF directory cannot be analysed by intrabundle");
         }
-        return new ManifestMetadata((FileResource<?>)manifest,projectRoot,resourceFactory);
+        return new ManifestMetadata((FileResource<?>) manifest, projectRoot, resourceFactory);
     }
 
     /**
@@ -199,7 +200,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     public List<Resource<?>> findStaleReferences() {
         staleReferences = new ArrayList<Resource<?>>();
-        if(ProjectUtils.getProjectSourcePath(projectRoot) instanceof DirectoryResource){
+        if (ProjectUtils.getProjectSourcePath(projectRoot) instanceof DirectoryResource) {
             searchStaleReferences(staleReferences, (DirectoryResource) ProjectUtils.getProjectSourcePath(projectRoot));
         }
 
@@ -236,10 +237,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
 
-    private void calculateNumberOfPackagesClassesAndInterfaces() {
+    private void visitAllClasses() {
         numberOfAbstractClasses = new Integer(0);
         numberOfClasses = new Integer(0);
         numberOfInterfaces = new Integer(0);
+        numberOfIpojoComponents = new Integer(0);
         packages = new HashSet<String>();
         calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
     }
@@ -257,6 +259,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                     continue;
                 }
                 packages.add(source.getPackage());
+                if (source.hasAnnotation(Constants.IPOJO.COMPONENT_IMPORT) || source.hasAnnotation(Constants.IPOJO.COMPONENT_IMPORT_WITH_WILDCARD)) {
+                    numberOfIpojoComponents++;
+                }
                 if (source.isInterface()) {
                     numberOfInterfaces++;
                 } else if (source.isClass()) {
@@ -274,10 +279,10 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private boolean isAbstractClass(Resource<?> aClass) {
         RandomAccessFile aFile = null;
         try {
-             aFile = new RandomAccessFile(new File(aClass.getFullyQualifiedName()),"r");
+            aFile = new RandomAccessFile(new File(aClass.getFullyQualifiedName()), "r");
             String line;
-            while((line = aFile.readLine())!=null){
-                if(line.contains("abstract class")){
+            while ((line = aFile.readLine()) != null) {
+                if (line.contains("abstract class")) {
                     return true;
                 }
             }
@@ -286,7 +291,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(aFile != null){
+            if (aFile != null) {
                 try {
                     aFile.close();
                 } catch (IOException e) {
@@ -294,7 +299,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 }
             }
         }
-       return false;
+        return false;
     }
 
     //getters
@@ -315,7 +320,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     public FileResource<?> getActivator() {
         return manifestMetadata.getActivator();
     }
-
 
 
     public Long getLinesOfCode() {
@@ -373,9 +377,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public Set<String> getPackages() {
-        if (packages == null) {
-            calculateNumberOfPackagesClassesAndInterfaces();
-        }
         return packages;
     }
 
@@ -389,23 +390,22 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     public Integer getNumberOfClasses() {
-        if (numberOfClasses == null) {
-            calculateNumberOfPackagesClassesAndInterfaces();
-        }
         return numberOfClasses;
     }
 
     public Integer getNumberOfAbstractClasses() {
-        if (numberOfAbstractClasses == null) {
-            calculateNumberOfPackagesClassesAndInterfaces();
-        }
         return numberOfAbstractClasses;
     }
 
     public Integer getNumberOfInterfaces() {
-        if (numberOfInterfaces == null) {
-            calculateNumberOfPackagesClassesAndInterfaces();
-        }
         return numberOfInterfaces;
+    }
+
+    public Boolean getUsesIpojo() {
+        return numberOfIpojoComponents > 0;
+    }
+
+    public Integer getNumberOfIpojoComponents() {
+        return numberOfIpojoComponents;
     }
 }

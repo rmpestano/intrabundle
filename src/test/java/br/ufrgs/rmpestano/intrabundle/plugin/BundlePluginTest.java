@@ -184,6 +184,22 @@ public class BundlePluginTest extends BaseBundleTest {
         Assert.assertTrue(getOutput().contains(expected));
     }
 
+    @Test
+    public void shouldUseIpojo() throws Exception {
+        resetOutput();
+        initializeOSGiProjectWithIpojoComponent();
+        resetOutput();
+        getShell().execute("bundle usesIpojo");
+        Assert.assertTrue(getOutput().startsWith(provider.getMessage("yes")));
+    }
 
+    @Test
+    public void shouldHasOneIpojoComponent() throws Exception {
+        resetOutput();
+        initializeOSGiProjectWithIpojoComponent();
+        resetOutput();
+        getShell().execute("bundle numberOfIpojoComponents");
+        Assert.assertTrue(getOutput().startsWith("1"));
+    }
 
 }

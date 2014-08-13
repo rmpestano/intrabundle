@@ -24,4 +24,8 @@ public interface Constants {
         public static final String IMPORT_PACKAGE = "<Import-Package>";
         public static final String REQUIRE_BUNDLE = "<Require-Bundle>";
     }
+    public static interface IPOJO {
+        public static final String COMPONENT_IMPORT = "org.apache.felix.ipojo.annotations.Component";
+        public static final String COMPONENT_IMPORT_WITH_WILDCARD = "org.apache.felix.ipojo.annotations.*";
+    }
 }

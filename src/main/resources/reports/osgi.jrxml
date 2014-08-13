@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="205"/>
-	<property name="ireport.y" value="973"/>
+	<property name="ireport.y" value="933"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
@@ -202,7 +202,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="358" splitType="Stretch">
+		<band height="413" splitType="Stretch">
 			<line>
 				<reportElement uuid="7246e5d5-0408-4288-8e5d-7c9c226f5736" x="0" y="0" width="780" height="3"/>
 			</line>
@@ -370,6 +370,40 @@
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfInterfaces() + ((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfAbstractClasses()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="504d962a-033e-431d-a692-bf86086bb85d" x="10" y="352" width="287" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Uses Ipojo:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0a21abab-de00-440f-9d22-867aed15c330" x="322" y="352" width="439" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getUsesIpojo() == true ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8f66ba72-a376-4068-89d9-f34bcf6b22b0" x="10" y="382" width="287" height="20">
+					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getUsesIpojo() == true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Ipojo Components:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="9754601f-2f19-423e-a80a-d5c16586a285" x="322" y="382" width="439" height="20">
+					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getUsesIpojo() == true]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfIpojoComponents()]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="49">

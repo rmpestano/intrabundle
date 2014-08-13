@@ -143,4 +143,14 @@ public class BundlePlugin implements Plugin {
         out.println(""+bundle.getNumberOfInterfaces());
     }
 
+    @Command(value = "usesIpojo", help = "true if bundle uses Ipojo, false otherwise")
+    public void usesIpojo(PipeOut out){
+        out.println(bundle.getUsesIpojo() ? messageProvider.getMessage("yes"):messageProvider.getMessage("no"));
+    }
+
+    @Command(value = "numberOfIpojoComponents", help = "count number of Ipojo components")
+    public void numberOfIpojoComponents(PipeOut out){
+        out.println(bundle.getNumberOfIpojoComponents().toString());
+    }
+
 }

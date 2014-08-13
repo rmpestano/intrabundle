@@ -99,5 +99,9 @@ public interface OSGiModule extends Serializable{
 
     Integer getNumberOfInterfaces();
 
+    Boolean getUsesIpojo();
+
+    Integer getNumberOfIpojoComponents();
+
 
 }

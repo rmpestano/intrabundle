@@ -26,6 +26,20 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
+    public Project initializeOSGiProjectWithIpojoComponent() throws Exception{
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("module");
+        addMetaInf(main, "/MANIFEST.MF");
+        addActivator(main);
+        addTestClass(main);
+        addPermissions(main);
+        addExportedPackage(main);
+        addHelloManager(main);
+        addIpojoComponent(main);
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
     private void addHelloManager(DirectoryResource root) {
         DirectoryResource resource = root.getOrCreateChildDirectory("src").
                 getOrCreateChildDirectory("br").
@@ -61,6 +75,16 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
         activator.setContents(getClass().getResourceAsStream("/Activator.java"));
+    }
+
+    private void addIpojoComponent(DirectoryResource root){
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").
+                getOrCreateChildDirectory("service");
+        FileResource<?> activator = (FileResource<?>) resource.getChild("IpojoService.java");
+        activator.setContents(getClass().getResourceAsStream("/IpojoService.java"));
     }
 
     private void addTestClass(DirectoryResource root) {
