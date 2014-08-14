@@ -12,7 +12,11 @@ import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -53,30 +57,22 @@ public class ProjectUtils implements Serializable {
         }
         Resource<?> pom = projectRoot.getChild("pom.xml");
         if (pom.exists()) {
-            RandomAccessFile file = null;
             try {
-                file = new RandomAccessFile(new File(pom.getFullyQualifiedName()), "r");
-                String line;
-                while ((line = file.readLine()) != null) {
-                    if (line.contains("<artifactId>intrabundle</artifactId>")) {
-                        return false;//minimal pom added to non maven projects has artifactId = 'intrabundle' and so is not a maven project
+                Document pomDom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(pom.getFullyQualifiedName()));
+                NodeList nodes = pomDom.getElementsByTagName("name");
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    if (nodes.item(i).getTextContent().equals("intrabundle")) {
+                        return false;//minimal pom added to non maven projects has name = 'intrabundle' and so is not a maven project
                     }
                 }
                 return true;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 //log ex
-            } finally {
-                if (file != null) {
-                    try {
-                        file.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                return false;
             }
         }
-        return false;
+        return false;//pom doesnt not exist so its not a maven project
     }
 
     public static Resource<?> getProjectResourcesPath(DirectoryResource projectRoot) {
@@ -110,6 +106,21 @@ public class ProjectUtils implements Serializable {
         }
     }
 
+    public static Resource<?> getProjectTestPath(DirectoryResource projectRoot) {
+        if (isMavenProject(projectRoot)) {
+            Resource<?> src = projectRoot.getChild("src");
+            Resource<?> main = src.exists() ? src.getChild("test") : null;
+            return main != null && main.exists() ? main.getChild("java") : projectRoot;
+        } else {
+            Resource<?> src = projectRoot.getChild("test");
+            if (src.exists()) {
+                return projectRoot.getChild("test");
+            } else {
+                return projectRoot;
+            }
+        }
+    }
+
     public static Resource<?> getProjectManifestFolder(DirectoryResource root) {
         if (isMavenBndProject(root)) {
             return root;
@@ -121,8 +132,8 @@ public class ProjectUtils implements Serializable {
             return resourcesPath.getChild("META-INF");
         } else if (root.getChild("META-INF").exists()) {
             return root.getChild("META-INF");
-          //META-INF in source folder
-        } else if(getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists()){
+            //META-INF in source folder
+        } else if (getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists()) {
             return getProjectSourcePath(root).getChild("META-INF");
         }
 
@@ -263,34 +274,23 @@ public class ProjectUtils implements Serializable {
     }
 
     public static boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> resource) {
-        RandomAccessFile randomAccessFile = null;
         try {
-            File f = new File(resource.getFullyQualifiedName());
-            randomAccessFile = new RandomAccessFile(f, "r");
-            String line;
-            while ((line = randomAccessFile.readLine()) != null) {
-                if (line.contains("<instructions>")) {
-                    String insctruction;
-                    while ((insctruction = randomAccessFile.readLine()) != null && !insctruction.contains("</instructions>")) {
-                        if (insctruction.contains(Constants.Manifest.BUNDLE_VERSION) || insctruction.contains(Constants.Manifest.EXPORT_PACKAGE) || insctruction.contains(Constants.Manifest.IMPORT_PACKAGE) || insctruction.contains(Constants.Manifest.PRIVATE_PACKAGE) || insctruction.contains(Constants.Manifest.ACTIVATOR) || insctruction.contains(Constants.Manifest.SYMBOLIC_NAME)) {
-                            return true;
-                        }
-                    }
+            File pom = new File(resource.getFullyQualifiedName());
+            Document pomDom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pom);
+            NodeList nodes = pomDom.getElementsByTagName("instructions");
+            Node instruction = nodes.item(0);
+            if(instruction == null){
+                   return false;
+            }
+            for (int i = 0; i < instruction.getChildNodes().getLength(); i++) {
+                String nodeName = instruction.getChildNodes().item(i).getNodeName();
+                if (nodeName.equals(Constants.Manifest.BUNDLE_VERSION) || nodeName.equals(Constants.Manifest.EXPORT_PACKAGE) || nodeName.equals(Constants.Manifest.IMPORT_PACKAGE) || nodeName.equals(Constants.Manifest.PRIVATE_PACKAGE) || nodeName.equals(Constants.Manifest.ACTIVATOR) || nodeName.equals(Constants.Manifest.SYMBOLIC_NAME)) {
+                    return true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (randomAccessFile != null) {
-                    randomAccessFile.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-
         return false;
     }
 
@@ -313,26 +313,18 @@ public class ProjectUtils implements Serializable {
             return false;
         }
 
-        RandomAccessFile pom = null;
+        Document pom = null;
 
         try {
-            pom = new RandomAccessFile(new File(child.getFullyQualifiedName()), "r");
-            String line = "";
-            while ((line = pom.readLine()) != null) {
-                if (line.contains(Constants.BND.MAVEN_BUNDLE_PLUGIN)) {
+            pom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(child.getFullyQualifiedName()));
+            NodeList nodes = pom.getElementsByTagName("artifactId");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                if (nodes.item(i).getTextContent().equals("maven-bundle-plugin")) {
                     return true;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (pom != null) {
-                try {
-                    pom.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return false;
     }

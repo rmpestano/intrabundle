@@ -6,7 +6,6 @@ import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.util.OSUtils;
 import org.jboss.forge.test.SingletonAbstractShellTest;
-import org.junit.Before;
 
 import java.io.IOException;
 
@@ -267,14 +266,6 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         permissions.setContents("permissions content");
     }
 
-    @Before
-    public void initProject(){
-        try {
-            initializeOSGiProject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
   public String getNewLine() {
     if(newLine == null ){

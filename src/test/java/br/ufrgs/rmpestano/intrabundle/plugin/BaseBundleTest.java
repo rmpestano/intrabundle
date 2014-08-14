@@ -4,7 +4,6 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
-import org.junit.Before;
 
 /**
  * Created by rmpestano on 1/24/14.
@@ -106,15 +105,6 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         exportedInterface.setContents("package abcd;\n public interface Interface{}");
     }
 
-
-    @Before
-    public void initProject(){
-        try {
-            initializeOSGiProject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * creates an maven OSGi project based on BND tools(maven bundle plugin)

@@ -50,13 +50,15 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldCountBundles() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi countBundles");
-        Assert.assertTrue(getOutput().contains("Total number of bundles:3"));
+        Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
     }
 
     @Test
     public void shouldListBundles() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi listBundles");
         Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
@@ -86,6 +88,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void module3ShouldUseDeclarativeServices() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi usesDeclarativeServices");
         String assertion = "\nmodule3";
@@ -97,6 +100,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldFindActivatorClass() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi activators");
         String activatorPath = "/main/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
@@ -108,6 +112,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListExportedPackagesInModule1() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("n");
         queueInputLines("1");
@@ -118,6 +123,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListExportedPackagesInAllModules() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
@@ -129,6 +135,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListImportedPackagesInAllModules() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         queueInputLines("1");
@@ -140,6 +147,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListImportedPackagesInModule1() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("n");
         queueInputLines("1");
@@ -152,6 +160,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
     @Test
     public void shouldListModuleDependencies() throws Exception {
         System.out.println("shouldListModuleDependencies");
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi dependencies");
@@ -160,6 +169,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListModuleDependenciesInModule1() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("n");
         queueInputLines("1");
@@ -169,6 +179,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListRequiredBundles() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi requiredBundles");
@@ -178,6 +189,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListRequiredBundlesInModule2() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("n");
         queueInputLines("2");
@@ -187,6 +199,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListStaleReferences() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi staleReferences");
@@ -196,6 +209,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListStaleReferencesInModule1() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("n");
         queueInputLines("1");
@@ -205,6 +219,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListModulesThatPublishesOnlyInterfaces() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi publishInterfaces");
@@ -215,6 +230,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListModulesThatDeclaresPermission() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi declaresPermissions");
@@ -226,7 +242,6 @@ public class OsgiPluginTest extends BaseOSGiTest {
      */
     @Test
     public void shouldListBundlesInBndProject() throws Exception {
-        resetOutput();
         initializeOSGiBNDProject();
         resetOutput();
         getShell().execute("osgi listBundles");
@@ -238,7 +253,6 @@ public class OsgiPluginTest extends BaseOSGiTest {
      */
     @Test
     public void shouldListBundlesInMavebBndProject() throws Exception {
-        resetOutput();
         initializeMavenOSGiBNDProject();
         resetOutput();
         getShell().execute("osgi countBundles");
@@ -259,6 +273,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldCountLinesOfCode() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi loc");
         assertTrue(getOutput().startsWith("module1:214"));

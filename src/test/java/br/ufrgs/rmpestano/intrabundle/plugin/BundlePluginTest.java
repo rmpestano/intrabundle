@@ -39,6 +39,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldUseDeclarativeServices() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle usesDeclarativeServices");
         Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
@@ -46,6 +47,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldPublishInterfaces() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle publishesInterfaces");
         Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
@@ -53,6 +55,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldDeclarePermissions() throws Exception{
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle declaresPermissions");
         Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
@@ -60,6 +63,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldNotUseBlueprint() throws Exception{
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle usesBlueprint");
         Assert.assertTrue(getOutput().contains(provider.getMessage("no")));
@@ -67,6 +71,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldFindActivator() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle activator");
         String activatorPath = "/module/src/br/ufrgs/rmpestano/activator/Activator.java";
@@ -78,6 +83,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldGetBundleVersion() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle version");
         Assert.assertTrue(getOutput().startsWith("1.0.0.qualifier"));
@@ -85,6 +91,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldGetExportedPackages() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle exportedPackages");
         Assert.assertTrue(getOutput().contains("br.ufrgs.rmpestano.api"));
@@ -92,6 +99,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldGetImportedPackages() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle importedPackages");
         Assert.assertTrue(getOutput().contains("org.osgi.framework"));
@@ -99,6 +107,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldCountLinesOfCode() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle loc");
         Assert.assertTrue(getOutput().startsWith("2"));
@@ -106,6 +115,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldFindRequiredBundle() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle requiredBundles");
         Assert.assertTrue(getOutput().contains("org.apache.tuscany.sdo.spec;visibility:=reexport"));
@@ -116,6 +126,7 @@ public class BundlePluginTest extends BaseBundleTest {
      */
     @Test
     public void shouldCountLinesOfTest() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle lot");
         Assert.assertTrue(getOutput().startsWith("1"));
@@ -123,6 +134,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldContainStaleReferences() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().clear();
         getShell().execute("bundle staleReferences");
@@ -131,6 +143,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldCountNumberOfClasses() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle nc");
         Assert.assertTrue(getOutput().startsWith("3"));
@@ -138,6 +151,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldCountNumberOfAbstractClasses() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle na");
         Assert.assertTrue(getOutput().startsWith("0"));
@@ -145,6 +159,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldCountNumberOfInterfaces() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle ni");
         Assert.assertTrue(getOutput().startsWith("1"));
@@ -152,6 +167,7 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Test
     public void shouldCountNumberOfPackages() throws Exception {
+        initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle np");
         Assert.assertTrue(getOutput().startsWith("3"));
@@ -172,11 +188,22 @@ public class BundlePluginTest extends BaseBundleTest {
     }
 
     /**
+     * test find activator command in maven bnd based OSGi bundle
+     */
+    //@Test
+    public void shouldFindActivatorInMavenBndBundle() throws Exception {
+        initializeMavenOSGiBNDProject();
+        resetOutput();
+        getShell().execute("bundle activator");
+        String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
+        Assert.assertTrue(getOutput().contains(expected));
+    }
+
+    /**
      * test find activator command in eclipse bnd tools based OSGi project with bnd file in resources folder
      */
     @Test
     public void shouldFindActivatorInBndProjectWithResources() throws Exception {
-        resetOutput();
         initializeOSGiBNDProjectWithBndInResources();
         resetOutput();
         getShell().execute("bundle activator");

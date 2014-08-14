@@ -185,9 +185,6 @@
               <forkCount>1</forkCount>
               <skipTests>false</skipTests>
               <runOrder>alphabetical</runOrder>
-               <!--<parallel>classes</parallel>-->
-               <!--useUnlimitedThreads>true</useUnlimitedThreads-->
-               <!--<threadCount>4</threadCount>-->
             </configuration>
           </plugin>
         </plugins>

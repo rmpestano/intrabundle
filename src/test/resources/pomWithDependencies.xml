@@ -5,7 +5,7 @@
   <groupId>br.ufrgs.rmpestano</groupId>
   <artifactId>test</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>intrabundle</name>
+  <name>maven-project</name>
        <dependencies></dependencies>
     <!-- minimal pom file(required for forge), added by OSGi plugin for non maven projects  -->
 </project>
