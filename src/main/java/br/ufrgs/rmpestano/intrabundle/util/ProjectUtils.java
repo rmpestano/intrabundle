@@ -7,16 +7,14 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.jboss.forge.git.GitFacet;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
+import org.jboss.forge.parser.xml.Node;
+import org.jboss.forge.parser.xml.XMLParser;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -58,10 +56,10 @@ public class ProjectUtils implements Serializable {
         Resource<?> pom = projectRoot.getChild("pom.xml");
         if (pom.exists()) {
             try {
-                Document pomDom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(pom.getFullyQualifiedName()));
-                NodeList nodes = pomDom.getElementsByTagName("name");
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    if (nodes.item(i).getTextContent().equals("intrabundle")) {
+                Node pomXml = XMLParser.parse(pom.getResourceInputStream());
+                List<Node> names = pomXml.get("name");
+                for (Node name : names) {
+                    if (name != null && "intrabundle".equals(name.getText())) {
                         return false;//minimal pom added to non maven projects has name = 'intrabundle' and so is not a maven project
                     }
                 }
@@ -273,21 +271,20 @@ public class ProjectUtils implements Serializable {
         return false;
     }
 
-    public static boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> resource) {
+    public static boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> pom) {
         try {
-            File pom = new File(resource.getFullyQualifiedName());
-            Document pomDom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pom);
-            NodeList nodes = pomDom.getElementsByTagName("instructions");
-            Node instruction = nodes.item(0);
+            Node pomXml = XMLParser.parse(pom.getResourceInputStream());
+            Node instruction = pomXml.getSingle("instructions");
             if(instruction == null){
                    return false;
             }
-            for (int i = 0; i < instruction.getChildNodes().getLength(); i++) {
-                String nodeName = instruction.getChildNodes().item(i).getNodeName();
+            for (Node node : instruction.getChildren()) {
+                String nodeName = node.getName();
                 if (nodeName.equals(Constants.Manifest.BUNDLE_VERSION) || nodeName.equals(Constants.Manifest.EXPORT_PACKAGE) || nodeName.equals(Constants.Manifest.IMPORT_PACKAGE) || nodeName.equals(Constants.Manifest.PRIVATE_PACKAGE) || nodeName.equals(Constants.Manifest.ACTIVATOR) || nodeName.equals(Constants.Manifest.SYMBOLIC_NAME)) {
                     return true;
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -308,18 +305,16 @@ public class ProjectUtils implements Serializable {
 
     }
 
-    private static boolean hasMavenBundlePlugin(Resource<?> child) {
-        if (!child.exists()) {
+    private static boolean hasMavenBundlePlugin(Resource<?> pom) {
+        if (!pom.exists()) {
             return false;
         }
 
-        Document pom = null;
-
         try {
-            pom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(child.getFullyQualifiedName()));
-            NodeList nodes = pom.getElementsByTagName("artifactId");
-            for (int i = 0; i < nodes.getLength(); i++) {
-                if (nodes.item(i).getTextContent().equals("maven-bundle-plugin")) {
+            Node pomXml = XMLParser.parse(pom.getResourceInputStream());
+            List<Node> artifactId = pomXml.get("artifactId");
+            for (Node node : artifactId) {
+                if (node.getText().equals("maven-bundle-plugin")) {
                     return true;
                 }
             }
