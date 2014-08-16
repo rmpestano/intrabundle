@@ -41,6 +41,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Integer numberOfAbstractClasses;
     private Integer numberOfInterfaces;
     private ManifestMetadata manifestMetadata;
+    private boolean classesVisited;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -51,8 +52,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
-        this.manifestMetadata = createManifestMetada();
-        visitAllClasses();//calculates number of packages,interfaces, classes etc...
     }
 
     @Override
@@ -233,13 +232,21 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
 
+    /**
+     * calculates number of packages,interfaces, classes by visiting all classes
+     *
+     */
     private void visitAllClasses() {
-        numberOfAbstractClasses = new Integer(0);
-        numberOfClasses = new Integer(0);
-        numberOfInterfaces = new Integer(0);
-        numberOfIpojoComponents = new Integer(0);
-        packages = new HashSet<String>();
-        calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
+        if(!classesVisited){
+            numberOfAbstractClasses = new Integer(0);
+            numberOfClasses = new Integer(0);
+            numberOfInterfaces = new Integer(0);
+            numberOfIpojoComponents = new Integer(0);
+            packages = new HashSet<String>();
+            calculateRecursively(ProjectUtils.getProjectSourcePath(projectRoot));
+            classesVisited = true;
+        }
+
     }
 
     private void calculateRecursively(Resource<?> root) {
@@ -273,23 +280,27 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
 
+
     //getters
 
     public Boolean getUsesDeclarativeServices() {
-        return manifestMetadata.getUsesDeclarativeServices();
+        return getManifestMetadata().getUsesDeclarativeServices();
     }
 
     public Boolean getUsesBlueprint() {
-        return manifestMetadata.getUsesBlueprint();
+        return getManifestMetadata().getUsesBlueprint();
     }
 
     public ManifestMetadata getManifestMetadata() {
+        if(manifestMetadata == null){
+            manifestMetadata = createManifestMetada();
+        }
         return manifestMetadata;
     }
 
     @Override
     public FileResource<?> getActivator() {
-        return manifestMetadata.getActivator();
+        return getManifestMetadata().getActivator();
     }
 
 
@@ -305,17 +316,17 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     public List<String> getExportedPackages() {
-        return manifestMetadata.getExportedPackages();
+        return getManifestMetadata().getExportedPackages();
     }
 
     @Override
     public List<String> getRequiredBundles() {
-        return manifestMetadata.getRequiredBundles();
+        return getManifestMetadata().getRequiredBundles();
     }
 
 
     public List<String> getImportedPackages() {
-        return manifestMetadata.getImportedPackages();
+        return getManifestMetadata().getImportedPackages();
     }
 
     public Boolean getPublishesInterfaces() {
@@ -343,11 +354,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public String getVersion() {
-        return manifestMetadata.getVersion();
+        return getManifestMetadata().getVersion();
     }
 
     @Override
     public Set<String> getPackages() {
+        if(packages == null){
+            visitAllClasses();
+        }
         return packages;
     }
 
@@ -361,22 +375,34 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     }
 
     public Integer getNumberOfClasses() {
+        if(numberOfClasses == null){
+            visitAllClasses();
+        }
         return numberOfClasses;
     }
 
     public Integer getNumberOfAbstractClasses() {
+        if(numberOfAbstractClasses == null){
+            visitAllClasses();
+        }
         return numberOfAbstractClasses;
     }
 
     public Integer getNumberOfInterfaces() {
+        if(numberOfInterfaces == null){
+            visitAllClasses();
+        }
         return numberOfInterfaces;
     }
 
     public Boolean getUsesIpojo() {
-        return numberOfIpojoComponents > 0;
+        return getNumberOfIpojoComponents() > 0;
     }
 
     public Integer getNumberOfIpojoComponents() {
+        if(numberOfIpojoComponents == null){
+            visitAllClasses();
+        }
         return numberOfIpojoComponents;
     }
 }

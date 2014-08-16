@@ -13,7 +13,6 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
-import org.jboss.forge.resources.ResourceFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,19 +27,6 @@ import java.util.List;
 public class ProjectUtils implements Serializable {
 
 
-    public static final ResourceFilter BND_FILTER = new ResourceFilter() {
-        @Override
-        public boolean accept(Resource<?> resource) {
-            return (resource instanceof DirectoryResource == false) && resource.getName().toLowerCase().endsWith(".bnd");
-        }
-    };
-
-    public static final ResourceFilter MANIFEST_FILTER = new ResourceFilter() {
-        @Override
-        public boolean accept(Resource<?> resource) {
-            return (resource instanceof DirectoryResource == false) && resource.getName().toLowerCase().endsWith(".mf");
-        }
-    };
     private static final List<String> ignoredDirectories = new ArrayList<String>() {
         {
             add("cnf");
@@ -141,7 +127,7 @@ public class ProjectUtils implements Serializable {
         if (ignoredDirectories.contains(root.getName().toLowerCase())) {
             return false;
         }
-        List<Resource<?>> candidates = root.listResources(MANIFEST_FILTER);
+        List<Resource<?>> candidates = root.listResources(Filters.MANIFEST_FILTER);
         if (!candidates.isEmpty()) {
             for (Resource<?> candidate : candidates) {
                 if (hasOsgiConfig(candidate)) {
@@ -161,7 +147,7 @@ public class ProjectUtils implements Serializable {
     }
 
     private static boolean hasBndFile(Resource<?> root) {
-        return root.listResources(BND_FILTER).size() > 0;
+        return root.listResources(Filters.BND_FILTER).size() > 0;
     }
 
 
@@ -207,7 +193,7 @@ public class ProjectUtils implements Serializable {
         if (manifestHome == null || !manifestHome.exists()) {
             return null;
         }
-        List<Resource<?>> manifestCandidate = manifestHome.listResources(MANIFEST_FILTER);
+        List<Resource<?>> manifestCandidate = manifestHome.listResources(Filters.MANIFEST_FILTER);
         if (manifestCandidate == null || manifestCandidate.isEmpty()) {
             return null;
         }
@@ -226,14 +212,14 @@ public class ProjectUtils implements Serializable {
 
     private static Resource<?> findBndFile(DirectoryResource projectRoot) {
         //look for .bnd in project root
-        List<Resource<?>> candidates = projectRoot.listResources(BND_FILTER);
+        List<Resource<?>> candidates = projectRoot.listResources(Filters.BND_FILTER);
 
         if (candidates == null || candidates.isEmpty()) {
             //try to find bnd file in resources dir
-            candidates = getProjectResourcesPath(projectRoot).listResources(BND_FILTER);
+            candidates = getProjectResourcesPath(projectRoot).listResources(Filters.BND_FILTER);
             if (candidates == null || candidates.isEmpty()) {
                 //try to find bnd in META-INF
-                candidates = getProjectManifestFolder(projectRoot).listResources(BND_FILTER);
+                candidates = getProjectManifestFolder(projectRoot).listResources(Filters.BND_FILTER);
                 return candidates == null || candidates.isEmpty() ? null : candidates.get(0);//.bnd in meta-inf
             } else {
                 return candidates.get(0);//.bnd in resources folder
