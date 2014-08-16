@@ -20,25 +20,23 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
      * creates an eclipse based OSGi project with a main folder
      * and 3 sub folders inside which are OSGi bundles
      */
-    public Project initializeOSGiProject() throws Exception
-    {
+    public Project initializeOSGiProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBundle(main,"module1");
+        addBundle(main, "module1");
         addHelloManager((DirectoryResource) main.getChild("module1"));
         addPermissions((DirectoryResource) main.getChild("module1"));
-        addBundle(main,"module2");
-        addBundle(main,"module3");
+        addBundle(main, "module2");
+        addBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
 
     /**
-     *  creates an OSGi maven based project where we have a master module
-     *  that aggregates sub modules(also maven projects) that are OSGi bundles
+     * creates an OSGi maven based project where we have a master module
+     * that aggregates sub modules(also maven projects) that are OSGi bundles
      */
-    public Project initializeOSGiMavenProject() throws Exception
-    {
+    public Project initializeOSGiMavenProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
         addPom(main);
@@ -64,11 +62,11 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         addActivator(mod1);
 
         DirectoryResource mod2 = basePackage.getOrCreateChildDirectory("module2");
-        addManifest(mod2,"/MANIFEST.MF");
+        addManifest(mod2, "/MANIFEST.MF");
         addActivator(mod2);
 
         DirectoryResource mod3 = basePackage.getOrCreateChildDirectory("module3");
-        addManifest(mod3,"/MANIFEST.MF");
+        addManifest(mod3, "/MANIFEST.MF");
         addActivator(mod3);
         getShell().setCurrentResource(main);
         return getProject();
@@ -81,9 +79,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource root = createTempFolder();
         DirectoryResource level1 = root.getOrCreateChildDirectory("level1");
         DirectoryResource level2 = level1.getOrCreateChildDirectory("level2");
-        addBundle(level2,"module1");
-        addBundle(level2,"module2");
-        addBundle(level2,"module3");
+        addBundle(level2, "module1");
+        addBundle(level2, "module2");
+        addBundle(level2, "module3");
         getShell().setCurrentResource(level1);
     }
 
@@ -91,13 +89,12 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
      * creates an eclipse OSGi project based on BND tools
      * which has 3 sub folders inside which are OSGi bundles
      */
-    public Project initializeOSGiBNDProject() throws Exception
-    {
+    public Project initializeOSGiBNDProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBndBundle(main,"module1");
-        addBndBundle(main,"module2");
-        addBndBundle(main,"module3");
+        addBndBundle(main, "module1");
+        addBndBundle(main, "module2");
+        addBndBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -106,29 +103,27 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
      * creates a maven OSGi project based on BND tools(maven bundle plugin)
      * which has 3 sub folders inside which are OSGi bundles
      */
-    public Project initializeMavenOSGiBNDProject() throws Exception
-    {
+    public Project initializeMavenOSGiBNDProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addMavenBndBundle(main,"module2");
-        addMavenBndBundle(main,"module1");
-        addMavenBndBundle(main,"module3");
+        addMavenBndBundle(main, "module2");
+        addMavenBndBundle(main, "module1");
+        addMavenBndBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
 
 
-    public Project initializeOSGiProjectWithTestBundles() throws Exception
-    {
+    public Project initializeOSGiProjectWithTestBundles() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addTestBundle(main,"module1");
-        addTestBundle(main,"module2");
+        addTestBundle(main, "module1");
+        addTestBundle(main, "module2");
         getShell().setCurrentResource(main);
         return getProject();
     }
 
-    public Project initializeOSGiProjectWithTestCodeInsideBundles() throws Exception{
+    public Project initializeOSGiProjectWithTestCodeInsideBundles() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
         addTestInsideBundle(main, "module1");
@@ -139,14 +134,14 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     private void addPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
-        if(!pom.exists()){
+        if (!pom.exists()) {
             pom.setContents(getClass().getResourceAsStream("/pomWithDependencies.xml"));
         }
     }
 
     private void addBndPom(DirectoryResource root) {
         FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
-        if(!pom.exists()){
+        if (!pom.exists()) {
             pom.setContents(getClass().getResourceAsStream("/pom_bnd.xml"));
         }
     }
@@ -160,6 +155,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     /**
      * test code in dedicated test folder
+     *
      * @param dir
      * @param module
      */
@@ -179,6 +175,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     /**
      * test code inside bundle
+     *
      * @param dir
      * @param module
      */
@@ -216,18 +213,18 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     private void addMetaInfWithManifest(DirectoryResource root, String manifestName) {
         DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
-        addManifest(metaInf,manifestName);
+        addManifest(metaInf, manifestName);
     }
 
 
-    public void addManifest(Resource<?> parent,String manifestName){
+    public void addManifest(Resource<?> parent, String manifestName) {
         FileResource<?> fileResource = (FileResource<?>) parent.getChild(manifestName);
-        if(!fileResource.exists()){
+        if (!fileResource.exists()) {
             fileResource.setContents(getClass().getResourceAsStream(manifestName));
         }
     }
 
-    private void addActivator(DirectoryResource root){
+    private void addActivator(DirectoryResource root) {
         DirectoryResource resource = root.getOrCreateChildDirectory("src").
                 getOrCreateChildDirectory("br").
                 getOrCreateChildDirectory("ufrgs").
@@ -237,7 +234,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         activator.setContents("activator content");
     }
 
-    private void addMavenActivator(DirectoryResource root){
+    private void addMavenActivator(DirectoryResource root) {
         DirectoryResource resource = root.getOrCreateChildDirectory("src").
                 getOrCreateChildDirectory("main").getOrCreateChildDirectory("java").
                 getOrCreateChildDirectory("br").
@@ -267,10 +264,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     }
 
 
-  public String getNewLine() {
-    if(newLine == null ){
-      newLine = OSUtils.isWindows() ? "\r\n":"\n";
+    public String getNewLine() {
+        if (newLine == null) {
+            newLine = OSUtils.isWindows() ? "\r\n" : "\n";
+        }
+        return newLine;
     }
-    return newLine;
-  }
 }

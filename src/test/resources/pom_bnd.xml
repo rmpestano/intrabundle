@@ -27,7 +27,7 @@
                             !com.mchange.*,
                             !oracle.*,
                             !org.quartz.*,
-                            !weblogic.*,
+                            weblogic.*,
                             !javax.transaction,
                             *
                         </Import-Package>
@@ -49,6 +49,7 @@
                         <Require-Capability>
                             ${requirements}
                         </Require-Capability>
+                        <Require-Bundle>com.eclipse.bundle</Require-Bundle>
                     </instructions>
                 </configuration>
             </plugin>

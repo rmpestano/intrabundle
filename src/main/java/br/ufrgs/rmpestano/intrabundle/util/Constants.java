@@ -20,9 +20,6 @@ public interface Constants {
 
     public static interface BND {
         public static final String MAVEN_BUNDLE_PLUGIN = "maven-bundle-plugin";
-        public static final String EXPORT_PACKAGE = "<Export-Package>";
-        public static final String IMPORT_PACKAGE = "<Import-Package>";
-        public static final String REQUIRE_BUNDLE = "<Require-Bundle>";
     }
     public static interface IPOJO {
         public static final String COMPONENT_IMPORT = "org.apache.felix.ipojo.annotations.Component";

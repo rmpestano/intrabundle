@@ -122,6 +122,16 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
+    public void shouldListExportedPackagesInMavenBndProject() throws Exception {
+        initializeMavenOSGiBNDProject();
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi exportedPackages");
+        Assert.assertTrue(getOutput().contains("org.apache.karaf.scheduler"));
+    }
+
+    @Test
     public void shouldListExportedPackagesInAllModules() throws Exception {
         initializeOSGiProject();
         resetOutput();
@@ -158,6 +168,16 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
+    public void shouldListImportedPackagesInMavenBndProject() throws Exception {
+        initializeMavenOSGiBNDProject();
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("1");
+        getShell().execute("osgi importedPackages");
+        Assert.assertTrue(getOutput().contains("weblogic.*"));
+    }
+
+    @Test
     public void shouldListModuleDependencies() throws Exception {
         System.out.println("shouldListModuleDependencies");
         initializeOSGiProject();
@@ -185,6 +205,15 @@ public class OsgiPluginTest extends BaseOSGiTest {
         getShell().execute("osgi requiredBundles");
         Assert.assertTrue(getOutput().contains("org.eclipse.core.runtime"));
         Assert.assertTrue(getOutput().contains("org.eclipse.osee.vaadin.widgets"));
+    }
+
+    @Test
+    public void shouldListRequiredBundlesInMavebBndProject() throws Exception {
+        resetOutput();
+        initializeMavenOSGiBNDProject();
+        queueInputLines("y");
+        getShell().execute("osgi requiredBundles");
+        Assert.assertTrue(getOutput().contains("com.eclipse.bundle"));
     }
 
     @Test
@@ -252,7 +281,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
      * test listBundles command in maven bnd tools(maven bundle plugin) based OSGi project
      */
     @Test
-    public void shouldListBundlesInMavebBndProject() throws Exception {
+    public void shouldListBundlesInMavenBndProject() throws Exception {
         initializeMavenOSGiBNDProject();
         resetOutput();
         getShell().execute("osgi countBundles");

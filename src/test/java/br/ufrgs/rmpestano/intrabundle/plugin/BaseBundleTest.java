@@ -134,6 +134,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         DirectoryResource root = createTempFolder();
         getShell().setCurrentResource(addMavenBndBundle(root, "module1"));
         return getProject();
+
     }
 
     /**

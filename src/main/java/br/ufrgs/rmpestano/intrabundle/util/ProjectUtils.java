@@ -42,12 +42,10 @@ public class ProjectUtils implements Serializable {
         Resource<?> pom = projectRoot.getChild("pom.xml");
         if (pom.exists()) {
             try {
-                Node pomXml = XMLParser.parse(pom.getResourceInputStream());
-                List<Node> names = pomXml.get("name");
-                for (Node name : names) {
-                    if (name != null && "intrabundle".equals(name.getText())) {
-                        return false;//minimal pom added to non maven projects has name = 'intrabundle' and so is not a maven project
-                    }
+                //intrabundle generates a pom.xml in project that arent maven projects(Forge limitation)
+                // and generated pom <name> is 'intrabudle'
+                if(pomContainsNodeValue((FileResource<?>) pom,"name","intrabundle")){
+                    return false;
                 }
                 return true;
             } catch (Exception ex) {
@@ -337,5 +335,43 @@ public class ProjectUtils implements Serializable {
         }
         file.close();
         return total;
+    }
+
+    /**
+     * scans pom.xml after an UNIQUE attribute
+     * @param pom
+     * @param nodeName
+     * @return
+     */
+    public static String getValueFromPomNode(FileResource<?> pom, String nodeName) {
+        Node pomXml = XMLParser.parse(pom.getResourceInputStream());
+        Node attr = pomXml.getSingle(nodeName);
+        if(attr != null && !"".equals(attr.getText().trim())){
+            return attr.getText().trim();
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    /**
+     * verifies if pom contain node value in node name
+     * @param pom
+     * @param nodeName
+     * @param nodeValue
+     * @return
+     */
+    public static boolean pomContainsNodeValue(FileResource<?> pom, String nodeName, String nodeValue){
+        Node pomXml = XMLParser.parse(pom.getResourceInputStream());
+        List<Node> nodes = pomXml.get(nodeName);
+
+        for (Node node : nodes) {
+            if(node.getText().trim().equalsIgnoreCase(nodeValue)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

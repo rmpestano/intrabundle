@@ -71,39 +71,23 @@ public class ManifestMetadata implements Serializable {
     }
 
     private void readManifest(FileResource<?> source) {
-        RandomAccessFile randomAccessFile = null;
         try {
-            File f = new File(source.getFullyQualifiedName());
-            randomAccessFile = new RandomAccessFile(f, "r");
-            this.initActivator(randomAccessFile);
-            randomAccessFile.seek(0);//rewind
-            this.initImportedPackages(randomAccessFile);
-            randomAccessFile.seek(0);//rewind
-            this.initExportedPackages(randomAccessFile);
-            randomAccessFile.seek(0);
-            this.initRequiredBundles(randomAccessFile);
-            randomAccessFile.seek(0);
-            this.initVersion(randomAccessFile);
-            randomAccessFile.seek(0);
-            this.initBluePrint(randomAccessFile);
-            randomAccessFile.seek(0);
-            initDeclarativeServices(randomAccessFile);
+            this.initActivator(source);
+            this.initImportedPackages(source);
+            this.initExportedPackages(source);
+            this.initRequiredBundles(source);
+            this.initVersion(source);
+            this.initBluePrint(source);
+            this.initDeclarativeServices(source);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    private void initDeclarativeServices(RandomAccessFile manifest) {
+    private void initDeclarativeServices(FileResource<?> manifest) throws IOException {
+        RandomAccessFile file = null;
         try {
             //look into stardard location
             Resource<?> resourcesDir = ProjectUtils.getProjectResourcesPath(projectRoot);
@@ -111,8 +95,9 @@ public class ManifestMetadata implements Serializable {
                 usesDeclarativeServices = Boolean.TRUE;
                 return;
             }
+            file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
             String line;
-            while ((line = manifest.readLine()) != null) {
+            while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.DECLARATIVE_SERVICES)) {
                     usesDeclarativeServices = Boolean.TRUE;
                     return;
@@ -122,11 +107,16 @@ public class ManifestMetadata implements Serializable {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (file != null) {
+                file.close();
+            }
         }
         usesDeclarativeServices = Boolean.FALSE;
     }
 
-    private void initBluePrint(RandomAccessFile manifest) {
+    private void initBluePrint(FileResource<?> manifest) throws IOException {
+        RandomAccessFile file = null;
         try {
             //look into stardard location
             Resource<?> resourcesDir = ProjectUtils.getProjectResourcesPath(projectRoot);
@@ -134,8 +124,9 @@ public class ManifestMetadata implements Serializable {
                 usesBlueprint = Boolean.TRUE;
                 return;
             }
+            file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
             String line;
-            while ((line = manifest.readLine()) != null) {
+            while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.BLUE_PRINT)) {
                     usesBlueprint = Boolean.TRUE;
                     return;
@@ -145,57 +136,71 @@ public class ManifestMetadata implements Serializable {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (file != null) {
+                file.close();
+            }
         }
         usesBlueprint = Boolean.FALSE;
     }
 
-    private void initVersion(RandomAccessFile file) {
+    private void initVersion(FileResource<?> manifest) throws IOException {
         version = new String();
-        try {
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
-                    line = line.substring(line.indexOf(":") + 1).trim();
-                    if (!"".equals(line)) {
-                        version = line.substring(line.indexOf(":") + 1).trim();
-                        break;
+        RandomAccessFile file = null;
+        if (ProjectUtils.isMavenBndProject(projectRoot)) {
+            try {
+                String value = ProjectUtils.getValueFromPomNode(manifest, Constants.Manifest.BUNDLE_VERSION);
+                if (value != null) {
+                    version = value.trim();
+                }
+            } catch (Exception ex) {
+                version = null;
+            }
+        } else {
+            try {
+                String line;
+                file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
+                while ((line = file.readLine()) != null) {
+                    if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
+                        line = line.substring(line.indexOf(":") + 1).trim();
+                        if (!"".equals(line)) {
+                            version = line.substring(line.indexOf(":") + 1).trim();
+                            break;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                //TODO log ex
+                e.printStackTrace();
+            } finally {
+                if (file != null) {
+                    file.close();
+                }
             }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
         }
     }
 
-    private void initRequiredBundles(RandomAccessFile file) {
+    private void initRequiredBundles(FileResource<?> source) throws IOException {
         requiredBundles = new ArrayList<String>();
-        try {
-            String line;
-            while ((line = file.readLine()) != null) {
-
-                if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                    //read OSGi metadata from pom.xml in maven bundle plugin
-                    if (line.trim().startsWith(Constants.BND.REQUIRE_BUNDLE)) {
-                        line = line.substring(line.indexOf(">") + 1);
-                        if (line.contains("</")) {
-                            line = line.substring(0, line.indexOf("</"));
-                        }
-                        if (!"".equals(line)) {
-                            requiredBundles.addAll(Arrays.asList(line.split(",")));
-                        }
-                        String nextLine;
-                        //try to get packages from next lines
-                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Required-Bundle>")) {
-                            requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
-                        }
-                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
-                            requiredBundles.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
-                        }
-                        break;
+        if (ProjectUtils.isMavenBndProject(projectRoot)) {
+            //read OSGi metadata from pom.xml in maven bundle plugin
+            try {
+                String nodeValue = ProjectUtils.getValueFromPomNode(source, Constants.Manifest.REQUIRE_BUNDLE);
+                if (nodeValue != null) {
+                    for (String s : Arrays.asList(nodeValue.split(","))) {
+                        requiredBundles.add(s.trim());
                     }
-                } else { //read OSGi metadata from MANIFEST.MF
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
+        } else {  //read OSGi metadata from manisfest.mf
+            String line;
+            File f = new File(source.getFullyQualifiedName());
+            RandomAccessFile file = new RandomAccessFile(f, "r");
+            try {
+                while ((line = file.readLine()) != null) {
                     if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
                         if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
 
@@ -214,41 +219,36 @@ public class ManifestMetadata implements Serializable {
 
                     }
                 }
-
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (file != null) {
+                    file.close();
+                }
             }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
         }
     }
 
-    private void initImportedPackages(RandomAccessFile file) {
+    private void initImportedPackages(FileResource<?> manifest) throws IOException {
         importedPackages = new ArrayList<String>();
-        try {
-            String line;
-            while ((line = file.readLine()) != null) {
-
-                if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                    //read OSGi metadata from pom.xml in maven bundle plugin
-                    if (line.trim().startsWith(Constants.BND.IMPORT_PACKAGE)) {
-                        line = line.substring(line.indexOf(">") + 1);
-                        if (line.contains("</")) {
-                            line = line.substring(0, line.indexOf("</"));
-                        }
-                        if (!"".equals(line)) {
-                            importedPackages.addAll(Arrays.asList(line.split(",")));
-                        }
-                        String nextLine;
-                        //try to get packages from next lines
-                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Import-Package>")) {
-                            importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                        }
-                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
-                            importedPackages.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
-                        }
-                        break;
+        RandomAccessFile file = null;
+        if (ProjectUtils.isMavenBndProject(projectRoot)) {
+            //read OSGi metadata from pom.xml in maven bundle plugin
+            try {
+                String nodeValue = ProjectUtils.getValueFromPomNode(manifest, Constants.Manifest.IMPORT_PACKAGE);
+                if (nodeValue != null) {
+                    for (String s : nodeValue.split(",")) {
+                        importedPackages.add(s.trim());
                     }
-                } else { //read OSGi metadata from MANIFEST.MF
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {   //read OSGi metadata from MANIFEST.MF
+            try {
+                String line;
+                file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
+                while ((line = file.readLine()) != null) {
 
                     if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
                         if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
@@ -265,100 +265,103 @@ public class ManifestMetadata implements Serializable {
                             importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
                         }
                         break;
-
                     }
                 }
 
+            } catch (Exception e) {
+                //TODO log ex
+                e.printStackTrace();
+            } finally {
+                if (file != null) {
+                    file.close();
+                }
             }
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
         }
-
     }
 
-    private void initExportedPackages(RandomAccessFile file) {
+    private void initExportedPackages(FileResource<?> manifest) throws IOException {
         exportedPackages = new ArrayList<String>();
-        try {
-            String line;
-            while ((line = file.readLine()) != null) {
-
-                if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                    //read OSGi metadata from pom.xml in maven bundle plugin
-                    if (line.trim().startsWith(Constants.BND.EXPORT_PACKAGE)) {
-                        line = line.substring(line.indexOf(">") + 1);
-                        if (line.contains("</")) {
-                            line = line.substring(0, line.indexOf("</"));
-                        }
-                        if (!"".equals(line)) {
-                            exportedPackages.addAll(Arrays.asList(line.split(",")));
-                        }
-                        String nextLine;
-                        //try to get packages from next lines
-                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains("</Export-Package>")) {
-                            exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                        }
-                        if (nextLine != null && nextLine.contains("</") && !nextLine.startsWith("</")) {
-                            exportedPackages.addAll(Arrays.asList(nextLine.trim().substring(0, nextLine.trim().indexOf("</")).split(",")));
-                        }
-                        break;
-                    }
-                } else { //read OSGi metadata from MANIFEST.MF
-
-                    if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
-
-                        } else if (line.contains(":")) {
-                            line = line.substring(line.indexOf(":") + 1).trim();
-                        }
-                        if (!"".equals(line)) {
-                            exportedPackages.addAll(Arrays.asList(line.split(",")));
-                        }
-                        //try to get packages from next lines
-                        String nextLine;
-                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                            exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
-                        }
-                        break;
-
-                    }
+        RandomAccessFile file = null;
+        if (ProjectUtils.isMavenBndProject(projectRoot)) {
+            //read OSGi metadata from pom.xml in maven bundle plugin
+            try {
+                String nodeValue = ProjectUtils.getValueFromPomNode(manifest, Constants.Manifest.EXPORT_PACKAGE);
+                if (nodeValue != null) {
+                    exportedPackages.addAll(Arrays.asList(nodeValue.split(",")));
                 }
-
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+        }
+        try {
+            //read OSGi metadata from MANIFEST.MF
+            String line;
+            file = new RandomAccessFile(manifest.getFullyQualifiedName(),"r");
+            while ((line = file.readLine()) != null) {
+                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
+                    if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
+
+                    } else if (line.contains(":")) {
+                        line = line.substring(line.indexOf(":") + 1).trim();
+                    }
+                    if (!"".equals(line)) {
+                        exportedPackages.addAll(Arrays.asList(line.split(",")));
+                    }
+                    //try to get packages from next lines
+                    String nextLine;
+                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                        exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                    }
+                    break;
+                }
+            }
+
         } catch (Exception e) {
             //TODO log ex
             e.printStackTrace();
         }
+        finally {
+            if(file != null){
+                file.close();
+            }
+        }
     }
 
-    private void initActivator(RandomAccessFile randomAccessFile) throws IOException {
-        try {
-            String line;
-            while ((line = randomAccessFile.readLine()) != null) {
-                if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                    if (line.contains("<" + Constants.Manifest.ACTIVATOR + ">") && !line.contains("${")) {
-                        while ((line += randomAccessFile.readLine()) != null && !line.contains("</" + Constants.Manifest.ACTIVATOR + ">")) {
+    private void initActivator(FileResource<?> source) throws IOException {
+        String activatorPath = null;
+        if (ProjectUtils.isMavenBndProject(projectRoot)) {
+            try {
+                activatorPath = ProjectUtils.getValueFromPomNode(source, Constants.Manifest.ACTIVATOR);
+            } catch (Exception ex) {
+                activator = null;
+            }
 
-                        }
-                        line = line.substring(line.indexOf(">") + 1, line.indexOf("</"));
-                        break;
-                    }
-                } else {
+        } else {
+            File f = new File(source.getFullyQualifiedName());
+            RandomAccessFile randomAccessFile = new RandomAccessFile(f, "r");
+            try {
+                String line;
+                while ((line = randomAccessFile.readLine()) != null) {
                     if (line.contains(Constants.Manifest.ACTIVATOR)) {
                         break;
                     }
                 }
-            }
-            if (line == null) {
-                activator = null;//no activator
-                return;
-            }
-            String activatorPath = null;
-            if (ProjectUtils.isMavenBndProject(projectRoot)) {
-                activatorPath = line.trim();
-            } else {
+                if (line == null) {
+                    activator = null;//no activator
+                    return;
+                }
                 activatorPath = line.trim().substring(line.indexOf(Constants.Manifest.ACTIVATOR) + 18);
+            } catch (Exception e) {
+                activator = null;
+                System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
+            } finally {
+                if (randomAccessFile != null) {
+                    randomAccessFile.close();
+                }
             }
+
+        }//end else
+        if (activatorPath != null) {
             activatorPath = activatorPath.trim().replaceAll("\\.", "/");
             if (!activatorPath.startsWith("/")) {
                 activatorPath = "/" + activatorPath;
@@ -372,18 +375,12 @@ public class ManifestMetadata implements Serializable {
                     activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
                 }
                 //try to get activator in test sources
-                else{
+                else {
                     activator = ProjectUtils.getProjectTestPath(projectRoot) != null ? (FileResource<?>) ProjectUtils.getProjectTestPath(projectRoot).getChild(activatorPath.concat(".java")) : null;
                 }
             }
-        } catch (Exception e) {
-            activator = null;
-            System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
         }
 
-        if(activator != null && !activator.exists()){
-            activator = null;
-        }
     }
 
 
