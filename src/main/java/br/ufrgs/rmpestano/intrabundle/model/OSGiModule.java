@@ -103,5 +103,4 @@ public interface OSGiModule extends Serializable{
 
     Integer getNumberOfIpojoComponents();
 
-
 }

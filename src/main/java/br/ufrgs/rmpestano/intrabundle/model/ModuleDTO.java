@@ -14,6 +14,8 @@ public class ModuleDTO implements Serializable {
     }
 
     public ModuleDTO(OSGiModule module) {
+        module.getNumberOfClasses();//forces visitAllClasses to be available in report as its called on demand
+        module.getManifestMetadata();//forces createManifestMetadata to be available in report
         this.module = module;
     }
 
