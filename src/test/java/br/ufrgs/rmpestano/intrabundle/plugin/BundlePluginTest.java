@@ -154,7 +154,7 @@ public class BundlePluginTest extends BaseBundleTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle na");
-        Assert.assertTrue(getOutput().startsWith("0"));
+        Assert.assertTrue(getOutput().startsWith("1"));
     }
 
     @Test
@@ -162,7 +162,7 @@ public class BundlePluginTest extends BaseBundleTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle ni");
-        Assert.assertTrue(getOutput().startsWith("1"));
+        Assert.assertTrue(getOutput().startsWith("2"));
     }
 
     @Test
@@ -170,7 +170,7 @@ public class BundlePluginTest extends BaseBundleTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle np");
-        Assert.assertTrue(getOutput().startsWith("3"));
+        Assert.assertTrue(getOutput().startsWith("4"));
     }
 
 

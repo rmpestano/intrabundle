@@ -18,6 +18,8 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         addMetaInf(main, "/MANIFEST.MF");
         addActivator(main);
         addTestClass(main);
+        addAbstractClass(main);
+        addInterface(main);
         addPermissions(main);
         addExportedPackage(main);
         addHelloManager(main);
@@ -93,6 +95,24 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("rmpestano");
         FileResource<?> testClass = (FileResource<?>) resource.getChild("TestClass.java");
         testClass.setContents("import org.junit.*; test class content");
+    }
+
+    private void addAbstractClass(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano");
+        FileResource<?> abstractClass = (FileResource<?>) resource.getChild("AbstractClass.java");
+        abstractClass.setContents(getClass().getResourceAsStream("/AbstractService.java"));
+    }
+
+    private void addInterface(DirectoryResource root) {
+        DirectoryResource resource = root.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano");
+        FileResource<?> abstractClass = (FileResource<?>) resource.getChild("AInterface.java");
+        abstractClass.setContents("public interface MyInterface { }");
     }
 
     private void addExportedPackage(DirectoryResource root){

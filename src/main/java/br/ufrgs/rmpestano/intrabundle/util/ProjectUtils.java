@@ -65,8 +65,7 @@ public class ProjectUtils implements Serializable {
                 }
                 return true;
             } catch (Exception ex) {
-                ex.printStackTrace();
-                //log ex
+                 
                 return false;
             }
         }
@@ -274,16 +273,19 @@ public class ProjectUtils implements Serializable {
     public static boolean hasOsgiConfigInMavenBundlePlugin(Resource<?> pom) {
         try {
             Node pomXml = XMLParser.parse(pom.getResourceInputStream());
-            Node instruction = pomXml.getSingle("instructions");
-            if(instruction == null){
+            List<Node> instructions = pomXml.get("instructions");
+            if(instructions == null){
                    return false;
             }
-            for (Node node : instruction.getChildren()) {
-                String nodeName = node.getName();
-                if (nodeName.equals(Constants.Manifest.BUNDLE_VERSION) || nodeName.equals(Constants.Manifest.EXPORT_PACKAGE) || nodeName.equals(Constants.Manifest.IMPORT_PACKAGE) || nodeName.equals(Constants.Manifest.PRIVATE_PACKAGE) || nodeName.equals(Constants.Manifest.ACTIVATOR) || nodeName.equals(Constants.Manifest.SYMBOLIC_NAME)) {
-                    return true;
+            for (Node instruction : instructions) {
+                for (Node node : instruction.getChildren()) {
+                    String nodeName = node.getName();
+                    if (nodeName.equals(Constants.Manifest.BUNDLE_VERSION) || nodeName.equals(Constants.Manifest.EXPORT_PACKAGE) || nodeName.equals(Constants.Manifest.IMPORT_PACKAGE) || nodeName.equals(Constants.Manifest.PRIVATE_PACKAGE) || nodeName.equals(Constants.Manifest.ACTIVATOR) || nodeName.equals(Constants.Manifest.SYMBOLIC_NAME)) {
+                        return true;
+                    }
                 }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,7 +316,7 @@ public class ProjectUtils implements Serializable {
             Node pomXml = XMLParser.parse(pom.getResourceInputStream());
             List<Node> artifactId = pomXml.get("artifactId");
             for (Node node : artifactId) {
-                if (node.getText().equals("maven-bundle-plugin")) {
+                if (node.getText().equals(Constants.BND.MAVEN_BUNDLE_PLUGIN)) {
                     return true;
                 }
             }

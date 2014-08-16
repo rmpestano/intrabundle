@@ -17,10 +17,6 @@ import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.*;
 
 import javax.enterprise.inject.Typed;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -265,7 +261,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
                 if (source.isInterface()) {
                     numberOfInterfaces++;
                 } else if (source.isClass()) {
-                    if (isAbstractClass(child)) {
+                    if (source.getInternal().toString().contains("abstract class")) {
                         numberOfAbstractClasses++;
                     } else {
                         numberOfClasses++;
@@ -276,31 +272,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         }
     }
 
-    private boolean isAbstractClass(Resource<?> aClass) {
-        RandomAccessFile aFile = null;
-        try {
-            aFile = new RandomAccessFile(new File(aClass.getFullyQualifiedName()), "r");
-            String line;
-            while ((line = aFile.readLine()) != null) {
-                if (line.contains("abstract class")) {
-                    return true;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (aFile != null) {
-                try {
-                    aFile.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
 
     //getters
 

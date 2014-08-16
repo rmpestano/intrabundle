@@ -202,7 +202,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project 
                         this.linesOfTestCode += projectUtils.countFileLines((FileResource<?>) resource);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                   //intentional
+                    continue;
                 }
             } else if (resource instanceof DirectoryResource) {
                 this.linesOfTestCode = countProjectTestLines((DirectoryResource) resource);
