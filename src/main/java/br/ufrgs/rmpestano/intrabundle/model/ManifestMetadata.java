@@ -319,9 +319,8 @@ public class ManifestMetadata implements Serializable {
         } catch (Exception e) {
             //TODO log ex
             e.printStackTrace();
-        }
-        finally {
-            if(file != null){
+        } finally {
+            if (file != null) {
                 file.close();
             }
         }
@@ -371,16 +370,18 @@ public class ManifestMetadata implements Serializable {
                 //try to infer activator path from projectRoot path
                 if (activatorPath.contains(projectRoot.getName())) {
                     String[] activatoPathTokens = activatorPath.split("/");
-                    String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
-                    activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
-                }
-                //try to get activator in test sources
-                else {
-                    activator = ProjectUtils.getProjectTestPath(projectRoot) != null ? (FileResource<?>) ProjectUtils.getProjectTestPath(projectRoot).getChild(activatorPath.concat(".java")) : null;
+                    try {
+                        String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
+                        activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
+                    } catch (Exception e) {
+                        System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
+                    }
                 }
             }
         }
-
+        if(activator != null && !activator.exists()){
+            activator = null;
+        }
     }
 
 

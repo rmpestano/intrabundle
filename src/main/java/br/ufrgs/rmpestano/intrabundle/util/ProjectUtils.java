@@ -87,20 +87,6 @@ public class ProjectUtils implements Serializable {
         }
     }
 
-    public static Resource<?> getProjectTestPath(DirectoryResource projectRoot) {
-        if (isMavenProject(projectRoot)) {
-            Resource<?> src = projectRoot.getChild("src");
-            Resource<?> main = src.exists() ? src.getChild("test") : null;
-            return main != null && main.exists() ? main.getChild("java") : projectRoot;
-        } else {
-            Resource<?> src = projectRoot.getChild("test");
-            if (src.exists()) {
-                return projectRoot.getChild("test");
-            } else {
-                return projectRoot;
-            }
-        }
-    }
 
     public static Resource<?> getProjectManifestFolder(DirectoryResource root) {
         if (isMavenBndProject(root)) {
@@ -346,7 +332,7 @@ public class ProjectUtils implements Serializable {
     public static String getValueFromPomNode(FileResource<?> pom, String nodeName) {
         Node pomXml = XMLParser.parse(pom.getResourceInputStream());
         Node attr = pomXml.getSingle(nodeName);
-        if(attr != null && !"".equals(attr.getText().trim())){
+        if(attr != null && attr.getText() != null){
             return attr.getText().trim();
         }
         else{
