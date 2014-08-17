@@ -405,4 +405,14 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         }
         return numberOfIpojoComponents;
     }
+
+    @Override
+    public String getName() {
+        return getProjectRoot().getName();
+    }
+
+    @Override
+    public int compareTo(OSGiModule o) {
+        return this.toString().compareTo(o.toString());
+    }
 }

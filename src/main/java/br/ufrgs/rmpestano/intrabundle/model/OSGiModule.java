@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created by rmpestano on 1/28/14.
  */
-public interface OSGiModule extends Serializable{
+public interface OSGiModule extends Serializable, Comparable<OSGiModule>{
 
     /**
      *
@@ -102,5 +102,7 @@ public interface OSGiModule extends Serializable{
     Boolean getUsesIpojo();
 
     Integer getNumberOfIpojoComponents();
+
+    String getName();
 
 }

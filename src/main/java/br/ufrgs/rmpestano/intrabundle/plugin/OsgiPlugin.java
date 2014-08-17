@@ -14,7 +14,6 @@ import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -53,7 +52,7 @@ public class OsgiPlugin implements Plugin {
     @Command(value = "listBundles")
     public void listBundles(@PipeIn String in, PipeOut out) {
         for (OSGiModule osGiModule : getModules()) {
-            out.println(osGiModule.toString());
+            out.println(osGiModule.getName());
         }
     }
 
@@ -69,7 +68,7 @@ public class OsgiPlugin implements Plugin {
         long total = 0;
         for (int i = 0; i < getModules().size(); i++) {
             long loci = getModules().get(i).getLinesOfCode();
-            out.println(getModules().get(i).toString() + ":" + loci);
+            out.println(getModules().get(i).getName() + ":" + loci);
             total += loci;
         }
         out.println(provider.getMessage("osgi.total-loc") + total);
@@ -85,7 +84,7 @@ public class OsgiPlugin implements Plugin {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.declarativeServices"));
         for (OSGiModule module : getModules()) {
             if (module.getUsesDeclarativeServices()) {
-                out.println(module.toString());
+                out.println(module.getName());
             }
         }
     }
@@ -94,7 +93,7 @@ public class OsgiPlugin implements Plugin {
     public void listActivators(@PipeIn String in, PipeOut out) {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.listActivators"));
         for (OSGiModule module : getModules()) {
-            out.println(module.toString() + ":" + (module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
+            out.println(module.getName() + ":" + (module.getActivator() != null ? module.getActivator().getFullyQualifiedName() : provider.getMessage("osgi.no-activator")));
         }
     }
 
@@ -187,7 +186,7 @@ public class OsgiPlugin implements Plugin {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.publishInterfaces"));
         for (OSGiModule osGiModule : getModules()) {
             if (osGiModule.getPublishesInterfaces()) {
-                out.println(osGiModule.toString());
+                out.println(osGiModule.getName());
             }
         }
     }
@@ -197,7 +196,7 @@ public class OsgiPlugin implements Plugin {
         out.println(ShellColor.YELLOW, provider.getMessage("osgi.declaresPermissions"));
         for (OSGiModule osGiModule : getModules()) {
             if (osGiModule.getDeclaresPermissions()) {
-                out.println(osGiModule.toString());
+                out.println(osGiModule.getName());
             }
         }
     }
@@ -246,7 +245,7 @@ public class OsgiPlugin implements Plugin {
             out.println(provider.getMessage("module.noDependency"));
         } else {
             for (OSGiModule m : project.getModulesDependencies().get(choice)) {
-                out.println(m.toString());
+                out.println(m.getName());
             }
         }
     }
@@ -262,12 +261,7 @@ public class OsgiPlugin implements Plugin {
 
     public List<OSGiModule> getModules() {
         if(!sorted){
-            Collections.sort(project.getModules(), new Comparator<OSGiModule>() {
-                @Override
-                public int compare(OSGiModule o1, OSGiModule o2) {
-                    return o1.toString().compareTo(o2.toString());
-                }
-            });
+            Collections.sort(project.getModules());
             sorted = true;
         }
         return project.getModules();
