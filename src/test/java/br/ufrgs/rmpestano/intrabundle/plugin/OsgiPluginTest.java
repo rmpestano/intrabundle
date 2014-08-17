@@ -74,7 +74,22 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi listBundles");
         Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+    }
 
+    /**
+     * test listActivator command in project where bundles
+     * are inside src instead of being separated projects as usual
+     */
+    @Test
+    public void shouldListActivatorsInSourceCode() throws Exception {
+        initializeOSGiProjectWithBundlesInSourceCode();
+        resetOutput();
+        getShell().execute("osgi activators");
+        String activatorPath = "/main/src/module1/br/ufrgs/rmpestano/activator/Activator.java";
+        if(OSUtils.isWindows()){
+            activatorPath = activatorPath.replaceAll("/", File.separator + File.separator);
+        }
+        Assert.assertTrue(getOutput().contains(activatorPath));
     }
 
     @Test

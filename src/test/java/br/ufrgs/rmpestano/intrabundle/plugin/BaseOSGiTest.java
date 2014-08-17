@@ -54,12 +54,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiProjectWithBundlesInSourceCode() throws IOException {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        DirectoryResource basePackage = main.getOrCreateChildDirectory("src").
-                getChildDirectory("br").getOrCreateChildDirectory("ufrgs").
-                getChildDirectory("rmpestano");
+        DirectoryResource basePackage = main.getOrCreateChildDirectory("src");
         DirectoryResource mod1 = basePackage.getOrCreateChildDirectory("module1");
-        addManifest(mod1, "/MANIFEST.MF");
-        addActivator(mod1);
+        addManifest(mod1, "/MANIFEST-in-mod1-source.MF");
+        addActivatorInSource(mod1.getOrCreateChildDirectory("br").getOrCreateChildDirectory("ufrgs").getOrCreateChildDirectory("rmpestano").getOrCreateChildDirectory("activator"));
 
         DirectoryResource mod2 = basePackage.getOrCreateChildDirectory("module2");
         addManifest(mod2, "/MANIFEST.MF");
@@ -231,6 +229,11 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
                 getOrCreateChildDirectory("rmpestano").
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
+        activator.setContents("activator content");
+    }
+
+    private void addActivatorInSource(DirectoryResource root) {
+        FileResource<?> activator = (FileResource<?>) root.getChild("Activator.java");
         activator.setContents("activator content");
     }
 
