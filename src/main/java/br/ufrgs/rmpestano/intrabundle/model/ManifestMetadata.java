@@ -202,10 +202,13 @@ public class ManifestMetadata implements Serializable {
             try {
                 while ((line = file.readLine()) != null) {
                     if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
-                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
-
-                        } else if (line.contains(":")) {
+                        if (line.contains(":")) {
                             line = line.substring(line.indexOf(":") + 1).trim();
+                        } else {
+                            line = line.substring(line.indexOf(Constants.Manifest.REQUIRE_BUNDLE) + Constants.Manifest.REQUIRE_BUNDLE.length()).trim();
+                        }
+                        if (line.contains("\\")) {//bnd line separator
+                            line = line.replaceAll("\\\\", "");
                         }
                         if (!"".equals(line)) {
                             requiredBundles.addAll(Arrays.asList(line.split(",")));
@@ -213,7 +216,7 @@ public class ManifestMetadata implements Serializable {
                         //try to get packages from next lines
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                            requiredBundles.addAll(Arrays.asList(nextLine.trim().split(",")));
+                            requiredBundles.addAll(Arrays.asList(nextLine.trim().replaceAll("\\\\", "").split(",")));
                         }
                         break;
 
@@ -251,10 +254,13 @@ public class ManifestMetadata implements Serializable {
                 while ((line = file.readLine()) != null) {
 
                     if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
-                        if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
-
-                        } else if (line.contains(":")) {
+                        if (line.contains(":")) {
                             line = line.substring(line.indexOf(":") + 1).trim();
+                        } else {
+                            line = line.substring(line.indexOf(Constants.Manifest.IMPORT_PACKAGE) + Constants.Manifest.IMPORT_PACKAGE.length()).trim();
+                        }
+                        if (line.contains("\\")) {//bnd line separator
+                            line = line.replaceAll("\\\\", "");
                         }
                         if (!"".equals(line)) {
                             importedPackages.addAll(Arrays.asList(line.split(",")));
@@ -262,7 +268,7 @@ public class ManifestMetadata implements Serializable {
                         //try to get packages from next lines
                         String nextLine;
                         while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                            importedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                            importedPackages.addAll(Arrays.asList(nextLine.trim().replaceAll("\\\\", "").split(",")));
                         }
                         break;
                     }
@@ -277,6 +283,7 @@ public class ManifestMetadata implements Serializable {
                 }
             }
         }
+
     }
 
     private void initExportedPackages(FileResource<?> manifest) throws IOException {
@@ -296,13 +303,16 @@ public class ManifestMetadata implements Serializable {
         try {
             //read OSGi metadata from MANIFEST.MF
             String line;
-            file = new RandomAccessFile(manifest.getFullyQualifiedName(),"r");
+            file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
             while ((line = file.readLine()) != null) {
                 if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                    if (ProjectUtils.isMavenBndProject(projectRoot) && line.contains(">")) {
-
-                    } else if (line.contains(":")) {
+                    if (line.contains(":")) {
                         line = line.substring(line.indexOf(":") + 1).trim();
+                    } else {
+                        line = line.substring(line.indexOf(Constants.Manifest.EXPORT_PACKAGE) + Constants.Manifest.EXPORT_PACKAGE.length()).trim();
+                    }
+                    if (line.contains("\\")) {//bnd line separator
+                        line = line.replaceAll("\\\\", "");
                     }
                     if (!"".equals(line)) {
                         exportedPackages.addAll(Arrays.asList(line.split(",")));
@@ -310,7 +320,7 @@ public class ManifestMetadata implements Serializable {
                     //try to get packages from next lines
                     String nextLine;
                     while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        exportedPackages.addAll(Arrays.asList(nextLine.trim().split(",")));
+                        exportedPackages.addAll(Arrays.asList(nextLine.trim().replaceAll("\\\\", "").split(",")));
                     }
                     break;
                 }
@@ -379,7 +389,7 @@ public class ManifestMetadata implements Serializable {
                 }
             }
         }
-        if(activator != null && !activator.exists()){
+        if (activator != null && !activator.exists()) {
             activator = null;
         }
     }
