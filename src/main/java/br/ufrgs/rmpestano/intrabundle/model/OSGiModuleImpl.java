@@ -80,7 +80,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
 
     @Override
     public String toString() {
-        return getProjectRoot().toString();
+        return getProjectRoot().getFullyQualifiedName();
     }
 
 
