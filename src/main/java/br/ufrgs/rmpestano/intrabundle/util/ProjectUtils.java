@@ -4,7 +4,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.jboss.forge.git.GitFacet;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.parser.xml.Node;
@@ -265,7 +264,7 @@ public class ProjectUtils implements Serializable {
 
     public static boolean isGitProject(Project project) {
         assert (project != null);
-        return project.hasFacet(GitFacet.class);
+        return project.getProjectRoot().getChild(".git").exists();
     }
 
     /**

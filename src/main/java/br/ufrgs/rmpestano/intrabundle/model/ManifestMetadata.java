@@ -186,7 +186,7 @@ public class ManifestMetadata implements Serializable {
             //read OSGi metadata from pom.xml in maven bundle plugin
             try {
                 String nodeValue = ProjectUtils.getValueFromPomNode(source, Constants.Manifest.REQUIRE_BUNDLE);
-                if (nodeValue != null) {
+                if (nodeValue != null && !"".equals(nodeValue)) {
                     for (String s : Arrays.asList(nodeValue.split(","))) {
                         requiredBundles.add(s.trim());
                     }
@@ -293,47 +293,49 @@ public class ManifestMetadata implements Serializable {
             //read OSGi metadata from pom.xml in maven bundle plugin
             try {
                 String nodeValue = ProjectUtils.getValueFromPomNode(manifest, Constants.Manifest.EXPORT_PACKAGE);
-                if (nodeValue != null) {
+                if (nodeValue != null && !"".equals(nodeValue)) {
                     exportedPackages.addAll(Arrays.asList(nodeValue.split(",")));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
-        try {
-            //read OSGi metadata from MANIFEST.MF
-            String line;
-            file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
-            while ((line = file.readLine()) != null) {
-                if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
-                    if (line.contains(":")) {
-                        line = line.substring(line.indexOf(":") + 1).trim();
-                    } else {
-                        line = line.substring(line.indexOf(Constants.Manifest.EXPORT_PACKAGE) + Constants.Manifest.EXPORT_PACKAGE.length()).trim();
+        }else{
+            try {
+                //read OSGi metadata from MANIFEST.MF
+                String line;
+                file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
+                while ((line = file.readLine()) != null) {
+                    if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
+                        if (line.contains(":")) {
+                            line = line.substring(line.indexOf(":") + 1).trim();
+                        } else {
+                            line = line.substring(line.indexOf(Constants.Manifest.EXPORT_PACKAGE) + Constants.Manifest.EXPORT_PACKAGE.length()).trim();
+                        }
+                        if (line.contains("\\")) {//bnd line separator
+                            line = line.replaceAll("\\\\", "");
+                        }
+                        if (!"".equals(line)) {
+                            exportedPackages.addAll(Arrays.asList(line.split(",")));
+                        }
+                        //try to get packages from next lines
+                        String nextLine;
+                        while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
+                            exportedPackages.addAll(Arrays.asList(nextLine.trim().replaceAll("\\\\", "").split(",")));
+                        }
+                        break;
                     }
-                    if (line.contains("\\")) {//bnd line separator
-                        line = line.replaceAll("\\\\", "");
-                    }
-                    if (!"".equals(line)) {
-                        exportedPackages.addAll(Arrays.asList(line.split(",")));
-                    }
-                    //try to get packages from next lines
-                    String nextLine;
-                    while ((nextLine = file.readLine()) != null && !"".equals(nextLine.trim()) && !nextLine.contains(":")) {
-                        exportedPackages.addAll(Arrays.asList(nextLine.trim().replaceAll("\\\\", "").split(",")));
-                    }
-                    break;
+                }
+
+            } catch (Exception e) {
+                //TODO log ex
+                e.printStackTrace();
+            } finally {
+                if (file != null) {
+                    file.close();
                 }
             }
-
-        } catch (Exception e) {
-            //TODO log ex
-            e.printStackTrace();
-        } finally {
-            if (file != null) {
-                file.close();
-            }
         }
+
     }
 
     private void initActivator(FileResource<?> source) throws IOException {
