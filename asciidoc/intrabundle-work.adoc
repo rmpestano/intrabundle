@@ -69,7 +69,7 @@ all bundles inside ROOT;
 . To consider a folder an +++<u>OSGi Bundle</u>+++ our tool verifies:
 .. if the folder has a manifest file with OSGi metadata inside META-INF;
 .. OR if its maven project and has manifest with OSGI metadata inside src/main/resources/META-INF;
-.. OR if its maven projects and uses maven bundle plugin;
+.. OR if its maven project and uses maven bundle plugin;
 .. OR if its a BND tools based project (.bnd file);
 .. OR finally it has bundles on each package(jitsi project layout);
 . if user navigate to an +++<u>OSGi bundle</u>+++  directory then our plugin must enable bundle related commands which are similar to OSGi *project* plugin commands but applying to single bundle eg: bundle staleReferences command will list classes which possibly have stale services references.
