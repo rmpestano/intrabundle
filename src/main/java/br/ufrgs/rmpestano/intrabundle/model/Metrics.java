@@ -15,4 +15,17 @@ public interface Metrics {
      * @return
      */
     public MetricScore getLocMetric(OSGiModule bundle);
+
+
+  /**
+   * this metric is based on bundle dependencies
+   * its based on the fact that the less bundle it
+   * depends the less coupled it is
+   * @param bundle
+   * @return
+   */
+    public MetricScore getBundleDependencyMetric(OSGiModule bundle);
+
+
+    public OSGiProject getCurrentOSGiProject();
 }
