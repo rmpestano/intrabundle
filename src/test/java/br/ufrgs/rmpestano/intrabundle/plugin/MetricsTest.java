@@ -8,6 +8,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class MetricsTest extends BaseOSGiTest {
 
@@ -36,6 +39,9 @@ public class MetricsTest extends BaseOSGiTest {
     Metrics metrics;
 
    
-
+    @Test
+    public void aTest(){
+      assertTrue(true);
+    }
 
 }
