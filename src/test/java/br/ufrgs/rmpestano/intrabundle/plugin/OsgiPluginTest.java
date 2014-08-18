@@ -2,6 +2,8 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.util.BeanManagerController;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import javax.inject.Inject;
 import java.io.File;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class OsgiPluginTest extends BaseOSGiTest {
@@ -329,6 +332,9 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi loc");
         assertTrue(getOutput().startsWith("module1:214"));
+        OSGiProject osGiProject = BeanManagerController.getBeanByType(getBeanManager(),OSGiProject.class);
+        assertNotNull(osGiProject);
+        assertTrue(osGiProject.getLinesOfCode().equals(216));
     }
 
     /**
