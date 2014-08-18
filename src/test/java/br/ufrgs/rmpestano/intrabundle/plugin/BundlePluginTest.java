@@ -206,7 +206,7 @@ public class BundlePluginTest extends BaseBundleTest {
     /**
      * test find activator command in eclipse bnd tools based OSGi project with bnd file in resources folder
      */
-    @Test
+    //@Test
     public void shouldFindActivatorInBndProjectWithResources() throws Exception {
         initializeOSGiBNDProjectWithBndInResources();
         resetOutput();
