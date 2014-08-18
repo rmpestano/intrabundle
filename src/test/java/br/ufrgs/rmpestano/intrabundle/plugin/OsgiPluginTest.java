@@ -3,7 +3,6 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.util.BeanManagerController;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
@@ -11,6 +10,7 @@ import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
 
@@ -40,6 +40,10 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Inject
     MessageProvider provider;
+
+
+    @Inject
+    Instance<OSGiProject> currentOsgiProject;
 
     @Test
     public void shouldExecuteOSGiScan() throws Exception {
@@ -326,15 +330,15 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
     }
 
+
     @Test
     public void shouldCountLinesOfCode() throws Exception {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi loc");
         assertTrue(getOutput().startsWith("module1:214"));
-        OSGiProject osGiProject = BeanManagerController.getBeanByType(getBeanManager(),OSGiProject.class);
-        assertNotNull(osGiProject);
-        assertTrue(osGiProject.getLinesOfCode().equals(216));
+        assertNotNull(currentOsgiProject.get());
+        assertTrue(currentOsgiProject.get().getLinesOfCode().equals(216L));
     }
 
     /**
