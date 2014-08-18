@@ -100,6 +100,14 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine()+ "module3"));
     }
 
+    @Test
+    public void shouldListBundlesInMavenProjectWithManifestInRoot() throws Exception {
+        initializeOSGiMavenProjectWithManifestInRoot();
+        resetOutput();
+        getShell().execute("osgi listBundles");
+        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine()+ "module3"));
+    }
+
 
     @Test
     public void module3ShouldUseDeclarativeServices() throws Exception {

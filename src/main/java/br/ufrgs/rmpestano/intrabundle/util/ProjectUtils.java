@@ -88,6 +88,12 @@ public class ProjectUtils implements Serializable {
 
 
     public static Resource<?> getProjectManifestFolder(DirectoryResource root) {
+
+        //always look into META-INF first
+        if(root.getChild("META-INF").exists() && hasOSGiManifest(root.getChild("META-INF"))){
+            return root.getChild("META-INF");
+        }
+
         if (isMavenBndProject(root)) {
             return root;
         }

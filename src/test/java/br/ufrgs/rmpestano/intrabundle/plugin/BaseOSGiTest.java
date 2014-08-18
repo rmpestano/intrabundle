@@ -48,6 +48,22 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     }
 
     /**
+     * creates an OSGi maven based project where we have a master module
+     * that aggregates sub modules(also maven projects) that are OSGi bundles
+     * with manifest in moduleRoot/META-INF instead of moduleRoot/src/main/resources/META-INF
+     */
+    public Project initializeOSGiMavenProjectWithManifestInRoot() throws Exception {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        addPom(main);
+        addMavenBundleWithManifestInRoot(main, "module1");
+        addMavenBundleWithManifestInRoot(main, "module2");
+        addMavenBundleWithManifestInRoot(main, "module3");
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
+    /**
      * create an OSGi project where bundles are separared by packages.
      * A real example of that is the Jitsi project:https://github.com/jitsi/jitsi
      */
@@ -194,6 +210,19 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
         addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
+        addMavenActivator(bundle);
+        addPom(bundle);
+    }
+
+    /**
+     * maven bundle with manifest in root/META-INF instead of src/main/resources/META-INF
+     * @param dir
+     * @param module
+     */
+    protected void addMavenBundleWithManifestInRoot(DirectoryResource dir, String module) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
+        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
+        DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
         addMavenActivator(bundle);
         addPom(bundle);
     }
