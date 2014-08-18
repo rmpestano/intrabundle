@@ -54,6 +54,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
         this.resourceFactory = resourceFactory;
     }
 
+
     @Override
     public <F extends Facet> F getFacet(final Class<F> type) {
         try {

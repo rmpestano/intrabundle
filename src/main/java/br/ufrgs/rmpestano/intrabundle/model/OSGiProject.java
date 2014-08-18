@@ -20,4 +20,5 @@ public interface OSGiProject extends Serializable{
     String getRevision();
 
     String getVersion();
+
 }

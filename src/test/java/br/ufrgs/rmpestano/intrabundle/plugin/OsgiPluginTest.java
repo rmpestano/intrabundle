@@ -2,6 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -13,9 +14,9 @@ import org.junit.Test;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class OsgiPluginTest extends BaseOSGiTest {
 
@@ -224,6 +225,13 @@ public class OsgiPluginTest extends BaseOSGiTest {
         queueInputLines("1");
         getShell().execute("osgi dependencies");
         Assert.assertTrue(getOutput().contains("module3"));
+        Set<OSGiModule> dependencies = currentOsgiProject.get().getModulesDependencies().keySet();
+        for (OSGiModule dependency : dependencies) {
+            if(dependency.getName().equals("module1")){
+                assertEquals(currentOsgiProject.get().getModulesDependencies().get(dependency).size(),1);
+                assertTrue(currentOsgiProject.get().getModulesDependencies().get(dependency).get(0).getName().equals("module3"));
+            }
+        }
     }
 
     @Test
@@ -254,6 +262,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         queueInputLines("2");
         getShell().execute("osgi requiredBundles");
         Assert.assertTrue(getOutput().contains("org.eclipse.osee.vaadin.widgets"));
+        assertTrue(currentOsgiProject.get().getModules().get(1).getRequiredBundles().contains("org.eclipse.osee.vaadin.widgets"));
     }
 
     @Test
@@ -274,6 +283,8 @@ public class OsgiPluginTest extends BaseOSGiTest {
         queueInputLines("1");
         getShell().execute("osgi staleReferences");
         assertTrue(getOutput().contains("HelloStaleManager.java"));
+        assertTrue(currentOsgiProject.get().getModules().get(0).getStaleReferences().get(0).getName().equals("HelloStaleManager.java"));
+
     }
 
     @Test
@@ -285,6 +296,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         assertTrue(getOutput().contains("module1"));
         assertTrue(getOutput().contains("module2"));
         assertTrue(getOutput().contains("module3"));
+        assertTrue(currentOsgiProject.get().getModules().get(0).getDeclaresPermissions());
     }
 
     @Test
@@ -328,6 +340,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi countBundles");
         Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
+        assertEquals(currentOsgiProject.get().getModules().size(),3);
     }
 
 
@@ -362,6 +375,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProjectWithTestBundles();
         resetOutput();
         getShell().execute("osgi lot");
+        assertTrue(currentOsgiProject.get().getLinesOfTestCode().equals(2L));
         assertTrue(getOutput().contains("Total lines of test code:2"));
     }
 
