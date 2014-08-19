@@ -37,6 +37,9 @@ public class MetricsCalculator implements Metrics {
   }
 
   public MetricScore getBundleDependencyMetric(OSGiModule osGiModule) {
+    if(getCurrentOSGiProject() == null){
+        return MetricScore.REGULAR;
+    }
     int numberOfDependencies = getCurrentOSGiProject().getModulesDependencies().get(osGiModule).size();
 
     // not depending on others modules is state of art
@@ -97,7 +100,10 @@ public class MetricsCalculator implements Metrics {
   }
 
   public OSGiProject getCurrentOSGiProject() {
-    return currentOSGiProject.get();
+      try {
+          return currentOSGiProject.get();
+      }catch (Exception e){}
+    return null;
   }
 
   public MetricPoints calculateBundleMetric(OSGiModule bundle) {
@@ -105,11 +111,15 @@ public class MetricsCalculator implements Metrics {
     int bundleScore = 0;
     bundleScore += getLocMetric(bundle).getValue();
     numMetrics++;
-    bundleScore += getBundleDependencyMetric(bundle).getValue();
-    numMetrics++;
+    if(getCurrentOSGiProject() != null){
+        bundleScore += getBundleDependencyMetric(bundle).getValue();
+        numMetrics++;
+    }
     bundleScore += getDeclaresPermissionMetric(bundle).getValue();
     numMetrics++;
     bundleScore += usesFrameworkToManageServicesMetric(bundle).getValue();
+    numMetrics++;
+    bundleScore += getPublishesInterfaceMetric(bundle).getValue();
     numMetrics++;
     bundleScore += hasStaleReferencesMetric(bundle).getValue();
     numMetrics++;

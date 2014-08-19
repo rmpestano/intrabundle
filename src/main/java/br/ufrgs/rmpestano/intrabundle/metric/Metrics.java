@@ -14,30 +14,33 @@ public interface Metrics {
      * this metric is based on bundle lines of code
      * its based on the fact that the less lines of code
      * the more cohesive the bundle is
+     *
      * @param bundle
      * @return
      */
     MetricScore getLocMetric(OSGiModule bundle);
 
 
-  /**
-   * this metric is based on bundle dependencies
-   * its based on the fact that the less bundle it
-   * depends the less coupled it is
-   * @param bundle
-   * @return
-   */
+    /**
+     * this metric is based on bundle dependencies
+     * its based on the fact that the less bundle it
+     * depends the less coupled it is
+     *
+     * @param bundle
+     * @return
+     */
     MetricScore getBundleDependencyMetric(OSGiModule bundle);
 
 
     MetricScore getPublishesInterfaceMetric(OSGiModule bundle);
 
-  /**
-   * verifies if bundle uses a framework to manage services lifecycle, frameworks being tracker are:
-   * declarativeServices, bluePrint and ipojo
-   * @param bundle
-   * @return MetricScore#STATE_OF_ART if use a framework,  MetricScore#REGULAR if no framework is used
-   */
+    /**
+     * verifies if bundle uses a framework to manage services lifecycle, frameworks being tracker are:
+     * declarativeServices, bluePrint and ipojo
+     *
+     * @param bundle
+     * @return MetricScore#STATE_OF_ART if use a framework,  MetricScore#REGULAR if no framework is used
+     */
     MetricScore usesFrameworkToManageServicesMetric(OSGiModule bundle);
 
     MetricScore hasStaleReferencesMetric(OSGiModule bundle);

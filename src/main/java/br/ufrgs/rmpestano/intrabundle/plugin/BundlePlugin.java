@@ -2,6 +2,8 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
+import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.ShellPrompt;
@@ -25,6 +27,8 @@ public class BundlePlugin implements Plugin {
     @Inject
     MessageProvider messageProvider;
 
+    @Inject
+    Metrics metrics;
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
@@ -151,6 +155,19 @@ public class BundlePlugin implements Plugin {
     @Command(value = "numberOfIpojoComponents", help = "count number of Ipojo components")
     public void numberOfIpojoComponents(PipeOut out){
         out.println(bundle.getNumberOfIpojoComponents().toString());
+    }
+
+    @Command(value = "metrics", help = "calculate bundle metric points")
+    public void metrics(PipeOut out){
+        out.println(messageProvider.getMessage("metrics"));
+        out.println(messageProvider.getMessage("metrics.lot",metrics.getLocMetric(bundle)));
+        out.println(messageProvider.getMessage("metrics.interfaces",metrics.getPublishesInterfaceMetric(bundle)));
+        out.println(messageProvider.getMessage("metrics.staleReferences",metrics.hasStaleReferencesMetric(bundle)));
+        out.println(messageProvider.getMessage("metrics.usesFramework",metrics.usesFrameworkToManageServicesMetric(bundle)));
+        out.println(messageProvider.getMessage("metrics.declaresPermission",metrics.usesFrameworkToManageServicesMetric(bundle)));
+        out.println("=========================");
+        MetricPoints points = metrics.calculateBundleMetric(bundle);
+        out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore()));
     }
 
 }
