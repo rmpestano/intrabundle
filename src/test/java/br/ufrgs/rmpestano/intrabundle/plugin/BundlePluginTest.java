@@ -30,6 +30,7 @@ public class BundlePluginTest extends BaseBundleTest {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addClass(ProjectUtils.class)
