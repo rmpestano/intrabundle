@@ -2,11 +2,11 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.util.BeanManagerController;
 import junit.framework.Assert;
 import org.jboss.forge.shell.util.OSUtils;
 import org.junit.Test;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
 
@@ -17,6 +17,9 @@ public class BundlePluginTest extends BaseBundleTest {
 
     @Inject
     MessageProvider provider;
+
+    @Inject
+    Instance<OSGiModule> currentBundle;
 
 
     @Test
@@ -191,7 +194,7 @@ public class BundlePluginTest extends BaseBundleTest {
         getShell().execute("bundle activator");
         String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
         Assert.assertTrue(getOutput().contains(expected));
-        OSGiModule osGiModule = BeanManagerController.getBeanByType(getBeanManager(), OSGiModule.class);
+        OSGiModule osGiModule = currentBundle.get();
         assertNotNull(osGiModule);
         Assert.assertTrue(osGiModule.getActivator().getFullyQualifiedName().equals(expected));
     }
