@@ -1,14 +1,11 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import junit.framework.Assert;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
-import org.jboss.forge.test.SingletonAbstractShellTest;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 
 import javax.enterprise.inject.Instance;
@@ -20,24 +17,7 @@ import static org.junit.Assert.*;
 
 public class OsgiPluginTest extends BaseOSGiTest {
 
-    @Deployment
-    public static JavaArchive getDeployment() {
-        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
-                .addClass(OsgiPlugin.class)
-                .addClass(OSGiScanPlugin.class)
-                .addClass(JasperManager.class)
-                .addClass(LocalePlugin.class);
-        //System.out.println(jar.toString(true));
-        return jar;
 
-    }
 
     @Inject
     MessageProvider provider;
@@ -69,7 +49,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine() + "module3"));
     }
 
     /**
@@ -81,7 +61,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProjectWithBundlesInSourceCode();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine() + "module3"));
     }
 
     /**
@@ -105,7 +85,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine()+ "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine()+ "module3"));
     }
 
     @Test
@@ -113,7 +93,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiMavenProjectWithManifestInRoot();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine()+ "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine()+ "module3"));
     }
 
 
@@ -305,7 +285,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi declaresPermissions");
-        assertTrue(getOutput().startsWith("Listing modules that declares permissions:" + getNewLine()+"module1"));
+        assertTrue(getOutput().startsWith("Listing modules that declares permissions:" + TestUtils.getNewLine()+"module1"));
     }
 
     /**
@@ -316,7 +296,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiBNDProject();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine() + "module3"));
     }
 
     /**
@@ -331,7 +311,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + getNewLine() + "module2" + getNewLine() + "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine() + "module3"));
     }
 
     @Test
@@ -350,9 +330,9 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("osgi loc");
-        assertTrue(getOutput().startsWith("module1:214"));
+        assertTrue(getOutput().startsWith("module1:255"));
         assertNotNull(currentOsgiProject.get());
-        assertTrue(currentOsgiProject.get().getLinesOfCode().equals(216L));
+        assertTrue(currentOsgiProject.get().getLinesOfCode().equals(339L));
     }
 
     /**

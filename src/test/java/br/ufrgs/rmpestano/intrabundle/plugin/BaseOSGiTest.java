@@ -1,11 +1,13 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
-import org.jboss.forge.resources.Resource;
-import org.jboss.forge.shell.util.OSUtils;
 import org.jboss.forge.test.SingletonAbstractShellTest;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 import java.io.IOException;
 
@@ -14,7 +16,25 @@ import java.io.IOException;
  */
 public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
-    public String newLine;
+
+    @Deployment
+    public static JavaArchive getDeployment() {
+        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
+                .addClass(OsgiPlugin.class)
+                .addClass(OSGiScanPlugin.class)
+                .addClass(JasperManager.class)
+                .addClass(LocalePlugin.class);
+        //System.out.println(jar.toString(true));
+        return jar;
+
+    }
 
     /**
      * creates an eclipse based OSGi project with a main folder
@@ -23,11 +43,11 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBundle(main, "module1");
-        addHelloManager((DirectoryResource) main.getChild("module1"));
-        addPermissions((DirectoryResource) main.getChild("module1"));
-        addBundle(main, "module2");
-        addBundle(main, "module3");
+        TestUtils.addBundle(main, "module1");
+        TestUtils.addHelloManager((DirectoryResource) main.getChild("module1"));
+        TestUtils.addPermissions((DirectoryResource) main.getChild("module1"));
+        TestUtils.addBundle(main, "module2");
+        TestUtils.addBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -39,10 +59,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiMavenProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addPom(main);
-        addMavenBundle(main, "module1");
-        addMavenBundle(main, "module2");
-        addMavenBundle(main, "module3");
+        TestUtils.addPom(main);
+        TestUtils.addMavenBundle(main, "module1");
+        TestUtils.addMavenBundle(main, "module2");
+        TestUtils.addMavenBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -55,10 +75,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiMavenProjectWithManifestInRoot() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addPom(main);
-        addMavenBundleWithManifestInRoot(main, "module1");
-        addMavenBundleWithManifestInRoot(main, "module2");
-        addMavenBundleWithManifestInRoot(main, "module3");
+        TestUtils.addPom(main);
+        TestUtils.addMavenBundleWithManifestInRoot(main, "module1");
+        TestUtils.addMavenBundleWithManifestInRoot(main, "module2");
+        TestUtils.addMavenBundleWithManifestInRoot(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -72,16 +92,16 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource main = root.getOrCreateChildDirectory("main");
         DirectoryResource basePackage = main.getOrCreateChildDirectory("src");
         DirectoryResource mod1 = basePackage.getOrCreateChildDirectory("module1");
-        addManifest(mod1, "/MANIFEST-in-mod1-source.MF");
-        addActivatorInSource(mod1.getOrCreateChildDirectory("br").getOrCreateChildDirectory("ufrgs").getOrCreateChildDirectory("rmpestano").getOrCreateChildDirectory("activator"));
+        TestUtils.addManifest(mod1, "/MANIFEST-in-mod1-source.MF");
+        TestUtils.addActivatorInSource(mod1.getOrCreateChildDirectory("br").getOrCreateChildDirectory("ufrgs").getOrCreateChildDirectory("rmpestano").getOrCreateChildDirectory("activator"));
 
         DirectoryResource mod2 = basePackage.getOrCreateChildDirectory("module2");
-        addManifest(mod2, "/MANIFEST.MF");
-        addActivator(mod2);
+        TestUtils.addManifest(mod2, "/MANIFEST.MF");
+        TestUtils.addActivator(mod2);
 
         DirectoryResource mod3 = basePackage.getOrCreateChildDirectory("module3");
-        addManifest(mod3, "/MANIFEST.MF");
-        addActivator(mod3);
+        TestUtils.addManifest(mod3, "/MANIFEST.MF");
+        TestUtils.addActivator(mod3);
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -93,9 +113,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         DirectoryResource root = createTempFolder();
         DirectoryResource level1 = root.getOrCreateChildDirectory("level1");
         DirectoryResource level2 = level1.getOrCreateChildDirectory("level2");
-        addBundle(level2, "module1");
-        addBundle(level2, "module2");
-        addBundle(level2, "module3");
+        TestUtils.addBundle(level2, "module1");
+        TestUtils.addBundle(level2, "module2");
+        TestUtils.addBundle(level2, "module3");
         getShell().setCurrentResource(level1);
     }
 
@@ -106,9 +126,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeOSGiBNDProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addBndBundle(main, "module1");
-        addBndBundle(main, "module2");
-        addBndBundle(main, "module3");
+        TestUtils.addBndBundle(main, "module1");
+        TestUtils.addBndBundle(main, "module2");
+        TestUtils.addBndBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -120,9 +140,9 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     public Project initializeMavenOSGiBNDProject() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("main");
-        addMavenBndBundle(main, "module2");
-        addMavenBndBundle(main, "module1");
-        addMavenBndBundle(main, "module3");
+        TestUtils.addMavenBndBundle(main, "module2");
+        TestUtils.addMavenBndBundle(main, "module1");
+        TestUtils.addMavenBndBundle(main, "module3");
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -146,26 +166,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         return getProject();
     }
 
-    private void addPom(DirectoryResource root) {
-        FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
-        if (!pom.exists()) {
-            pom.setContents(getClass().getResourceAsStream("/pomWithDependencies.xml"));
-        }
-    }
 
-    private void addBndPom(DirectoryResource root) {
-        FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
-        if (!pom.exists()) {
-            pom.setContents(getClass().getResourceAsStream("/pom_bnd.xml"));
-        }
-    }
-
-
-    protected void addBundle(DirectoryResource dir, String module) {
-        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
-        addActivator(bundle);
-    }
 
     /**
      * test code in dedicated test folder
@@ -175,10 +176,10 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
      */
     protected void addTestBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
-        addActivator(bundle);
+        TestUtils.addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
+        TestUtils.addActivator(bundle);
         DirectoryResource testFolder = dir.getChildDirectory("test");
-        addMetaInfWithManifest(testFolder, "/MANIFEST-" + module + ".MF");
+        TestUtils.addMetaInfWithManifest(testFolder, "/MANIFEST-" + module + ".MF");
         DirectoryResource aPackage = testFolder.getChildDirectory("package");
         FileResource<?> test1 = (FileResource<?>) aPackage.getChild("TestClass1.java");
         test1.setContents("import junit.framework.Assert; public class TestClass {@Test public void aTest{}}");
@@ -195,8 +196,8 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
      */
     protected void addTestInsideBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
-        addActivator(bundle);
+        TestUtils.addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
+        TestUtils.addActivator(bundle);
         DirectoryResource testFolder = bundle.getChildDirectory("test");
         DirectoryResource aPackage = testFolder.getChildDirectory("package");
         FileResource<?> test1 = (FileResource<?>) aPackage.getChild("TestClass1.java");
@@ -206,100 +207,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
         test2.setContents("import org.testng.Assert; public class TestClass {@Test public void aTest{}}");
     }
 
-    protected void addMavenBundle(DirectoryResource dir, String module) {
-        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
-        addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
-        addMavenActivator(bundle);
-        addPom(bundle);
-    }
-
-    /**
-     * maven bundle with manifest in root/META-INF instead of src/main/resources/META-INF
-     * @param dir
-     * @param module
-     */
-    protected void addMavenBundleWithManifestInRoot(DirectoryResource dir, String module) {
-        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
-        DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
-        addMavenActivator(bundle);
-        addPom(bundle);
-    }
-
-    protected void addMavenBndBundle(DirectoryResource dir, String module) {
-        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMavenActivator(bundle);
-        addBndPom(bundle);
-    }
-
-    protected void addBndBundle(DirectoryResource dir, String module) {
-        DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addManifest(bundle, "/bnd.bnd");
-    }
-
-    private void addMetaInfWithManifest(DirectoryResource root, String manifestName) {
-        DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
-        addManifest(metaInf, manifestName);
-    }
 
 
-    public void addManifest(Resource<?> parent, String manifestName) {
-        FileResource<?> fileResource = (FileResource<?>) parent.getChild(manifestName);
-        if (!fileResource.exists()) {
-            fileResource.setContents(getClass().getResourceAsStream(manifestName));
-        }
-    }
 
-    private void addActivator(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("activator");
-        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents("activator content");
-    }
-
-    private void addActivatorInSource(DirectoryResource root) {
-        FileResource<?> activator = (FileResource<?>) root.getChild("Activator.java");
-        activator.setContents("activator content");
-    }
-
-    private void addMavenActivator(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("main").getOrCreateChildDirectory("java").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("activator");
-        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents("activator content");
-    }
-
-    private void addHelloManager(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("manager");
-        FileResource<?> manager = (FileResource<?>) resource.getChild("HelloManager.java");
-        manager.setContents(getClass().getResourceAsStream("/HelloManager.java"));
-        FileResource<?> staleManager = (FileResource<?>) resource.getChild("HelloStaleManager.java");
-        staleManager.setContents(getClass().getResourceAsStream("/HelloStaleManager.java"));
-    }
-
-    private void addPermissions(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
-        FileResource<?> permissions = (FileResource<?>) resource.getChild("permissions.perm");
-        permissions.setContents("permissions content");
-    }
-
-
-    public String getNewLine() {
-        if (newLine == null) {
-            newLine = OSUtils.isWindows() ? "\r\n" : "\n";
-        }
-        return newLine;
-    }
 }

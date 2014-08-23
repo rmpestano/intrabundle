@@ -1,15 +1,10 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.util.BeanManagerController;
-import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import junit.framework.Assert;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.shell.util.OSUtils;
-import org.jboss.forge.test.SingletonAbstractShellTest;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -23,24 +18,6 @@ public class BundlePluginTest extends BaseBundleTest {
     @Inject
     MessageProvider provider;
 
-    @Deployment
-    public static JavaArchive getDeployment() {
-        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
-                .addClass(ProjectUtils.class)
-                .addClass(BundlePlugin.class).
-                addClass(LocalePlugin.class).
-                addClass(BundleProjectLocator.class)
-                ;
-        //System.out.println(jar.toString(true));
-        return jar;
-    }
 
     @Test
     public void shouldUseDeclarativeServices() throws Exception {

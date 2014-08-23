@@ -1,28 +1,50 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
+import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
-import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
  * Created by rmpestano on 1/24/14.
  */
 public abstract class BaseBundleTest extends SingletonAbstractShellTest {
 
+    @Deployment
+    public static JavaArchive getDeployment() {
+        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
+                .addClass(ProjectUtils.class)
+                .addClass(BundlePlugin.class).
+                        addClass(LocalePlugin.class).
+                        addClass(BundleProjectLocator.class)
+                ;
+        //System.out.println(jar.toString(true));
+        return jar;
+    }
 
 
     public Project initializeOSGiProject() throws Exception{
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("module");
-        addMetaInf(main, "/MANIFEST.MF");
-        addActivator(main);
-        addTestClass(main);
-        addAbstractClass(main);
-        addInterface(main);
-        addPermissions(main);
-        addExportedPackage(main);
-        addHelloManager(main);
+        TestUtils.addMetaInfWithManifest(main, "/MANIFEST.MF");
+        TestUtils.addActivator(main);
+        TestUtils.addTestClass(main);
+        TestUtils.addAbstractClass(main);
+        TestUtils.addInterface(main);
+        TestUtils.addPermissions(main);
+        TestUtils.addExportedPackage(main);
+        TestUtils.addHelloManager(main);
         getShell().setCurrentResource(main);
         return getProject();
     }
@@ -30,99 +52,15 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
     public Project initializeOSGiProjectWithIpojoComponent() throws Exception{
         DirectoryResource root = createTempFolder();
         DirectoryResource main = root.getOrCreateChildDirectory("module");
-        addMetaInf(main, "/MANIFEST.MF");
-        addActivator(main);
-        addTestClass(main);
-        addPermissions(main);
-        addExportedPackage(main);
-        addHelloManager(main);
-        addIpojoComponent(main);
+        TestUtils.addMetaInfWithManifest(main, "/MANIFEST.MF");
+        TestUtils.addActivator(main);
+        TestUtils.addTestClass(main);
+        TestUtils.addPermissions(main);
+        TestUtils.addExportedPackage(main);
+        TestUtils.addHelloManager(main);
+        TestUtils.addIpojoComponent(main);
         getShell().setCurrentResource(main);
         return getProject();
-    }
-
-    private void addHelloManager(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("manager");
-        FileResource<?> manager = (FileResource<?>) resource.getChild("HelloManager.java");
-        manager.setContents(getClass().getResourceAsStream("/HelloManager.java"));
-        FileResource<?> staleManager = (FileResource<?>) resource.getChild("HelloStaleManager.java");
-        staleManager.setContents(getClass().getResourceAsStream("/HelloStaleManager.java"));
-    }
-
-    private void addPermissions(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("OSGI-INF");
-        FileResource<?> permissions = (FileResource<?>) resource.getChild("permissions.perm");
-        permissions.setContents("permissions content");
-    }
-
-    private void addMetaInf(DirectoryResource root,String manifestName) {
-        DirectoryResource metaInf = root.getOrCreateChildDirectory("META-INF");
-        FileResource<?> fileResource = (FileResource<?>) metaInf.getChild("MANIFEST.MF");
-        if(!fileResource.exists()){
-            fileResource.setContents(getClass().getResourceAsStream(manifestName));
-
-        }
-    }
-
-    private void addActivator(DirectoryResource root){
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("activator");
-        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents(getClass().getResourceAsStream("/Activator.java"));
-    }
-
-    private void addIpojoComponent(DirectoryResource root){
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("service");
-        FileResource<?> activator = (FileResource<?>) resource.getChild("IpojoService.java");
-        activator.setContents(getClass().getResourceAsStream("/IpojoService.java"));
-    }
-
-    private void addTestClass(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("test").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano");
-        FileResource<?> testClass = (FileResource<?>) resource.getChild("TestClass.java");
-        testClass.setContents("import org.junit.*; test class content");
-    }
-
-    private void addAbstractClass(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano");
-        FileResource<?> abstractClass = (FileResource<?>) resource.getChild("AbstractClass.java");
-        abstractClass.setContents(getClass().getResourceAsStream("/AbstractService.java"));
-    }
-
-    private void addInterface(DirectoryResource root) {
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano");
-        FileResource<?> abstractClass = (FileResource<?>) resource.getChild("AInterface.java");
-        abstractClass.setContents("public interface MyInterface { }");
-    }
-
-    private void addExportedPackage(DirectoryResource root){
-     DirectoryResource resource =  root.getOrCreateChildDirectory("src").
-               getOrCreateChildDirectory("br").
-               getOrCreateChildDirectory("ufrgs").
-               getOrCreateChildDirectory("rmpestano").
-               getOrCreateChildDirectory("api");
-        FileResource<?> exportedInterface = (FileResource<?>)resource.getChild("ExportedClass.java");
-        exportedInterface.setContents("package abcd;\n public interface Interface{}");
     }
 
 
@@ -159,51 +97,30 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
 
     protected DirectoryResource addMavenBndBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addMavenActivator(bundle);
-        addBndPom(bundle);
+        TestUtils.addMavenActivator(bundle);
+        TestUtils.addBndPom(bundle);
         return bundle;
     }
 
     protected DirectoryResource addBndBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
-        addActivator(bundle);
-        addBnd(bundle);
+        TestUtils.addActivator(bundle);
+        TestUtils.addBnd(bundle);
         return bundle;
     }
 
     protected DirectoryResource addBndBundleInResources(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         DirectoryResource resources = bundle.getOrCreateChildDirectory("resources");
-        addActivator(bundle);
-        addBnd(resources);
+        TestUtils.addActivator(bundle);
+        TestUtils.addBnd(resources);
         return bundle;
     }
 
 
-    private void addMavenActivator(DirectoryResource root){
-        DirectoryResource resource = root.getOrCreateChildDirectory("src").
-                getOrCreateChildDirectory("main").getOrCreateChildDirectory("java").
-                getOrCreateChildDirectory("br").
-                getOrCreateChildDirectory("ufrgs").
-                getOrCreateChildDirectory("rmpestano").
-                getOrCreateChildDirectory("activator");
-        FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents("public class Activator{}");
-    }
+    
 
-    private void addBndPom(DirectoryResource root) {
-        FileResource<?> pom = (FileResource<?>) root.getChild("pom.xml");
-        if(!pom.exists()){
-            pom.setContents(getClass().getResourceAsStream("/pom_bnd.xml"));
-        }
-    }
-
-    private void addBnd(DirectoryResource root) {
-        FileResource<?> bnd = (FileResource<?>) root.getChild("bnd.bnd");
-        if(!bnd.exists()){
-            bnd.setContents(getClass().getResourceAsStream("/bnd.bnd"));
-        }
-    }
+   
 
 
 }
