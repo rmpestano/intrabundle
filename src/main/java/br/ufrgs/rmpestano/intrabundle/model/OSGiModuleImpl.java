@@ -2,6 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -42,6 +43,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Integer numberOfInterfaces;
     private ManifestMetadata manifestMetadata;
     private boolean classesVisited;
+    private MetricScore metricScore;
 
     public OSGiModuleImpl() {
         factory = null;

@@ -2,6 +2,8 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
+import java.util.List;
+
 /**
  * Created by RAFAEL-PESTANO on 18/08/2014.
  */
@@ -11,11 +13,10 @@ public class MetricPoints {
     private int bundlePoints;
     private int maxPoints;
     private int numberOfMetrics;
+    private List<Metric> bundleMetrics;
 
-    public MetricPoints(int bundlePoints, int maxPoints, int numberOfMetrics) {
-        this.bundlePoints = bundlePoints;
-        this.maxPoints = maxPoints;
-        this.numberOfMetrics = numberOfMetrics;
+    public MetricPoints(List<Metric> bundleMetrics) {
+        this.bundleMetrics = bundleMetrics;
     }
 
     public MetricScore getFinalScore() {

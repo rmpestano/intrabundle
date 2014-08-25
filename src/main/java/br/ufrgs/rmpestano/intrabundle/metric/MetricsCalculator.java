@@ -1,13 +1,17 @@
 package br.ufrgs.rmpestano.intrabundle.metric;
 
+import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rmpestano on 8/17/14.
@@ -91,11 +95,12 @@ public class MetricsCalculator implements Metrics {
     return MetricScore.ANTI_PATTERN;
   }
 
-  public MetricScore getDeclaresPermissionMetric(OSGiModule bundle) {
+  public Metric getDeclaresPermissionMetric(OSGiModule bundle) {
+    MetricName name = MetricName.DECLARES_PERMISSION;
     if (bundle.getDeclaresPermissions()) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(name,MetricScore.STATE_OF_ART);
     } else {
-      return MetricScore.REGULAR;
+      return new Metric(name,MetricScore.REGULAR);
     }
   }
 
@@ -107,8 +112,7 @@ public class MetricsCalculator implements Metrics {
   }
 
   public MetricPoints calculateBundleMetric(OSGiModule bundle) {
-    int numMetrics = 0;
-    int bundleScore = 0;
+    List<Metric> bundleMetrics = new ArrayList<Metric>();
     bundleScore += getLocMetric(bundle).getValue();
     numMetrics++;
     if(getCurrentOSGiProject() != null){
@@ -126,7 +130,7 @@ public class MetricsCalculator implements Metrics {
     // maximum points a bundle can get
     int maxPoints = numMetrics * MetricScore.STATE_OF_ART.getValue();
 
-    MetricPoints metricPoints = new MetricPoints(bundleScore, maxPoints, numberOfMetrics);
+    MetricPoints metricPoints = new MetricPoints(bundleMetrics);
     return metricPoints;
 
   }
