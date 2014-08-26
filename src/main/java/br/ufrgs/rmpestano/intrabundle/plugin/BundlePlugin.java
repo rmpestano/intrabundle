@@ -160,12 +160,12 @@ public class BundlePlugin implements Plugin {
     @Command(value = "metrics", help = "calculate bundle metric points")
     public void metrics(PipeOut out){
         out.println(messageProvider.getMessage("metrics.result"));
-        out.println(messageProvider.getMessage("metrics.loc")+":"+metrics.getLocMetric(bundle));
-        out.println(messageProvider.getMessage("metrics.interfaces")+":"+metrics.getPublishesInterfaceMetric(bundle));
-        out.println(messageProvider.getMessage("metrics.staleReferences")+":"+metrics.hasStaleReferencesMetric(bundle));
-        out.println(messageProvider.getMessage("metrics.usesFramework")+":"+metrics.usesFrameworkToManageServicesMetric(bundle));
-        out.println(messageProvider.getMessage("metrics.declaresPermission")+":"+metrics.getDeclaresPermissionMetric(bundle));
-        out.println(messageProvider.getMessage("metrics.bundleDependencies")+":"+metrics.getBundleDependencyMetric(bundle));
+        out.println(messageProvider.getMessage("metrics.loc")+":"+metrics.getLocMetric(bundle).getScore());
+        out.println(messageProvider.getMessage("metrics.interfaces")+":"+metrics.getPublishesInterfaceMetric(bundle).getScore());
+        out.println(messageProvider.getMessage("metrics.staleReferences")+":"+metrics.hasStaleReferencesMetric(bundle).getScore());
+        out.println(messageProvider.getMessage("metrics.usesFramework")+":"+metrics.usesFrameworkToManageServicesMetric(bundle).getScore());
+        out.println(messageProvider.getMessage("metrics.declaresPermission")+":"+metrics.getDeclaresPermissionMetric(bundle).getScore());
+        out.println(messageProvider.getMessage("metrics.bundleDependencies")+":"+metrics.getBundleDependencyMetric(bundle).getScore());
         out.println("=========================");
         MetricPoints points = metrics.calculateBundleMetric(bundle);
         out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore()));

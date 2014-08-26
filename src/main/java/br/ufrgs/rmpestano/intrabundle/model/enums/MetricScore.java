@@ -15,4 +15,5 @@ public enum MetricScore {
     public int getValue() {
         return value;
     }
+
 }

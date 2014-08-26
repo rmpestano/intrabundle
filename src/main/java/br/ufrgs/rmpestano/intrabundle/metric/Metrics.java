@@ -3,7 +3,7 @@ package br.ufrgs.rmpestano.intrabundle.metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
+import br.ufrgs.rmpestano.intrabundle.model.Metric;
 
 /**
  * Created by rmpestano on 8/18/14.
@@ -18,7 +18,7 @@ public interface Metrics {
      * @param bundle
      * @return
      */
-    MetricScore getLocMetric(OSGiModule bundle);
+    Metric getLocMetric(OSGiModule bundle);
 
 
     /**
@@ -29,23 +29,23 @@ public interface Metrics {
      * @param bundle
      * @return
      */
-    MetricScore getBundleDependencyMetric(OSGiModule bundle);
+    Metric getBundleDependencyMetric(OSGiModule bundle);
 
 
-    MetricScore getPublishesInterfaceMetric(OSGiModule bundle);
+    Metric getPublishesInterfaceMetric(OSGiModule bundle);
 
     /**
      * verifies if bundle uses a framework to manage services lifecycle, frameworks being tracker are:
      * declarativeServices, bluePrint and ipojo
      *
      * @param bundle
-     * @return MetricScore#STATE_OF_ART if use a framework,  MetricScore#REGULAR if no framework is used
+     * @return Metric#STATE_OF_ART if use a framework,  Metric#REGULAR if no framework is used
      */
-    MetricScore usesFrameworkToManageServicesMetric(OSGiModule bundle);
+    Metric usesFrameworkToManageServicesMetric(OSGiModule bundle);
 
-    MetricScore hasStaleReferencesMetric(OSGiModule bundle);
+    Metric hasStaleReferencesMetric(OSGiModule bundle);
 
-    MetricScore getDeclaresPermissionMetric(OSGiModule bundle);
+    Metric getDeclaresPermissionMetric(OSGiModule bundle);
 
     OSGiProject getCurrentOSGiProject();
 

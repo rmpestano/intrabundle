@@ -24,75 +24,79 @@ public class MetricsCalculator implements Metrics {
 
   private final int     numberOfMetrics = 8;
 
-  public MetricScore getLocMetric(OSGiModule bundle) {
+  public Metric getLocMetric(OSGiModule bundle) {
+    MetricName name = MetricName.LOC;
     long linesOfCode = bundle.getLinesOfCode();
 
     if (linesOfCode <= 300) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(name,MetricScore.STATE_OF_ART);
     } else if (linesOfCode <= 500) {
-      return MetricScore.VERY_GOOD;
+        return new Metric(name,MetricScore.VERY_GOOD);
     } else if (linesOfCode <= 750) {
-      return MetricScore.GOOD;
+        return new Metric(name,MetricScore.GOOD);
     } else if (linesOfCode <= 1000) {
-      return MetricScore.REGULAR;
+        return new Metric(name,MetricScore.REGULAR);
     }
     // lines of code greater than 1000
-    return MetricScore.ANTI_PATTERN;
+    return new Metric(name,MetricScore.ANTI_PATTERN);
   }
 
-  public MetricScore getBundleDependencyMetric(OSGiModule osGiModule) {
+  public Metric getBundleDependencyMetric(OSGiModule osGiModule) {
+    MetricName name = MetricName.BUNDLE_DEPENDENCIES;
     if(getCurrentOSGiProject() == null){
-        return MetricScore.REGULAR;
+        return null;
     }
     int numberOfDependencies = getCurrentOSGiProject().getModulesDependencies().get(osGiModule).size();
 
     // not depending on others modules is state of art
     if (numberOfDependencies == 0) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(name,MetricScore.STATE_OF_ART);
     }
 
     if (numberOfDependencies <= 3) {
-      return MetricScore.VERY_GOOD;
+      return new Metric(name,MetricScore.VERY_GOOD);
     }
 
     if (numberOfDependencies <= 5) {
-      return MetricScore.GOOD;
+      return new Metric(name,MetricScore.GOOD);
     }
 
     if (numberOfDependencies <= 9) {
-      return MetricScore.REGULAR;
+      return new Metric(name,MetricScore.REGULAR);
     }
 
     // depending on 10 or more bundles is considered anti pattern(high coupled)
-    return MetricScore.ANTI_PATTERN;
+    return new Metric(name,MetricScore.ANTI_PATTERN);
   }
 
-  public MetricScore getPublishesInterfaceMetric(OSGiModule bundle) {
+  public Metric getPublishesInterfaceMetric(OSGiModule bundle) {
+    MetricName name = MetricName.PUBLISHES_INTERFACES;
     if (bundle.getPublishesInterfaces()) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(name,MetricScore.STATE_OF_ART);
     } else {
-      return MetricScore.REGULAR;
+      return new Metric(name,MetricScore.REGULAR);
     }
   }
 
-  public MetricScore usesFrameworkToManageServicesMetric(OSGiModule bundle) {
+  public Metric usesFrameworkToManageServicesMetric(OSGiModule bundle) {
     if (bundle.getUsesDeclarativeServices() || bundle.getUsesBlueprint() || bundle.getUsesIpojo()) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(MetricName.USES_FRAMEWORK,MetricScore.STATE_OF_ART);
     } else {
-      return MetricScore.REGULAR;
+      return new Metric(MetricName.USES_FRAMEWORK,MetricScore.REGULAR);
     }
   }
 
-  public MetricScore hasStaleReferencesMetric(OSGiModule bundle) {
+  public Metric hasStaleReferencesMetric(OSGiModule bundle) {
+    MetricName name = MetricName.STALE_REFERENCES;
     int nroOfStaleReferences = bundle.getStaleReferences().size();
     if (nroOfStaleReferences == 0) {
-      return MetricScore.STATE_OF_ART;
+      return new Metric(name,MetricScore.STATE_OF_ART);
     } else if (nroOfStaleReferences >= (bundle.getNumberOfClasses() / 25)) {
-      // 20% of classes has stale references
-      return MetricScore.REGULAR;
+      // 25% of classes has stale references
+      return new Metric(name,MetricScore.REGULAR);
     }
     // more than 25% of classes contains staleReferences
-    return MetricScore.ANTI_PATTERN;
+    return new Metric(name,MetricScore.ANTI_PATTERN);
   }
 
   public Metric getDeclaresPermissionMetric(OSGiModule bundle) {
@@ -113,23 +117,15 @@ public class MetricsCalculator implements Metrics {
 
   public MetricPoints calculateBundleMetric(OSGiModule bundle) {
     List<Metric> bundleMetrics = new ArrayList<Metric>();
-    bundleScore += getLocMetric(bundle).getValue();
-    numMetrics++;
+    bundleMetrics.add(getLocMetric(bundle));
     if(getCurrentOSGiProject() != null){
-        bundleScore += getBundleDependencyMetric(bundle).getValue();
-        numMetrics++;
+        bundleMetrics.add(getBundleDependencyMetric(bundle));
     }
-    bundleScore += getDeclaresPermissionMetric(bundle).getValue();
-    numMetrics++;
-    bundleScore += usesFrameworkToManageServicesMetric(bundle).getValue();
-    numMetrics++;
-    bundleScore += getPublishesInterfaceMetric(bundle).getValue();
-    numMetrics++;
-    bundleScore += hasStaleReferencesMetric(bundle).getValue();
-    numMetrics++;
+    bundleMetrics.add(getDeclaresPermissionMetric(bundle));
+    bundleMetrics.add(usesFrameworkToManageServicesMetric(bundle));
+    bundleMetrics.add(getPublishesInterfaceMetric(bundle));
+    bundleMetrics.add(hasStaleReferencesMetric(bundle));
     // maximum points a bundle can get
-    int maxPoints = numMetrics * MetricScore.STATE_OF_ART.getValue();
-
     MetricPoints metricPoints = new MetricPoints(bundleMetrics);
     return metricPoints;
 

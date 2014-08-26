@@ -12,11 +12,23 @@ public class MetricPoints {
     private MetricScore finalScore;
     private int bundlePoints;
     private int maxPoints;
-    private int numberOfMetrics;
     private List<Metric> bundleMetrics;
 
     public MetricPoints(List<Metric> bundleMetrics) {
         this.bundleMetrics = bundleMetrics;
+        int numMetrics = bundleMetrics.size();
+        maxPoints = numMetrics * MetricScore.STATE_OF_ART.getValue();
+        bundlePoints = calculateBundlePoints();
+    }
+
+    private int calculateBundlePoints() {
+        int totalPoints = 0;
+        for (Metric bundleMetric : bundleMetrics) {
+            totalPoints += bundleMetric.getScore().getValue();
+        }
+
+        return totalPoints;
+
     }
 
     public MetricScore getFinalScore() {
@@ -56,7 +68,4 @@ public class MetricPoints {
         return maxPoints;
     }
 
-    public int getNumberOfMetrics() {
-        return numberOfMetrics;
-    }
 }
