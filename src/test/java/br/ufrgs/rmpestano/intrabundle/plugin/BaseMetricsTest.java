@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.locator.OSGiProjectLocator;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -15,6 +16,7 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
     @Deployment
     public static JavaArchive getDeployment() {
         JavaArchive jar = TestUtils.getBaseDeployment();
+        jar.addPackages(true, OSGiProjectLocator.class.getPackage()) ;
         System.out.println(jar.toString(true));
         return jar;
 

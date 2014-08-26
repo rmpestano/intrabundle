@@ -208,7 +208,6 @@ public class TestUtils {
                 .addPackages(true, SolderRoot.class.getPackage())
                 .addAsManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")

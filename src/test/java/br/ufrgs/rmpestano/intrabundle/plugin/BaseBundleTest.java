@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
+import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -15,6 +16,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
     @Deployment
     public static JavaArchive getDeployment() {
         JavaArchive jar = TestUtils.getBaseDeployment();
+        jar.addClass(BundleProjectLocator.class);
         //System.out.println(jar.toString(true));
         return jar;
     }
@@ -31,6 +33,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
         TestUtils.addPermissions(main);
         TestUtils.addExportedPackage(main);
         TestUtils.addHelloManager(main);
+        resetOutput();
         getShell().setCurrentResource(main);
         return getProject();
     }
