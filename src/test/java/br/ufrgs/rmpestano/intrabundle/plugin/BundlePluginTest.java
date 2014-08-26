@@ -35,7 +35,7 @@ public class BundlePluginTest extends BaseBundleTest {
         initializeOSGiProject();
         resetOutput();
         getShell().execute("bundle publishesInterfaces");
-        Assert.assertTrue(getOutput().contains(provider.getMessage("yes")));
+        Assert.assertTrue(getOutput().startsWith(provider.getMessage("yes")));
     }
 
     @Test
@@ -175,12 +175,12 @@ public class BundlePluginTest extends BaseBundleTest {
     /**
      * test find activator command in maven bnd based OSGi bundle
      */
-    //@Test
+    @Test
     public void shouldFindActivatorInMavenBndBundle() throws Exception {
         initializeMavenOSGiBNDProject();
         resetOutput();
         getShell().execute("bundle activator");
-        String expected = OSUtils.isWindows() ? "\\module1\\src\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/br/ufrgs/rmpestano/activator/Activator.java";
+        String expected = OSUtils.isWindows() ? "\\module1\\src\\main\\java\\br\\ufrgs\\rmpestano\\activator\\Activator.java" : "/module1/src/main/java/br/ufrgs/rmpestano/activator/Activator.java";
         Assert.assertTrue(getOutput().contains(expected));
     }
 

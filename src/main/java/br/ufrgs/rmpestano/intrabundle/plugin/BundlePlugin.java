@@ -165,7 +165,9 @@ public class BundlePlugin implements Plugin {
         out.println(messageProvider.getMessage("metrics.staleReferences")+":"+metrics.hasStaleReferencesMetric(bundle).getScore());
         out.println(messageProvider.getMessage("metrics.usesFramework")+":"+metrics.usesFrameworkToManageServicesMetric(bundle).getScore());
         out.println(messageProvider.getMessage("metrics.declaresPermission")+":"+metrics.getDeclaresPermissionMetric(bundle).getScore());
-        out.println(messageProvider.getMessage("metrics.bundleDependencies")+":"+metrics.getBundleDependencyMetric(bundle).getScore());
+        if(metrics.getCurrentOSGiProject() != null){
+            out.println(messageProvider.getMessage("metrics.bundleDependencies")+":"+metrics.getBundleDependencyMetric(bundle).getScore());
+        }
         out.println("=========================");
         MetricPoints points = metrics.calculateBundleMetric(bundle);
         out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore()));

@@ -1,6 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.util.Filters;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.resources.DirectoryResource;
@@ -47,7 +48,7 @@ public class OSGiFacet extends BaseFacet {
      * @return true if it contains at least one OSGi bundle, false otherwise
      */
     public boolean isOSGiProject(DirectoryResource projectRoot) {
-         if(projectRoot.toString().equals("intrabundle")){
+         if(projectRoot.toString().equals("intrabundle") || projectRoot.toString().endsWith(".tmp")){
              /* special case where intrabundle is considered OSGi bundle cause it has OSGi bundles inside
                its source code(test folder)
              */
@@ -66,7 +67,7 @@ public class OSGiFacet extends BaseFacet {
         //try to find bundles inside source code
         Resource<?> src = projectRoot.getChild("src").exists() ? projectRoot.getChild("src") :
                 projectRoot.getChild("SRC").exists() ?  projectRoot.getChild("SRC") : null;
-        if(src != null){
+        if(src != null && !ProjectUtils.isMavenProject(projectRoot)){
             if(sourceContainsOsgiBundle(src)){
                 return true;
             }
@@ -80,6 +81,11 @@ public class OSGiFacet extends BaseFacet {
 
     private boolean sourceContainsOsgiBundle(Resource<?> root) {
         boolean result = false;
+
+        if(root.listResources(Filters.MANIFEST_FILTER).size() > 0){
+            return true;
+        }
+
         List<Resource<?>> children = root.listResources(new ResourceFilter() {
             @Override
             public boolean accept(Resource<?> resource) {

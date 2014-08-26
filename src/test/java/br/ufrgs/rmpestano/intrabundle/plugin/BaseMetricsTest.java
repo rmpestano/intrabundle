@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -15,19 +14,8 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
 
     @Deployment
     public static JavaArchive getDeployment() {
-        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
-                .addClass(OsgiPlugin.class)
-                .addClass(JasperManager.class)
-                .addClass(LocalePlugin.class);
-        //System.out.println(jar.toString(true));
+        JavaArchive jar = TestUtils.getBaseDeployment();
+        System.out.println(jar.toString(true));
         return jar;
 
     }
@@ -40,6 +28,12 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
         TestUtils.addMavenBundle(main, "module2");
         TestUtils.addMavenBundle(main, "module3");
         getShell().setCurrentResource(main);
+        return getProject();
+    }
+
+    public Project initializeMavenBundle() throws Exception {
+        DirectoryResource root = createTempFolder();
+        getShell().setCurrentResource(TestUtils.addMavenBundle(root, "module1"));
         return getProject();
     }
 }

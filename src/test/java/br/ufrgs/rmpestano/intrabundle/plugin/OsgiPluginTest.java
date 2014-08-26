@@ -73,11 +73,19 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiProjectWithBundlesInSourceCode();
         resetOutput();
         getShell().execute("osgi activators");
-        String activatorPath = "/main/src/module1/br/ufrgs/rmpestano/activator/Activator.java";
+        String mod1Expected = "/main/src/module1/br/ufrgs/rmpestano/activator/Activator.java";
+        String mod2Expected = "/main/src/module2/br/ufrgs/rmpestano/activator/Activator.java";
+        String mod3Expected = "/main/src/module3/src/br/ufrgs/rmpestano/activator/Activator.java";
         if(OSUtils.isWindows()){
-            activatorPath = activatorPath.replaceAll("/", File.separator + File.separator);
+            mod1Expected = mod1Expected.replaceAll("/", File.separator + File.separator);
+            mod2Expected = mod2Expected.replaceAll("/", File.separator + File.separator);
+            mod3Expected = mod3Expected.replaceAll("/", File.separator + File.separator);
         }
-        Assert.assertTrue(getOutput().contains(activatorPath));
+        getOutput().contains(mod1Expected);
+        getOutput().contains(mod2Expected);
+        getOutput().contains(mod3Expected);
+
+
     }
 
     @Test

@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -19,18 +18,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
-                .addClass(OsgiPlugin.class)
-                .addClass(OSGiScanPlugin.class)
-                .addClass(JasperManager.class)
-                .addClass(LocalePlugin.class);
+        JavaArchive jar = TestUtils.getBaseDeployment();
         //System.out.println(jar.toString(true));
         return jar;
 
@@ -97,7 +85,7 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
 
         DirectoryResource mod2 = basePackage.getOrCreateChildDirectory("module2");
         TestUtils.addManifest(mod2, "/MANIFEST.MF");
-        TestUtils.addActivator(mod2);
+        TestUtils.addActivatorInSource(mod2.getOrCreateChildDirectory("br").getOrCreateChildDirectory("ufrgs").getOrCreateChildDirectory("rmpestano").getOrCreateChildDirectory("activator"));
 
         DirectoryResource mod3 = basePackage.getOrCreateChildDirectory("module3");
         TestUtils.addManifest(mod3, "/MANIFEST.MF");

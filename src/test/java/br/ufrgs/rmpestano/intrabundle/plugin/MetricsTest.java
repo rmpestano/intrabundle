@@ -8,6 +8,7 @@ import org.junit.Test;
 import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MetricsTest extends BaseMetricsTest {
 
@@ -25,5 +26,21 @@ public class MetricsTest extends BaseMetricsTest {
       assertEquals(metrics.calculateBundleMetric(module2).getFinalScore(), MetricScore.GOOD);
       assertEquals(metrics.calculateBundleMetric(module3).getFinalScore(), MetricScore.VERY_GOOD);
     }
+
+    @Test
+    public void shouldInvokeMetricCommand() throws Exception {
+        initializeMavenBundle();
+        resetOutput();
+        getShell().execute("bundle metrics");
+        assertTrue(getOutput().contains("Lines of code:STATE_OF_ART"));
+        assertTrue(getOutput().contains("Publishes interfaces:STATE_OF_ART"));
+        assertTrue(getOutput().contains("Stale references:STATE_OF_ART"));
+        assertTrue(getOutput().contains("Uses framework to manage services:REGULAR"));
+        assertTrue(getOutput().contains("Declares Permission:REGULAR"));
+        assertTrue(getOutput().contains("Points obtained:60 of 100. Average score: GOOD"));
+        System.out.println(getOutput());
+    }
+
+
 
 }

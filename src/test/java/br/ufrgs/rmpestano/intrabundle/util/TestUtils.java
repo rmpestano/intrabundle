@@ -1,9 +1,18 @@
 package br.ufrgs.rmpestano.intrabundle.util;
 
+import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import org.jboss.forge.Root;
+import org.jboss.forge.maven.locators.MavenProjectLocator;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.util.OSUtils;
+import org.jboss.seam.render.RenderRoot;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.solder.SolderRoot;
 
 /**
  * Created by rmpestano on 8/23/14.
@@ -104,7 +113,7 @@ public class TestUtils {
                 getOrCreateChildDirectory("rmpestano").
                 getOrCreateChildDirectory("activator");
         FileResource<?> activator = (FileResource<?>) resource.getChild("Activator.java");
-        activator.setContents("activator content");
+        activator.setContents("package br.ufrgs.rmpestano.activator; public class Activator {}");
     }
 
     public static void addExportedPackage(DirectoryResource root) {
@@ -147,12 +156,13 @@ public class TestUtils {
         }
     }
 
-    public static void addMavenBundle(DirectoryResource dir, String module) {
+    public static DirectoryResource addMavenBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         DirectoryResource moduleResources = bundle.getOrCreateChildDirectory("src").getOrCreateChildDirectory("main").getOrCreateChildDirectory("resources");
         TestUtils.addMetaInfWithManifest(moduleResources, "/MANIFEST-" + module + ".MF");
         TestUtils.addMavenActivator(bundle);
         TestUtils.addPom(bundle);
+        return bundle;
     }
 
     /**
@@ -190,4 +200,25 @@ public class TestUtils {
     }
 
 
+    public static JavaArchive getBaseDeployment() {
+
+        return ShrinkWrap.create(JavaArchive.class, "test.jar")
+                .addPackages(true, org.jboss.shrinkwrap.api.Filters.exclude(MavenProjectLocator.class), Root.class.getPackage())
+                .addPackages(true, RenderRoot.class.getPackage())
+                .addPackages(true, SolderRoot.class.getPackage())
+                .addAsManifestResource(new ByteArrayAsset("<beans/>".getBytes()), ArchivePaths.create("beans.xml"))
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.locator")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.plugin")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
+                .addClass(JasperManager.class)
+                        //force fixed messages for test to be independent from default locale
+                .addAsResource("messages_en.properties", "messages_en.properties")
+                .addAsResource("messages_en.properties", "messages_pt.properties");
+    }
 }

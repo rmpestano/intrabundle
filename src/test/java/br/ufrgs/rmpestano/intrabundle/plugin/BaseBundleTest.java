@@ -1,7 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
-import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
@@ -16,19 +14,7 @@ public abstract class BaseBundleTest extends SingletonAbstractShellTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        JavaArchive jar = SingletonAbstractShellTest.getDeployment()
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.facet")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.metric")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
-                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
-                .addClass(ProjectUtils.class)
-                .addClass(BundlePlugin.class).
-                        addClass(LocalePlugin.class).
-                        addClass(BundleProjectLocator.class)
-                ;
+        JavaArchive jar = TestUtils.getBaseDeployment();
         //System.out.println(jar.toString(true));
         return jar;
     }

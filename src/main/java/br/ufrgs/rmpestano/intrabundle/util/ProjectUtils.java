@@ -109,10 +109,10 @@ public class ProjectUtils implements Serializable {
             return getProjectSourcePath(root).getChild("META-INF");
         }
 
-        return root;
+        return null;
     }
 
-    private static boolean hasOSGiManifest(Resource<?> root) {
+    public static boolean hasOSGiManifest(Resource<?> root) {
         if (ignoredDirectories.contains(root.getName().toLowerCase())) {
             return false;
         }
@@ -125,7 +125,7 @@ public class ProjectUtils implements Serializable {
             }
         }
 
-        if (hasOsgiConfig(findBndFile(root.reify(DirectoryResource.class)))) {
+        if (isEclipseBndProject((DirectoryResource) root) && hasOsgiConfig(findBndFile(root.reify(DirectoryResource.class)))) {
             return true;
         }
 
@@ -136,7 +136,7 @@ public class ProjectUtils implements Serializable {
     }
 
     private static boolean hasBndFile(Resource<?> root) {
-        return root.listResources(Filters.BND_FILTER).size() > 0;
+        return root != null && root.listResources(Filters.BND_FILTER).size() > 0;
     }
 
 
@@ -147,7 +147,8 @@ public class ProjectUtils implements Serializable {
     }
 
     public static boolean isOsgiBundle(DirectoryResource projectRoot) {
-        return hasOSGiManifest(getProjectManifestFolder(projectRoot));
+        Resource<?> manifestRoot = getProjectManifestFolder(projectRoot);
+        return (manifestRoot != null && hasOSGiManifest(manifestRoot)) || (isEclipseBndProject(projectRoot)) || hasOSGiManifest(projectRoot);
 
     }
 
@@ -180,7 +181,7 @@ public class ProjectUtils implements Serializable {
 
         Resource<?> manifestHome = getProjectManifestFolder(projectRoot);
         if (manifestHome == null || !manifestHome.exists()) {
-            return null;
+            manifestHome = projectRoot;
         }
         List<Resource<?>> manifestCandidate = manifestHome.listResources(Filters.MANIFEST_FILTER);
         if (manifestCandidate == null || manifestCandidate.isEmpty()) {
@@ -195,7 +196,7 @@ public class ProjectUtils implements Serializable {
     }
 
 
-    private static boolean isEclipseBndProject(DirectoryResource projectRoot) {
+    public static boolean isEclipseBndProject(DirectoryResource projectRoot) {
         return hasBndFile(projectRoot) || hasBndFile(getProjectManifestFolder(projectRoot)) || hasBndFile(getProjectResourcesPath(projectRoot));
     }
 
@@ -208,8 +209,11 @@ public class ProjectUtils implements Serializable {
             candidates = getProjectResourcesPath(projectRoot).listResources(Filters.BND_FILTER);
             if (candidates == null || candidates.isEmpty()) {
                 //try to find bnd in META-INF
-                candidates = getProjectManifestFolder(projectRoot).listResources(Filters.BND_FILTER);
-                return candidates == null || candidates.isEmpty() ? null : candidates.get(0);//.bnd in meta-inf
+                Resource<?> manifestRoot = getProjectManifestFolder(projectRoot);
+                if(manifestRoot != null){
+                    candidates = manifestRoot.listResources(Filters.BND_FILTER);
+                    return candidates == null || candidates.isEmpty() ? null : candidates.get(0);//.bnd in meta-inf
+                }
             } else {
                 return candidates.get(0);//.bnd in resources folder
             }

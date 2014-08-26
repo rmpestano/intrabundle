@@ -32,6 +32,9 @@ public class OSGiProjectLocator implements ProjectLocator {
     private final Instance<OSGiFacet> osgiFacetInstance;
 
     @Inject
+    Instance<BundleFacet> bundleFacetInstance;
+
+    @Inject
     MessageProvider provider;
 
     @Inject
