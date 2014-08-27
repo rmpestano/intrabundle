@@ -35,7 +35,7 @@ public class MetricsTest extends BaseMetricsTest {
         queueInputLines("n");
         queueInputLines("1");
         getShell().execute("osgi bundleMetrics");
-        assertTrue(getOutput().contains("Points obtained:70 of 120. Average score: REGULAR"));
+        assertTrue(getOutput().contains("Points obtained: 70 of 120. Average score: REGULAR"));
         assertTrue(getOutput().contains("Lines of code:STATE_OF_ART"));
         assertTrue(getOutput().contains("Bundle dependencies:VERY_GOOD"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
@@ -83,7 +83,7 @@ public class MetricsTest extends BaseMetricsTest {
         assertTrue(getOutput().contains("Stale references:STATE_OF_ART"));
         assertTrue(getOutput().contains("Uses framework to manage services:REGULAR"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
-        assertTrue(getOutput().contains("Points obtained:60 of 100. Average score: GOOD"));
+        assertTrue(getOutput().contains("Points obtained: 60 of 100. Average score: GOOD"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         getShell().execute("bundle metrics");
         assertTrue(getOutput().contains("Lines of code:ANTI_PATTERN"));
-        assertTrue(getOutput().contains("Points obtained:15 of 100. Average score: ANTI_PATTERN"));
+        assertTrue(getOutput().contains("Points obtained: 15 of 100. Average score: ANTI_PATTERN"));
     }
 
 }
