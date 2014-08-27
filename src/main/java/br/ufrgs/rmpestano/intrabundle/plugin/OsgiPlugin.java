@@ -222,7 +222,7 @@ public class OsgiPlugin implements Plugin {
         else {
             out.println(ShellColor.YELLOW, "===== " + provider.getMessage("osgi.listing-metrics") + " =====");
             for (OSGiModule module: getModules()) {
-                out.println(provider.getMessage("module.metrics",module.getName()));
+                out.println(ShellColor.YELLOW,provider.getMessage("module.metrics",module.getName()));
                 MetricPoints metricPoints = metrics.calculateBundleMetric(module);
                 for (Metric metric : metricPoints.getBundleMetrics()) {
                     out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
