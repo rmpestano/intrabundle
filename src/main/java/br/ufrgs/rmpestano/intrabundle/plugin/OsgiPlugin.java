@@ -3,6 +3,9 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
+import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.model.Metric;
+import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import org.jboss.forge.project.Project;
@@ -38,6 +41,9 @@ public class OsgiPlugin implements Plugin {
 
     @Inject
     JasperManager jasperManager;
+
+    @Inject
+    Metrics metrics;
 
 
     private boolean sorted;
@@ -201,6 +207,30 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command(value = "bundleMetrics")
+    public void bundleMetrics(PipeOut out) {
+        if (!this.allModules(provider.getMessage("metrics"))) {
+            OSGiModule bundle = choiceModule();
+            MetricPoints metricPoints = metrics.calculateBundleMetric(bundle);
+            out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore()));
+            out.println(provider.getMessage("bundle.listing-metrics"));
+            for (Metric metric : metricPoints.getBundleMetrics()) {
+                 out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
+            }
+
+        }//execute command for all modules
+        else {
+            out.println(ShellColor.YELLOW, "===== " + provider.getMessage("osgi.listing-metrics") + " =====");
+            for (OSGiModule module: getModules()) {
+                out.println(provider.getMessage("module.metrics",module.getName()));
+                MetricPoints metricPoints = metrics.calculateBundleMetric(module);
+                for (Metric metric : metricPoints.getBundleMetrics()) {
+                    out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
+                }
+            }
+        }
+    }
+
 
 
     private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
@@ -272,5 +302,6 @@ public class OsgiPlugin implements Plugin {
     public void report() {
         jasperManager.reportFromProject(project);
     }
+
 
 }

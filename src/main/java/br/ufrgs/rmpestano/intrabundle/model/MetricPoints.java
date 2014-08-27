@@ -68,4 +68,7 @@ public class MetricPoints {
         return maxPoints;
     }
 
+    public List<Metric> getBundleMetrics() {
+        return bundleMetrics;
+    }
 }

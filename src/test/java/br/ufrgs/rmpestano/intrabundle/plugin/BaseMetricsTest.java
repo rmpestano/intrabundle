@@ -5,6 +5,7 @@ import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
+import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.test.SingletonAbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
@@ -17,7 +18,7 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
     public static JavaArchive getDeployment() {
         JavaArchive jar = TestUtils.getBaseDeployment();
         jar.addPackages(true, OSGiProjectLocator.class.getPackage()) ;
-        System.out.println(jar.toString(true));
+        //System.out.println(jar.toString(true));
         return jar;
 
     }
@@ -32,6 +33,23 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
         getShell().setCurrentResource(main);
         return getProject();
     }
+
+    public Project initializeOSGiBundleWithModuleWithManyLoc() throws Exception {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource mod1 = TestUtils.addMavenBundle(root,"module1");
+        FileResource<?> aClass = (FileResource<?>) mod1.getOrCreateChildDirectory("src").
+                getOrCreateChildDirectory("main").
+                getOrCreateChildDirectory("java").
+                getOrCreateChildDirectory("br").
+                getOrCreateChildDirectory("ufrgs").
+                getOrCreateChildDirectory("rmpestano").getChild("AClass.java");
+         if(!aClass.exists()){
+             aClass.setContents(TestUtils.class.getResourceAsStream("/ClassWithLotsOfLines.java"));
+         }
+        getShell().setCurrentResource(mod1);
+        return getProject();
+    }
+
 
     public Project initializeMavenBundle() throws Exception {
         DirectoryResource root = createTempFolder();

@@ -142,10 +142,11 @@ public class TestUtils {
     }
 
 
-    public static void addBundle(DirectoryResource dir, String module) {
+    public static DirectoryResource addBundle(DirectoryResource dir, String module) {
         DirectoryResource bundle = dir.getOrCreateChildDirectory(module);
         addMetaInfWithManifest(bundle, "/MANIFEST-" + module + ".MF");
         addActivator(bundle);
+        return bundle;
     }
 
 

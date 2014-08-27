@@ -2,18 +2,17 @@ package br.ufrgs.rmpestano.intrabundle.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by rmpestano on 1/26/14.
  */
 public enum MetricName {
-  LOC("metric.loc"),
-  PUBLISHES_INTERFACES("metric.interfaces"),
-  BUNDLE_DEPENDENCIES("metric.bundleDependencies"),
+  LOC("metrics.loc"),
+  PUBLISHES_INTERFACES("metrics.interfaces"),
+  BUNDLE_DEPENDENCIES("metrics.bundleDependencies"),
   USES_FRAMEWORK("metrics.usesFramework"),
   DECLARES_PERMISSION("metrics.declaresPermission"),
-  STALE_REFERENCES("metric.staleReferences");
+  STALE_REFERENCES("metrics.staleReferences");
 
     private final String value;
 
@@ -21,7 +20,9 @@ public enum MetricName {
         this.value = value;
     }
 
-
+    public String getValue(){
+        return value;
+    }
 
     public static List<String> getAll() {
         List<String> retorno = new ArrayList<String>();
