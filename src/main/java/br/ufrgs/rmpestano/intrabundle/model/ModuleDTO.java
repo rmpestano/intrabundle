@@ -21,6 +21,7 @@ public class ModuleDTO implements Serializable {
         module.getManifestMetadata();//forces createManifestMetadata to be available in report
         this.module = module;
         metricsPoints = metrics.calculateBundleMetric(module);
+        metricsPoints.getFinalScore();
     }
 
     public OSGiModule getModule() {

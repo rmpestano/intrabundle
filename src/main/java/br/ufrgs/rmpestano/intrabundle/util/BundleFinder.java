@@ -36,6 +36,7 @@ public class BundleFinder implements Serializable {
         if (modules == null || modules.isEmpty()) {
             return null;
         } else {
+
             OSGiProjectImpl project = new OSGiProjectImpl(null, resourceFactory, root,projectUtils);
             project.setModules(modules);
             return project;
@@ -44,7 +45,6 @@ public class BundleFinder implements Serializable {
 
 
     private void findModulesRecursively(Resource<?> root, List<OSGiModule> modules, Integer level) {
-
         if (level-- == 0) {
             return;
         }

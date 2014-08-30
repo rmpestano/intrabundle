@@ -187,9 +187,9 @@ public class JasperManager implements Serializable {
 
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
         List<ModuleDTO> modulesDTO = new ArrayList<ModuleDTO>();
-
+        System.out.println("modules to report:");
         for (OSGiModule module : project.getModules()) {
-            modulesDTO.add(new ModuleDTO(module,metrics));
+            modulesDTO.add(new ModuleDTO(module, metrics));
         }
         return modulesDTO;
     }

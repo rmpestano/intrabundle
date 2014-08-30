@@ -7,7 +7,6 @@ import org.jboss.forge.parser.ParserException;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
-import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.project.services.ResourceFactory;
@@ -23,7 +22,7 @@ import java.util.*;
  * Created by rmpestano on 1/22/14.
  */
 @Typed
-public class OSGiProjectImpl extends BaseProject implements OSGiProject,Project {
+public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private final ResourceFactory resourceFactory;

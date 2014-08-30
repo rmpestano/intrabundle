@@ -212,6 +212,8 @@ public class ManifestMetadata implements Serializable {
                         }
                         if (!"".equals(line)) {
                             requiredBundles.addAll(Arrays.asList(line.split(",")));
+                        }else{
+                            continue;
                         }
                         //try to get packages from next lines
                         String nextLine;
@@ -264,6 +266,8 @@ public class ManifestMetadata implements Serializable {
                         }
                         if (!"".equals(line)) {
                             importedPackages.addAll(Arrays.asList(line.split(",")));
+                        }else{
+                            continue;
                         }
                         //try to get packages from next lines
                         String nextLine;
@@ -316,6 +320,8 @@ public class ManifestMetadata implements Serializable {
                         }
                         if (!"".equals(line)) {
                             exportedPackages.addAll(Arrays.asList(line.split(",")));
+                        }else{
+                            continue;
                         }
                         //try to get packages from next lines
                         String nextLine;

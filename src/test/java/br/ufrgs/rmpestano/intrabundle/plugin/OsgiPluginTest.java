@@ -234,7 +234,6 @@ public class OsgiPluginTest extends BaseOSGiTest {
 
     @Test
     public void shouldListRequiredBundlesInMavebBndProject() throws Exception {
-        System.out.println("shouldListRequiredBundlesInMavebBndProject");
         resetOutput();
         initializeMavenOSGiBNDProject();
         queueInputLines("y");
@@ -312,7 +311,6 @@ public class OsgiPluginTest extends BaseOSGiTest {
      */
     @Test
     public void shouldListBundlesInMavenBndProject() throws Exception {
-        System.out.println("shouldListBundlesInMavenBndProject");
         initializeMavenOSGiBNDProject();
         resetOutput();
         getShell().execute("osgi countBundles");

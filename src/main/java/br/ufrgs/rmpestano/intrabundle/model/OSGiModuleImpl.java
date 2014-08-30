@@ -2,7 +2,6 @@ package br.ufrgs.rmpestano.intrabundle.model;
 
 import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
 import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
-import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -11,7 +10,6 @@ import org.jboss.forge.parser.ParserException;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.BaseProject;
 import org.jboss.forge.project.Facet;
-import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.project.services.ResourceFactory;
@@ -27,7 +25,7 @@ import java.util.Set;
  * Created by rmpestano on 1/22/14.
  */
 @Typed()
-public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
+public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     private DirectoryResource projectRoot = null;
     private final ProjectFactory factory;
     private final ResourceFactory resourceFactory;
@@ -43,7 +41,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule, Project {
     private Integer numberOfInterfaces;
     private ManifestMetadata manifestMetadata;
     private boolean classesVisited;
-    private MetricScore metricScore;
 
     public OSGiModuleImpl() {
         factory = null;

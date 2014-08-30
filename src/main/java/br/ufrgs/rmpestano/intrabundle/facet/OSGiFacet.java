@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.facet;
 
+import br.ufrgs.rmpestano.intrabundle.event.ProjectChangeEvent;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.util.Filters;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
@@ -8,6 +9,8 @@ import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.ResourceFilter;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -128,5 +131,9 @@ public class OSGiFacet extends BaseFacet {
 
     public BundleFacet getBundleFacet() {
         return bundleFacet.get();
+    }
+
+    public void observeProjectChange(@Observes(notifyObserver = Reception.IF_EXISTS) ProjectChangeEvent projectChangeEvent){
+           setProject((org.jboss.forge.project.Project) projectChangeEvent.getOsGiProject());
     }
 }
