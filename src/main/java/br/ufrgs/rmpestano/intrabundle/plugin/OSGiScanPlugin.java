@@ -5,6 +5,7 @@ import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.util.BundleFinder;
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import org.jboss.forge.shell.Shell;
 import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
@@ -53,8 +54,10 @@ public class OSGiScanPlugin implements Plugin {
             projectChangeEvent.fire(new ProjectChangeEvent(projectFound));
             Boolean generateReport = prompt.promptBoolean(provider.getMessage("osgi.scan.bundlesFound", projectFound.getModules().size()));
             if (generateReport) {
-                jasperManager.reportFromProject(projectFound);
+                jasperManager.reportFromProject(projectFound, Constants.REPORT.GENERAL, Constants.REPORT.METRICS);
             }
+
+
         }
 
     }

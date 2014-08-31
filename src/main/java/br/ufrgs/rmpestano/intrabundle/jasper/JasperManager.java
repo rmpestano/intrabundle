@@ -24,6 +24,7 @@ public class JasperManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
     private String fileName;
     private String reportName;
     private List<?> data;
@@ -176,21 +177,12 @@ public class JasperManager implements Serializable {
         }
     }
 
-
-    public void reportFromProject(OSGiProject project) {
+    public void reportFromProject(OSGiProject project, String reportName) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
-        this.reportName("osgi").filename(project.toString()).type(type).data(getModulesToReport(project)).params(params).build();
-    }
-
-    public void reportFromProject(OSGiProject project,String reportName) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("project", new OSGiProjectReport(project));
-        params.put("provider", provider);
-        FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
-        this.reportName(reportName).filename(project.toString()).type(type).data(getModulesToReport(project)).params(params).build();
+        this.reportName(reportName).filename(project.toString() + "_" + reportName).type(type).data(getModulesToReport(project)).params(params).build();
     }
 
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
@@ -199,5 +191,15 @@ public class JasperManager implements Serializable {
             modulesDTO.add(new ModuleDTO(module, metrics));
         }
         return modulesDTO;
+    }
+
+    public void reportFromProject(OSGiProject project, String... reportsName) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("project", new OSGiProjectReport(project));
+        params.put("provider", provider);
+        FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
+        for (String s : reportsName) {
+            this.reportName(s).filename(project.toString() + "_" + s).type(type).data(getModulesToReport(project)).params(params).build();
+        }
     }
 }

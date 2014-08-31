@@ -25,4 +25,10 @@ public interface Constants {
         public static final String COMPONENT_IMPORT = "org.apache.felix.ipojo.annotations.Component";
         public static final String COMPONENT_IMPORT_WITH_WILDCARD = "org.apache.felix.ipojo.annotations.*";
     }
+    public static interface REPORT {
+        public static final String GENERAL = "general";
+        public static final String METRICS = "metrics";
+    }
+
+
 }

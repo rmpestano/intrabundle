@@ -8,6 +8,7 @@ import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.Shell;
@@ -301,12 +302,12 @@ public class OsgiPlugin implements Plugin {
 
     @Command(help = "Generate a report containing information about all bundles of the project")
     public void report() {
-        jasperManager.reportFromProject(project);
+        jasperManager.reportFromProject(project,Constants.REPORT.GENERAL);
     }
 
     @Command(help = "Generate a report containing bundle metric information of all bundles of the project")
     public void metricsReport() {
-        jasperManager.reportFromProject(project,"metrics");
+        jasperManager.reportFromProject(project, Constants.REPORT.METRICS);
     }
 
 

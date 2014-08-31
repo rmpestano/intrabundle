@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="1332"/>
+	<property name="ireport.x" value="178"/>
+	<property name="ireport.y" value="956"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<subDataset name="dataset1" uuid="547ba1da-c8ff-493d-ba1e-53414db9c4d0"/>
@@ -45,14 +45,14 @@
 			<frame>
 				<reportElement uuid="3f708bd7-7c61-4da6-aabe-36f08bd0ca6d" mode="Opaque" x="0" y="-20" width="780" height="92" backcolor="#006699"/>
 				<staticText>
-					<reportElement uuid="6ad4c304-442f-4979-a3a7-f7031e9c7b3d" x="20" y="20" width="461" height="53" forecolor="#FFFFFF"/>
+					<reportElement uuid="6ad4c304-442f-4979-a3a7-f7031e9c7b3d" x="20" y="20" width="657" height="41" forecolor="#FFFFFF"/>
 					<textElement>
 						<font size="20" isBold="true"/>
 					</textElement>
-					<text><![CDATA[OSGi Quality Analisys Report ]]></text>
+					<text><![CDATA[OSGi Quality Analisys ]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="0c601123-b78c-46b8-b984-7c8381450f15" x="533" y="72" width="144" height="20" forecolor="#FFFFFF"/>
+					<reportElement uuid="0c601123-b78c-46b8-b984-7c8381450f15" x="547" y="72" width="135" height="20" forecolor="#FFFFFF"/>
 					<textElement textAlignment="Right">
 						<font size="14" isBold="false"/>
 					</textElement>
@@ -224,7 +224,7 @@
 				<text><![CDATA[Uses Declarative services:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="fdeef461-5dce-4b22-98e8-c2d1c7b2b98e" x="236" y="229" width="525" height="20"/>
+				<reportElement uuid="fdeef461-5dce-4b22-98e8-c2d1c7b2b98e" x="236" y="229" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -239,28 +239,28 @@
 				<text><![CDATA[Uses Blueprint:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="199fd02d-f786-4f42-91c0-5f1eacbd88c3" x="236" y="105" width="525" height="20"/>
+				<reportElement uuid="199fd02d-f786-4f42-91c0-5f1eacbd88c3" x="236" y="105" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getLinesOfCode()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="326cbff7-4a19-454d-99a3-bedfa7a7090b" x="236" y="10" width="525" height="20"/>
+				<reportElement uuid="326cbff7-4a19-454d-99a3-bedfa7a7090b" x="236" y="10" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getName()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="0270f71c-934e-49c1-b1c4-5e6cdc112d67" x="236" y="136" width="525" height="20"/>
+				<reportElement uuid="0270f71c-934e-49c1-b1c4-5e6cdc112d67" x="236" y="136" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getPublishesInterfaces() ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="53824835-acc5-4239-ad95-e88763ad7a7f" x="236" y="169" width="525" height="20"/>
+				<reportElement uuid="53824835-acc5-4239-ad95-e88763ad7a7f" x="236" y="169" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -283,7 +283,7 @@
 				<text><![CDATA[Lines of code:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="184e1a9c-bd4d-4659-9098-45ecaee52284" x="236" y="199" width="525" height="20"/>
+				<reportElement uuid="184e1a9c-bd4d-4659-9098-45ecaee52284" x="236" y="199" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -298,7 +298,7 @@
 				<text><![CDATA[Activator:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="0ad1baeb-9e9a-4eb9-8952-e54778aa34ce" x="236" y="75" width="525" height="20"/>
+				<reportElement uuid="0ad1baeb-9e9a-4eb9-8952-e54778aa34ce" x="236" y="75" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -321,14 +321,14 @@
 				<text><![CDATA[Location:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="d2c35479-15e2-475a-873a-6e7e4ed7cc52" x="236" y="41" width="526" height="20"/>
+				<reportElement uuid="d2c35479-15e2-475a-873a-6e7e4ed7cc52" x="236" y="41" width="544" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).toString()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="e12fef94-5210-4e45-9360-e9f294a32b38" x="238" y="259" width="523" height="20"/>
+				<reportElement uuid="e12fef94-5210-4e45-9360-e9f294a32b38" x="238" y="259" width="542" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -343,7 +343,7 @@
 				<text><![CDATA[Number of packages:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8f55005b-33a2-4ea6-a89b-1d100cee98ba" x="10" y="290" width="209" height="20"/>
+				<reportElement uuid="8f55005b-33a2-4ea6-a89b-1d100cee98ba" x="10" y="289" width="209" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -351,7 +351,7 @@
 				<text><![CDATA[Number of classes:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="46dcfb51-2e05-4a59-ae2e-41d2493089d3" x="238" y="290" width="523" height="20"/>
+				<reportElement uuid="46dcfb51-2e05-4a59-ae2e-41d2493089d3" x="238" y="289" width="542" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -366,7 +366,7 @@
 				<text><![CDATA[Interfaces/abstract classes:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="e6f1903f-4b03-414c-92d1-5d33a4219e04" x="238" y="322" width="523" height="20"/>
+				<reportElement uuid="e6f1903f-4b03-414c-92d1-5d33a4219e04" x="238" y="322" width="542" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -381,7 +381,7 @@
 				<text><![CDATA[Uses Ipojo:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="0a21abab-de00-440f-9d22-867aed15c330" x="238" y="352" width="523" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="0a21abab-de00-440f-9d22-867aed15c330" x="238" y="352" width="542" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -398,7 +398,7 @@
 				<text><![CDATA[Ipojo Components:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="9754601f-2f19-423e-a80a-d5c16586a285" x="236" y="382" width="525" height="20" isRemoveLineWhenBlank="true">
+				<reportElement uuid="9754601f-2f19-423e-a80a-d5c16586a285" x="236" y="382" width="544" height="20" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getUsesIpojo() == true]]></printWhenExpression>
 				</reportElement>
 				<textElement>
