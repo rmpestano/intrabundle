@@ -212,7 +212,7 @@ public class OsgiPlugin implements Plugin {
         if (!this.allModules(provider.getMessage("metrics"))) {
             OSGiModule bundle = choiceModule();
             MetricPoints metricPoints = metrics.calculateBundleMetric(bundle);
-            out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore()));
+            out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
             out.println(provider.getMessage("bundle.listing-metrics"));
             for (Metric metric : metricPoints.getBundleMetrics()) {
                  out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
@@ -224,6 +224,7 @@ public class OsgiPlugin implements Plugin {
             for (OSGiModule module: getModules()) {
                 out.println(ShellColor.YELLOW,provider.getMessage("module.metrics",module.getName()));
                 MetricPoints metricPoints = metrics.calculateBundleMetric(module);
+                out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
                 for (Metric metric : metricPoints.getBundleMetrics()) {
                     out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
                 }

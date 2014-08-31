@@ -170,7 +170,7 @@ public class BundlePlugin implements Plugin {
         }
         out.println("=========================");
         MetricPoints points = metrics.calculateBundleMetric(bundle);
-        out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore()));
+        out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore().name()));
     }
 
 }
