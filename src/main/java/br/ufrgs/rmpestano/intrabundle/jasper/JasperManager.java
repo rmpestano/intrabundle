@@ -185,9 +185,16 @@ public class JasperManager implements Serializable {
         this.reportName("osgi").filename(project.toString()).type(type).data(getModulesToReport(project)).params(params).build();
     }
 
+    public void reportFromProject(OSGiProject project,String reportName) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("project", new OSGiProjectReport(project));
+        params.put("provider", provider);
+        FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
+        this.reportName(reportName).filename(project.toString()).type(type).data(getModulesToReport(project)).params(params).build();
+    }
+
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
         List<ModuleDTO> modulesDTO = new ArrayList<ModuleDTO>();
-        System.out.println("modules to report:");
         for (OSGiModule module : project.getModules()) {
             modulesDTO.add(new ModuleDTO(module, metrics));
         }

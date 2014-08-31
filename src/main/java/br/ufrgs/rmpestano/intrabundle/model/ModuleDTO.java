@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ModuleDTO implements Serializable {
 
     protected OSGiModule module;
-    protected MetricPoints metricsPoints;
+    protected MetricPoints metricPoints;
 
     public ModuleDTO() {
     }
@@ -20,8 +20,7 @@ public class ModuleDTO implements Serializable {
         module.getNumberOfClasses();//forces visitAllClasses to be available in report as its called on demand
         module.getManifestMetadata();//forces createManifestMetadata to be available in report
         this.module = module;
-        metricsPoints = metrics.calculateBundleMetric(module);
-        metricsPoints.getFinalScore();
+        metricPoints = metrics.calculateBundleMetric(module);
     }
 
     public OSGiModule getModule() {
@@ -32,11 +31,11 @@ public class ModuleDTO implements Serializable {
         this.module = module;
     }
 
-    public MetricPoints getMetricsPoints() {
-        return metricsPoints;
+    public MetricPoints getMetricPoints() {
+        return metricPoints;
     }
 
-    public void setMetricsPoints(MetricPoints metricsPoints) {
-        this.metricsPoints = metricsPoints;
+    public void setMetricPoints(MetricPoints metricsPoints) {
+        this.metricPoints = metricsPoints;
     }
 }

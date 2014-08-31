@@ -298,9 +298,14 @@ public class OsgiPlugin implements Plugin {
     }
 
 
-    @Command(help = "Generate a .pdf file containing information about all bundles of the project")
+    @Command(help = "Generate a report containing information about all bundles of the project")
     public void report() {
         jasperManager.reportFromProject(project);
+    }
+
+    @Command(help = "Generate a report containing bundle metric information of all bundles of the project")
+    public void metricsReport() {
+        jasperManager.reportFromProject(project,"metrics");
     }
 
 

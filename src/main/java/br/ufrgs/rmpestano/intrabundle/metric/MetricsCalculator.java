@@ -136,10 +136,4 @@ public class MetricsCalculator implements Metrics {
 
     }
 
-    public MetricScore getProjectMetric() {
-        //todo
-        return null;
-    }
-
-
 }

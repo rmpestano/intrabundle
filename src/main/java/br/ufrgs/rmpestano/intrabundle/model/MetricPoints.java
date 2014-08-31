@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
 import java.util.List;
@@ -70,5 +71,14 @@ public class MetricPoints {
 
     public List<Metric> getBundleMetrics() {
         return bundleMetrics;
+    }
+
+    public Metric getMetric(MetricName name){
+        for (Metric bundleMetric : bundleMetrics) {
+            if(bundleMetric.getName().equals(name)){
+                return bundleMetric;
+            }
+        }
+        return null;
     }
 }
