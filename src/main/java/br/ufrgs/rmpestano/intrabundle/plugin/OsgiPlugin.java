@@ -16,6 +16,7 @@ import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 public class OsgiPlugin implements Plugin {
 
     @Inject
-    OSGiProject project;
+    Instance<OSGiProject> project;
 
     @Inject
     MessageProvider provider;
@@ -83,7 +84,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "lot", help = "count lines of test code of all bundles")
     public void lot(@PipeIn String in, PipeOut out) {
-        out.println(provider.getMessage("osgi.total-lot") + project.getLinesOfTestCode());
+        out.println(provider.getMessage("osgi.total-lot") + project.get().getLinesOfTestCode());
     }
 
     @Command(value = "usesDeclarativeServices", help = "list modules that use declarative services")
@@ -273,10 +274,10 @@ public class OsgiPlugin implements Plugin {
 
     private void listModuleDependencies(OSGiModule choice, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.dependencies", choice) + " =====");
-        if (project.getModulesDependencies().get(choice).isEmpty()) {
+        if (project.get().getModulesDependencies().get(choice).isEmpty()) {
             out.println(provider.getMessage("module.noDependency"));
         } else {
-            for (OSGiModule m : project.getModulesDependencies().get(choice)) {
+            for (OSGiModule m : project.get().getModulesDependencies().get(choice)) {
                 out.println(m.getName());
             }
         }
@@ -293,21 +294,21 @@ public class OsgiPlugin implements Plugin {
 
     public List<OSGiModule> getModules() {
         if(!sorted){
-            Collections.sort(project.getModules());
+            Collections.sort(project.get().getModules());
             sorted = true;
         }
-        return project.getModules();
+        return project.get().getModules();
     }
 
 
     @Command(help = "Generate a report containing information about all bundles of the project")
     public void report() {
-        jasperManager.reportFromProject(project,Constants.REPORT.GENERAL);
+        jasperManager.reportFromProject(project.get(),Constants.REPORT.GENERAL);
     }
 
     @Command(help = "Generate a report containing bundle metric information of all bundles of the project")
     public void metricsReport() {
-        jasperManager.reportFromProject(project, Constants.REPORT.METRICS);
+        jasperManager.reportFromProject(project.get(), Constants.REPORT.METRICS);
     }
 
 
