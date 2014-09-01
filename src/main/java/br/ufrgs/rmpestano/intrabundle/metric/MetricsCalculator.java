@@ -51,6 +51,7 @@ public class MetricsCalculator implements Metrics {
             return null;
         }
         int numberOfDependencies = getCurrentOSGiProject().getModulesDependencies().get(osGiModule).size();
+        numberOfDependencies += osGiModule.getRequiredBundles().size();
 
         // not depending on others modules is state of art
         if (numberOfDependencies == 0) {
