@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="569"/>
+	<property name="ireport.y" value="1056"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<style name="table">
@@ -476,6 +476,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.DECLARES_PERMISSION)).getScore().toString()]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="986c70cb-fd23-4e11-af42-a7581fb50bc3" x="4" y="6" width="780" height="3"/>
+			</line>
 		</band>
 	</detail>
 	<columnFooter>
