@@ -40,7 +40,7 @@ public class OSGiFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-        return isOSGiProject(project.getProjectRoot());
+        return !project.hasFacet(BundleFacet.class) && isOSGiProject(project.getProjectRoot());
 
     }
 
@@ -112,17 +112,6 @@ public class OSGiFacet extends BaseFacet {
         return result;
     }
 
-    private boolean childContainsOsgiBundle(Resource<?> child) {
-
-        for (Resource<?> resource : child.listResources()) {
-            DirectoryResource dir = child.reify(DirectoryResource.class);
-            if(dir != null && ProjectUtils.isOsgiBundle(dir)){
-                return true;
-            }
-            else return childContainsOsgiBundle(child);
-        }
-        return false;
-    }
 
     @Produces
     public OSGiProject getCurrentOSGiProject() {
