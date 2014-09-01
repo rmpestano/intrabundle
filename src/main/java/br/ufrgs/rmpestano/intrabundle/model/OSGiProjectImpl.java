@@ -32,7 +32,6 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     private Long linesOfTestCode;
     protected String version;
     protected String revision;
-    protected ProjectUtils projectUtils;
 
 
     public OSGiProjectImpl() {
@@ -45,7 +44,6 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
-        this.projectUtils = projectUtils;
     }
 
     @Override
@@ -61,7 +59,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     public List<OSGiModule> getModules() {
         if (modules == null) {
             modules = new ArrayList<OSGiModule>();
-            Resource<?> srcDir = projectUtils.getProjectSourcePath(getProjectRoot());
+            Resource<?> srcDir = ProjectUtils.getProjectSourcePath(getProjectRoot());
             if(srcDir != null && srcDir.exists()){
                initalizeModules(modules,(DirectoryResource)srcDir);
             }
@@ -122,7 +120,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
         if(children != null && !children.isEmpty()){
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
-                if(directoryResource != null && projectUtils.isOsgiBundle(directoryResource)){
+                if(directoryResource != null && ProjectUtils.isOsgiBundle(directoryResource)){
                     result.add(new OSGiModuleImpl(factory, resourceFactory,directoryResource));
                 }
                 else{
@@ -198,7 +196,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
                     ||  source.hasImport("org.testng") || source.hasImport("org.testng.annotations.Test")
                     ||  source.hasImport("org.testng.Assert")|| source.hasImport("org.testng.annotations")
                             ) {
-                        this.linesOfTestCode += projectUtils.countFileLines((FileResource<?>) resource);
+                        this.linesOfTestCode += ProjectUtils.countFileLines((FileResource<?>) resource);
                     }
                 } catch (Exception e) {
                    //intentional
@@ -214,7 +212,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
 
     @Override
     public String getVersion() {
-        if(version == null && projectUtils.isMavenProject(projectRoot)) {
+        if(version == null && ProjectUtils.isMavenProject(projectRoot)) {
             MavenCoreFacet mavenCoreFacet = this.getFacet(MavenCoreFacet.class);
             version = mavenCoreFacet.getMavenProject().getVersion();
         }
@@ -224,8 +222,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
 
     @Override
     public String getRevision() {
-        if(revision == null && (projectUtils.isGitProject(this)))  {
-            revision = projectUtils.getProjectGitHeadRevision(this);
+        if(revision == null && (ProjectUtils.isGitProject(this)))  {
+            revision = ProjectUtils.getProjectGitHeadRevision(this);
         }
         return revision;
     }

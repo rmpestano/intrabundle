@@ -212,6 +212,7 @@ public class TestUtils {
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.model")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.i18n")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.event")
+                .addPackages(true, "br.ufrgs.rmpestano.intrabundle.factory")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.util")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.jdt")
                 .addPackages(true, "br.ufrgs.rmpestano.intrabundle.plugin")
