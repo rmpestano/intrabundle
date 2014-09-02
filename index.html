@@ -3,11 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>Bundle Introspection</title>
+    <script type="text/javascript" src="js/jquery-min.js"></script>
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-table.min.css" rel="stylesheet">
     <link href="css/docs.css" rel="stylesheet">
+    <script type="text/javascript" src="js/bootstrap-table.min.js" ></script>
+
   </head>
 
   <body>
+
     <div class="container">
       <header class="jumbotron masthead">
  
@@ -45,25 +50,95 @@
      </div>
       </header>
 
-      <hr class="soften">
-      
-      <div id="reports" class="marketing" style="font-size: 16px;font-weight: bold">
-        <h1>Generated reports with intrabundle:</h1>
-          <ul>
-              <li><a href="reports/birt.html" target="_blank">BIRT Report</a></li>
-              <li><a href="reports/org.eclipse.cdt.html" target="_blank">Eclipse CTD</a></li>
-              <li><a href="reports/org.eclipse.sirius.html" target="_blank">Eclipse Sirius</a></li>
-              <li><a href="reports/dali.html" target="_blank">Eclipse Dali</a></li>
-              <li><a href="reports/rt.equinox.bundles.html" target="_blank">Equinox runtime bundles</a></li>
-              <li><a href="reports/jitsi.html" target="_blank">Jitsi</a></li>
-              <li><a href="reports/jonas.html" target="_blank">JonAS</a></li>
-              <li><a href="reports/karaf.html" target="_blank">Karaf</a></li>
-              <li><a href="reports/osee.html" target="_blank">Eclipse OSEE(Open System Engineering Environment)</a></li>
-              <li><a href="reports/pax-cdi.html" target="_blank">Pax CDI</a></li>
-              <li><a href="reports/riena.html" target="_blank">Riena</a></li>
-              <li><a href="reports/scout.rt.html" target="_blank">Scout runtime</a></li>
-              <li><a href="reports/tuscany-sca-2.x.html" target="_blank">Tuscany-sca-2.x</a></li>
-          </ul>
+
+
+        <hr class="soften">
+
+
+      <div id="reports" class="marketing" >
+        <h1 style="font-weight: bold">Generated reports with intrabundle:</h1>
+
+          <table data-toggle="table" data-height="499" >
+              <thead>
+              <tr>
+                  <th data-field="id">OSGi Project</th>
+                  <th data-field="name">General report</th>
+                  <th data-field="price">Metrics report</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>BIRT</td>
+                  <td> <a href="reports/birt_general.html" target="_blank">birt_general.html</a></td>
+                  <td> <a href="reports/birt_metrics.html" target="_blank">birt_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Eclipse CTD</td>
+                  <td> <a href="reports/org.eclipse.cdt_general.html" target="_blank">org.eclipse.cdt_general.html</a></td>
+                  <td> <a href="reports/org.eclipse.cdt_metrics.html" target="_blank">org.eclipse.cdt_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Eclipse Sirius</td>
+                  <td> <a href="reports/org.eclipse.sirius_general.html" target="_blank">org.eclipse.sirius_general.html</a></td>
+                  <td> <a href="reports/org.eclipse.sirius_metrics.html" target="_blank">org.eclipse.sirius_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Eclipse Dali</td>
+                  <td> <a href="reports/dali_general.html" target="_blank">dali_general.html</a></td>
+                  <td> <a href="reports/dali_metrics.html" target="_blank">dali_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Gemini Runtime</td>
+                  <td> <a href="reports/gemini-runtime_general.html" target="_blank">gemini-runtime_general.html</a></td>
+                  <td> <a href="reports/gemini-runtime_metrics.html" target="_blank">gemini-runtime_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Equinox runtime bundles</td>
+                  <td> <a href="reports/rt.equinox.bundles_general.html" target="_blank">rt.equinox.bundles_general.html</a></td>
+                  <td> <a href="reports/rt.equinox.bundles_metrics.html" target="_blank">rt.equinox.bundles_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Jitsi</td>
+                  <td> <a href="reports/jitsi_general.html" target="_blank">jitsi_general.html</a></td>
+                  <td> <a href="reports/jitsi_metrics.html" target="_blank">jitsi_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>JonAS</td>
+                  <td> <a href="reports/jonas_general.html" target="_blank">jonas_general.html</a></td>
+                  <td> <a href="reports/jonas_metrics.html" target="_blank">jonas_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Karaf</td>
+                  <td> <a href="reports/karaf_general.html" target="_blank">karaf_general.html</a></td>
+                  <td> <a href="reports/karaf_metrics.html" target="_blank">karaf_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Eclipse OSEE</td>
+                  <td> <a href="reports/osee_general.html" target="_blank">osee_general.html</a></td>
+                  <td> <a href="reports/osee_metrics.html" target="_blank">osee_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Pax CDI</td>
+                  <td> <a href="reports/pax-cdi_general.html" target="_blank">pax-cdi_general.html</a></td>
+                  <td> <a href="reports/pax-cdi_metrics.html" target="_blank">pax-cdi_metrics.html</a></td>
+              </tr>
+                <tr>
+                  <td>Riena</td>
+                  <td> <a href="reports/riena_general.html" target="_blank">riena_general.html</a></td>
+                  <td> <a href="reports/riena_metrics.html" target="_blank">riena_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Scout runtime</td>
+                  <td> <a href="reports/scout.rt_general.html" target="_blank">scout.rt_general.html</a></td>
+                  <td> <a href="reports/scout.rt_metrics.html" target="_blank">scout.rt_metrics.html</a></td>
+              </tr>
+              <tr>
+                  <td>Tuscany-sca-2.x</td>
+                  <td> <a href="reports/tuscany-sca_general.html" target="_blank">tuscany-sca_general.html</a></td>
+                  <td> <a href="reports/tuscany-sca_metrics.html" target="_blank">tuscany-sca_metrics.html</a></td>
+              </tr>
+              </tbody>
+          </table>
       </div>
 
         <div class="marketing" style="font-size: 16px;font-weight: bold">
@@ -83,5 +158,7 @@
       </footer>
             
     </div>
+
+
   </body>
 </html>
