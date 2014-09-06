@@ -31,15 +31,10 @@ public class ManifestMetadata implements Serializable {
 
 
     public ManifestMetadata(FileResource<?> manifestSource, DirectoryResource projectRoot, ResourceFactory resourceFactory) {
-        if (manifestSource == null) {
-            throw new RuntimeException("provide source of manifest metadata such as manisfest or bnd file");
-        }
         this.resourceFactory = resourceFactory;
         this.projectRoot = projectRoot;
 
         this.readManifest(manifestSource);
-
-
     }
 
     public List<String> getImportedPackages() {

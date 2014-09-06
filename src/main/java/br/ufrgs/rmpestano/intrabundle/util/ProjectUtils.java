@@ -100,12 +100,12 @@ public class ProjectUtils implements Serializable {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
 
         //META-INF in resource folder
-        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists()) {
+        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && !resourcesPath.getChild("META-INF").listResources().isEmpty()) {
             return resourcesPath.getChild("META-INF");
-        } else if (root.getChild("META-INF").exists()) {
+        } else if (root.getChild("META-INF").exists() && !root.getChild("META-INF").listResources().isEmpty()) {
             return root.getChild("META-INF");
             //META-INF in source folder
-        } else if (getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists()) {
+        } else if (getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists() && !getProjectSourcePath(root).getChild("META-INF").listResources().isEmpty()) {
             return getProjectSourcePath(root).getChild("META-INF");
         }
 
@@ -160,6 +160,7 @@ public class ProjectUtils implements Serializable {
      * @return
      */
     public static Resource<?> getBundleManifestSource(DirectoryResource projectRoot) {
+
         if (isMavenBndProject(projectRoot)) {
             Resource<?> manifest = null;
             try {
