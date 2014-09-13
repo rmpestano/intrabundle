@@ -234,7 +234,10 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
-
+    @Command(value = "projectMetric", help = "returns OSGi project average metric score based on each bundle score")
+    public void projectMetric(PipeOut out) {
+        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectMetric(project.get()).name());
+    }
 
     private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listImported", module) + " =====");

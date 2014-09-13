@@ -1,5 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.maven.MavenCoreFacet;
 import org.jboss.forge.parser.JavaParser;
@@ -32,6 +34,8 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     private Long linesOfTestCode;
     protected String version;
     protected String revision;
+    private MetricScore projectMetric;
+    private Metrics metrics;
 
 
     public OSGiProjectImpl() {
@@ -40,7 +44,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
         projectRoot = null;
     }
 
-    public OSGiProjectImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir, ProjectUtils projectUtils) {
+    public OSGiProjectImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;

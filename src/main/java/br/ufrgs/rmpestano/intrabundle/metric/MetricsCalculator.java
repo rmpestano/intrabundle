@@ -3,16 +3,15 @@ package br.ufrgs.rmpestano.intrabundle.metric;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
+import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by rmpestano on 8/17/14.
@@ -137,4 +136,54 @@ public class MetricsCalculator implements Metrics {
 
     }
 
+    public MetricScore calculateProjectMetric(OSGiProject osGiProject) {
+        Map<MetricScore, Integer> metricScores = new HashMap<MetricScore, Integer>();//counts metricScore of each bundle where:
+        metricScores.put(MetricScore.ANTI_PATTERN,0);
+        metricScores.put(MetricScore.REGULAR,0);
+        metricScores.put(MetricScore.GOOD,0);
+        metricScores.put(MetricScore.VERY_GOOD,0);
+        metricScores.put(MetricScore.STATE_OF_ART,0);
+        for (OSGiModule osGiModule : osGiProject.getModules()) {
+
+            MetricScore bundleScore = this.calculateBundleMetric(osGiModule).getFinalScore();
+            switch (bundleScore){
+                case ANTI_PATTERN: {
+                    Integer count = metricScores.get(MetricScore.ANTI_PATTERN);
+                    metricScores.put(MetricScore.ANTI_PATTERN, ++count);
+                }
+                case REGULAR:{
+                    Integer count = metricScores.get(MetricScore.REGULAR);
+                    metricScores.put(MetricScore.REGULAR, ++count);
+                }
+                case GOOD:{
+                    Integer count = metricScores.get(MetricScore.GOOD);
+                    metricScores.put(MetricScore.GOOD, ++count);
+                }
+                case VERY_GOOD:{
+                    Integer count = metricScores.get(MetricScore.VERY_GOOD);
+                    metricScores.put(MetricScore.VERY_GOOD, ++count);
+                }
+                case STATE_OF_ART:{
+                    Integer count = metricScores.get(MetricScore.STATE_OF_ART);
+                    metricScores.put(MetricScore.STATE_OF_ART, ++count);
+                }
+            }
+        }
+        MetricScore mostFrequent = MetricScore.ANTI_PATTERN;
+        Set<MetricScore> sortedMetrics = metricScores.keySet();
+        for (MetricScore metricScore : metricScores.keySet()) {
+            if(metricScores.get(metricScore) > metricScores.get(mostFrequent)){
+                mostFrequent = metricScore;
+            }else if(metricScores.get(metricScore).equals(metricScores.get(mostFrequent))){
+                if(metricScore.getValue() > mostFrequent.getValue()){
+                    mostFrequent = metricScore;
+                }
+            }
+        }
+        return mostFrequent;
+    }
+
+    public MetricScore calculateProjectMetric(){
+        return calculateProjectMetric(getCurrentOSGiProject());
+    }
 }

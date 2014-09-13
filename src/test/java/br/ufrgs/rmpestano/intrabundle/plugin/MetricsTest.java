@@ -45,6 +45,23 @@ public class MetricsTest extends BaseMetricsTest {
     }
 
     @Test
+    public void shouldExecuteOSGiProjectMetricCommand() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        getShell().execute("osgi projectMetric");
+        assertTrue(getOutput().startsWith("Project metric:STATE_OF_ART"));
+    }
+
+    @Test
+    public void shouldGetOSGiProjectMetric() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        MetricScore projectScore = metrics.calculateProjectMetric();
+        assertEquals(projectScore,MetricScore.STATE_OF_ART);
+    }
+
+
+    @Test
     public void shouldExecuteBundleMetricsCommandOnAllBundles() throws Exception {
         initializeOSGiMavenProject();
         resetOutput();

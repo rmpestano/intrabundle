@@ -4,6 +4,7 @@ import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.model.Metric;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
 /**
  * Created by rmpestano on 8/18/14.
@@ -50,4 +51,18 @@ public interface Metrics {
     OSGiProject getCurrentOSGiProject();
 
     MetricPoints calculateBundleMetric(OSGiModule bundle);
+
+    /**
+     * get average project metric score
+     * @param osGiProject
+     * @return
+     */
+    MetricScore calculateProjectMetric(OSGiProject osGiProject);
+
+    /**
+     * get average project metric score on current OSGiProject
+     * @return
+     */
+    MetricScore calculateProjectMetric();
+
 }
