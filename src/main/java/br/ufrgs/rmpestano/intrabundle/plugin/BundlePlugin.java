@@ -81,7 +81,6 @@ public class BundlePlugin implements Plugin {
 
     @Command(value = "requiredBundles",help = "list bundle required bundles")
     public void requiredBundles(PipeOut out){
-        System.out.println("requiredBundles()");
         if(bundle.getRequiredBundles().isEmpty()){
             out.println(messageProvider.getMessage("module.noRequiredBundles"));
         }
