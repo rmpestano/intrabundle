@@ -83,7 +83,7 @@ public class MetricsCalculator implements Metrics {
     }
 
     public Metric usesFrameworkToManageServicesMetric(OSGiModule bundle) {
-        if (bundle.getUsesDeclarativeServices() || bundle.getUsesBlueprint() || bundle.getUsesIpojo()) {
+        if (bundle.usesFramework()) {
             return new Metric(MetricName.USES_FRAMEWORK, MetricScore.STATE_OF_ART);
         } else {
             return new Metric(MetricName.USES_FRAMEWORK, MetricScore.REGULAR);
@@ -95,7 +95,7 @@ public class MetricsCalculator implements Metrics {
         int nroOfStaleReferences = bundle.getStaleReferences().size();
         if (nroOfStaleReferences == 0) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (nroOfStaleReferences >= (bundle.getNumberOfClasses() / 25)) {
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.25)) {
             // 25% of classes has stale references
             return new Metric(name, MetricScore.REGULAR);
         }

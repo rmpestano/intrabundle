@@ -49,7 +49,7 @@ public class MetricsTest extends BaseMetricsTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi projectMetric");
-        assertTrue(getOutput().startsWith("Project metric:STATE_OF_ART"));
+        assertTrue(getOutput().startsWith("Project metric:GOOD"));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         getShell().execute("bundle metrics");
         assertTrue(getOutput().contains("Lines of code:ANTI_PATTERN"));
-        assertTrue(getOutput().contains("Points obtained: 35 of 100. Average score: ANTI_PATTERN"));
+        assertTrue(getOutput().contains("Points obtained: 30 of 100. Average score: ANTI_PATTERN"));
     }
 
 }

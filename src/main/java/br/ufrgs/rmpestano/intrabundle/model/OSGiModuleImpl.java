@@ -412,6 +412,11 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     }
 
     @Override
+    public boolean usesFramework() {
+        return this.getUsesDeclarativeServices() || this.getUsesBlueprint() || this.getUsesIpojo();
+    }
+
+    @Override
     public int compareTo(OSGiModule o) {
         return this.toString().compareTo(o.toString());
     }

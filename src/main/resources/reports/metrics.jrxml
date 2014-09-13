@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="711"/>
+	<property name="ireport.y" value="1392"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<style name="table">
@@ -37,6 +37,7 @@
 	</parameter>
 	<parameter name="provider" class="java.lang.Object"/>
 	<parameter name="INITIAL_TIME" class="java.util.Date"/>
+	<parameter name="projectQuality" class="java.lang.String"/>
 	<field name="module" class="java.lang.Object"/>
 	<field name="metricPoints" class="java.lang.Object"/>
 	<group name="Group1">
@@ -200,98 +201,84 @@
 				<text><![CDATA[Version:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="aa2a93c8-1a54-49b8-8fd9-fb251ea5ec8d" mode="Opaque" x="4" y="225" width="776" height="24" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="aa2a93c8-1a54-49b8-8fd9-fb251ea5ec8d" mode="Opaque" x="4" y="238" width="776" height="24" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Metrics Formula]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e3bc2d3a-b0a8-4a64-a90d-31e1b60c6d58" x="8" y="457" width="211" height="20"/>
+				<reportElement uuid="e3bc2d3a-b0a8-4a64-a90d-31e1b60c6d58" x="8" y="470" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Lines of code:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="36cb9d67-0f1f-490d-aecd-82d2457d88d7" x="8" y="499" width="211" height="20"/>
+				<reportElement uuid="36cb9d67-0f1f-490d-aecd-82d2457d88d7" x="8" y="512" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Bundle depedency:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="7ab8a337-5031-47e1-be64-1b84985668da" x="236" y="499" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="7ab8a337-5031-47e1-be64-1b84985668da" x="236" y="512" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["0: STATE_OF_ART, <= 3: VERY_GOOD,\n <=5: GOOD, <= 9: REGULAR, >=10: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="0934116f-6e0e-4c33-ad3a-f3c4ff70c494" x="237" y="457" width="541" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="0934116f-6e0e-4c33-ad3a-f3c4ff70c494" x="237" y="470" width="541" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["<= 300: STATE_OF_ART, <= 500: VERY_GOOD, <=750: GOOD,\n <= 1000: REGULAR, >1000: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="70548bc7-60db-41c1-9fe2-6a23daae3aa7" x="8" y="540" width="211" height="20"/>
+				<reportElement uuid="70548bc7-60db-41c1-9fe2-6a23daae3aa7" x="8" y="553" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Publishes interfaces:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="590060a0-e8b5-45d3-b136-6839d119adf8" x="238" y="540" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="590060a0-e8b5-45d3-b136-6839d119adf8" x="238" y="553" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR >=10"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="4f38ed09-9477-4adb-819e-7b8e0923effb" x="238" y="572" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="4f38ed09-9477-4adb-819e-7b8e0923effb" x="238" y="585" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="40b454fd-d81e-476e-a0d9-580597174cd3" x="8" y="572" width="211" height="20"/>
+				<reportElement uuid="40b454fd-d81e-476e-a0d9-580597174cd3" x="8" y="585" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Uses framework:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2178af15-a828-4674-aa02-7fd24d875f37" x="8" y="606" width="211" height="20"/>
+				<reportElement uuid="2178af15-a828-4674-aa02-7fd24d875f37" x="8" y="619" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Stale references:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="8fba9e1c-3b25-4d92-bebe-9bccb9326ec0" x="238" y="606" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="8fba9e1c-3b25-4d92-bebe-9bccb9326ec0" x="238" y="619" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["no stale references: STATE_OF_ART\n 1/4 of classes has stale references: REGULAR\n > 1/4 of classes: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement uuid="e79dce2f-009c-445a-a857-c133f0f6919b" x="8" y="672" width="211" height="20"/>
-				<textElement>
-					<font size="14"/>
-				</textElement>
-				<text><![CDATA[Declares permission:]]></text>
-			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="74bf894b-0464-4f40-8d6f-b0e2870231d9" x="238" y="672" width="535" height="20" isPrintWhenDetailOverflows="true"/>
-				<textElement markup="none">
-					<font size="14"/>
-				</textElement>
-				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR"]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement uuid="3c212b02-d2b7-4aa2-8a7e-53279d85eafa" x="239" y="360" width="539" height="20"/>
+				<reportElement uuid="3c212b02-d2b7-4aa2-8a7e-53279d85eafa" x="239" y="373" width="539" height="20"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
@@ -302,14 +289,14 @@
 "Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="cbebd637-b450-4bcf-aaad-d1e575a315d0" x="6" y="360" width="211" height="20"/>
+				<reportElement uuid="cbebd637-b450-4bcf-aaad-d1e575a315d0" x="6" y="373" width="211" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Final Score:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="d3719ccb-0537-4594-b7ca-1543f7351dbb" positionType="Float" x="235" y="252" width="543" height="20"/>
+				<reportElement uuid="d3719ccb-0537-4594-b7ca-1543f7351dbb" positionType="Float" x="235" y="265" width="543" height="20"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
@@ -320,11 +307,26 @@
 "ANTI_PATTERN: 0"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="71329835-50c2-40ff-aace-c213cf4d8826" x="8" y="259" width="209" height="20"/>
+				<reportElement uuid="71329835-50c2-40ff-aace-c213cf4d8826" x="8" y="272" width="209" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Metric Points:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c3769398-a1a3-4523-9f86-3c8a6634fe6b" x="320" y="214" width="453" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectQuality}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="07e24d29-8e11-41ea-bf20-f76387a780d0" x="4" y="214" width="293" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Project quality(average bundle metric):]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -346,7 +348,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.USES_FRAMEWORK)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).usesFramework() ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")) + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.USES_FRAMEWORK)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="fb68d7ca-8bc3-4d12-82fb-76df97d5888e" x="4" y="263" width="215" height="20"/>
@@ -368,7 +370,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.PUBLISHES_INTERFACES)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getPublishesInterfaces() ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no")) + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.PUBLISHES_INTERFACES)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="94424aa3-fbaa-4a02-a247-09ece6b524f5" x="4" y="46" width="215" height="20"/>
@@ -398,7 +400,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.STALE_REFERENCES)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getStaleReferences().size() + " of " + ((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getNumberOfClasses() + " classes - ") + ((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.STALE_REFERENCES)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="f5250b02-3b2d-4140-a1e8-693cfd240097" x="4" y="203" width="215" height="20"/>
@@ -413,7 +415,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.BUNDLE_DEPENDENCIES)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getModuleDependencies(((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module})).size() + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.BUNDLE_DEPENDENCIES)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="fb73d942-80ed-4fae-8ede-c009992d9224" x="4" y="110" width="215" height="20"/>
@@ -467,14 +469,14 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.LOC)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getLinesOfCode() + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.LOC)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="59dfbf5d-821e-4cce-993e-64660e57f7d3" x="236" y="263" width="535" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.DECLARES_PERMISSION)).getScore().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getDeclaresPermissions() == true ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no") + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.DECLARES_PERMISSION)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="986c70cb-fd23-4e11-af42-a7581fb50bc3" x="4" y="6" width="780" height="3"/>
