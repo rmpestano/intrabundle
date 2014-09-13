@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>br.ufrgs.rmpestano</groupId>
   <artifactId>intrabundle</artifactId>
-  <version>0.2</version>
+  <version>0.0.2</version>
   <name>intrabundle</name>
   <properties>
     <forge.version>1.4.4.Final</forge.version>
