@@ -20,7 +20,7 @@ public class ModuleDTO implements Serializable {
         module.getNumberOfClasses();//forces visitAllClasses to be available in report as its called on demand
         module.getManifestMetadata();//forces createManifestMetadata to be available in report
         this.module = module;
-        metricPoints = metrics.calculateBundleMetric(module);
+        metricPoints = metrics.calculateBundleQuality(module);
     }
 
     public OSGiModule getModule() {

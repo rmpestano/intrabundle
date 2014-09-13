@@ -50,19 +50,19 @@ public interface Metrics {
 
     OSGiProject getCurrentOSGiProject();
 
-    MetricPoints calculateBundleMetric(OSGiModule bundle);
+    MetricPoints calculateBundleQuality(OSGiModule bundle);
 
     /**
      * get average project metric score
      * @param osGiProject
      * @return
      */
-    MetricScore calculateProjectMetric(OSGiProject osGiProject);
+    MetricScore calculateProjectQuality(OSGiProject osGiProject);
 
     /**
      * get average project metric score on current OSGiProject
      * @return
      */
-    MetricScore calculateProjectMetric();
+    MetricScore calculateProjectQuality();
 
 }

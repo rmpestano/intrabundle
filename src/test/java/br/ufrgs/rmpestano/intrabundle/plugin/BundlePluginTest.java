@@ -187,7 +187,7 @@ public class BundlePluginTest extends BaseBundleTest {
     /**
      * test find activator command in eclipse bnd tools based OSGi project with bnd file in resources folder
      */
-    //@Test
+    @Test
     public void shouldFindActivatorInBndProjectWithResources() throws Exception {
         initializeOSGiBNDProjectWithBndInResources();
         resetOutput();
@@ -196,7 +196,7 @@ public class BundlePluginTest extends BaseBundleTest {
         Assert.assertTrue(getOutput().contains(expected));
         OSGiModule osGiModule = currentBundle.get();
         assertNotNull(osGiModule);
-        Assert.assertTrue(osGiModule.getActivator().getFullyQualifiedName().equals(expected));
+        Assert.assertTrue(osGiModule.getActivator().getFullyQualifiedName().endsWith(expected));
     }
 
     @Test

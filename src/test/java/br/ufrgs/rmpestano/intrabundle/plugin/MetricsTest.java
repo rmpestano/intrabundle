@@ -23,9 +23,9 @@ public class MetricsTest extends BaseMetricsTest {
       OSGiModule module1 = metrics.getCurrentOSGiProject().getModules().get(0);
       OSGiModule module2 = metrics.getCurrentOSGiProject().getModules().get(1);
       OSGiModule module3 = metrics.getCurrentOSGiProject().getModules().get(2);
-      assertEquals(metrics.calculateBundleMetric(module1).getFinalScore().name(), MetricScore.GOOD.name());
-      assertEquals(metrics.calculateBundleMetric(module2).getFinalScore().name(), MetricScore.GOOD.name());
-      assertEquals(metrics.calculateBundleMetric(module3).getFinalScore().name(), MetricScore.VERY_GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module1).getFinalScore().name(), MetricScore.GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module2).getFinalScore().name(), MetricScore.GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module3).getFinalScore().name(), MetricScore.VERY_GOOD.name());
     }
 
     @Test
@@ -53,11 +53,11 @@ public class MetricsTest extends BaseMetricsTest {
     }
 
     @Test
-    public void shouldGetOSGiProjectMetric() throws Exception {
+    public void shouldCalculateMetricOfOSGiProject() throws Exception {
         initializeOSGiMavenProject();
         resetOutput();
-        MetricScore projectScore = metrics.calculateProjectMetric();
-        assertEquals(projectScore,MetricScore.STATE_OF_ART);
+        MetricScore projectScore = metrics.calculateProjectQuality();
+        assertEquals(projectScore, MetricScore.GOOD);
     }
 
 

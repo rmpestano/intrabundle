@@ -120,7 +120,7 @@ public class MetricsCalculator implements Metrics {
         return null;
     }
 
-    public MetricPoints calculateBundleMetric(OSGiModule bundle) {
+    public MetricPoints calculateBundleQuality(OSGiModule bundle) {
         List<Metric> bundleMetrics = new ArrayList<Metric>();
         bundleMetrics.add(getLocMetric(bundle));
         if (getCurrentOSGiProject() != null) {
@@ -136,7 +136,7 @@ public class MetricsCalculator implements Metrics {
 
     }
 
-    public MetricScore calculateProjectMetric(OSGiProject osGiProject) {
+    public MetricScore calculateProjectQuality(OSGiProject osGiProject) {
         Map<MetricScore, Integer> metricScores = new HashMap<MetricScore, Integer>();//counts metricScore of each bundle where:
         metricScores.put(MetricScore.ANTI_PATTERN,0);
         metricScores.put(MetricScore.REGULAR,0);
@@ -145,35 +145,40 @@ public class MetricsCalculator implements Metrics {
         metricScores.put(MetricScore.STATE_OF_ART,0);
         for (OSGiModule osGiModule : osGiProject.getModules()) {
 
-            MetricScore bundleScore = this.calculateBundleMetric(osGiModule).getFinalScore();
+            MetricScore bundleScore = this.calculateBundleQuality(osGiModule).getFinalScore();
             switch (bundleScore){
                 case ANTI_PATTERN: {
                     Integer count = metricScores.get(MetricScore.ANTI_PATTERN);
                     metricScores.put(MetricScore.ANTI_PATTERN, ++count);
+                    break;
                 }
                 case REGULAR:{
                     Integer count = metricScores.get(MetricScore.REGULAR);
                     metricScores.put(MetricScore.REGULAR, ++count);
+                    break;
                 }
                 case GOOD:{
                     Integer count = metricScores.get(MetricScore.GOOD);
                     metricScores.put(MetricScore.GOOD, ++count);
+                    break;
                 }
                 case VERY_GOOD:{
                     Integer count = metricScores.get(MetricScore.VERY_GOOD);
                     metricScores.put(MetricScore.VERY_GOOD, ++count);
+                    break;
                 }
                 case STATE_OF_ART:{
                     Integer count = metricScores.get(MetricScore.STATE_OF_ART);
                     metricScores.put(MetricScore.STATE_OF_ART, ++count);
+                    break;
                 }
             }
         }
         MetricScore mostFrequent = MetricScore.ANTI_PATTERN;
-        Set<MetricScore> sortedMetrics = metricScores.keySet();
         for (MetricScore metricScore : metricScores.keySet()) {
             if(metricScores.get(metricScore) > metricScores.get(mostFrequent)){
                 mostFrequent = metricScore;
+                //let the higher score to prevail if most frequent scores are tie
             }else if(metricScores.get(metricScore).equals(metricScores.get(mostFrequent))){
                 if(metricScore.getValue() > mostFrequent.getValue()){
                     mostFrequent = metricScore;
@@ -183,7 +188,7 @@ public class MetricsCalculator implements Metrics {
         return mostFrequent;
     }
 
-    public MetricScore calculateProjectMetric(){
-        return calculateProjectMetric(getCurrentOSGiProject());
+    public MetricScore calculateProjectQuality(){
+        return calculateProjectQuality(getCurrentOSGiProject());
     }
 }

@@ -213,7 +213,7 @@ public class OsgiPlugin implements Plugin {
     public void bundleMetrics(PipeOut out) {
         if (!this.allModules(provider.getMessage("metrics"))) {
             OSGiModule bundle = choiceModule();
-            MetricPoints metricPoints = metrics.calculateBundleMetric(bundle);
+            MetricPoints metricPoints = metrics.calculateBundleQuality(bundle);
             out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
             out.println(provider.getMessage("bundle.listing-metrics"));
             for (Metric metric : metricPoints.getBundleMetrics()) {
@@ -225,7 +225,7 @@ public class OsgiPlugin implements Plugin {
             out.println(ShellColor.YELLOW, "===== " + provider.getMessage("osgi.listing-metrics") + " =====");
             for (OSGiModule module: getModules()) {
                 out.println(ShellColor.YELLOW,provider.getMessage("module.metrics",module.getName()));
-                MetricPoints metricPoints = metrics.calculateBundleMetric(module);
+                MetricPoints metricPoints = metrics.calculateBundleQuality(module);
                 out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
                 for (Metric metric : metricPoints.getBundleMetrics()) {
                     out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
@@ -236,7 +236,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "projectMetric", help = "returns OSGi project average metric score based on each bundle score")
     public void projectMetric(PipeOut out) {
-        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectMetric(project.get()).name());
+        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectQuality(project.get()).name());
     }
 
     private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
