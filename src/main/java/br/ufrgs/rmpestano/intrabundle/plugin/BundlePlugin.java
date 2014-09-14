@@ -2,7 +2,7 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 
 import br.ufrgs.rmpestano.intrabundle.facet.BundleFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.resources.Resource;
@@ -28,7 +28,7 @@ public class BundlePlugin implements Plugin {
     MessageProvider messageProvider;
 
     @Inject
-    Metrics metrics;
+    MetricsCalculation metrics;
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {

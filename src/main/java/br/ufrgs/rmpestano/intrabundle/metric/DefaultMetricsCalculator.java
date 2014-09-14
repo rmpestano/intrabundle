@@ -11,21 +11,22 @@ import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rmpestano on 8/17/14.
  */
 @Singleton
-public class MetricsCalculator implements Metrics {
+public class DefaultMetricsCalculator implements MetricsCalculation {
 
     @Inject
     Instance<OSGiProject> currentOSGiProject;
 
     @Inject
     MessageProvider provider;
-
-    private final int numberOfMetrics = 8;
 
     public Metric getLocMetric(OSGiModule bundle) {
         MetricName name = MetricName.LOC;
@@ -186,6 +187,17 @@ public class MetricsCalculator implements Metrics {
             }
         }
         return mostFrequent;
+    }
+
+    public List<OSGiModule> getModulesByQuality(MetricScore quality){
+        List<OSGiModule> result = new ArrayList<OSGiModule>(getCurrentOSGiProject().getModules().size());
+        for (OSGiModule osGiModule : getCurrentOSGiProject().getModules()) {
+            MetricPoints points = calculateBundleQuality(osGiModule);
+            if(points.getFinalScore().equals(quality)){
+                result.add(osGiModule);
+            }
+        }
+        return result;
     }
 
     public MetricScore calculateProjectQuality(){

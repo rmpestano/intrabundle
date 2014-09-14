@@ -1,15 +1,17 @@
 package br.ufrgs.rmpestano.intrabundle.metric;
 
+import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
+
+import java.util.List;
 
 /**
  * Created by rmpestano on 8/18/14.
  */
-public interface Metrics {
+public interface MetricsCalculation {
 
     /**
      * this metric is based on bundle lines of code
@@ -64,5 +66,7 @@ public interface Metrics {
      * @return
      */
     MetricScore calculateProjectQuality();
+
+    List<OSGiModule> getModulesByQuality(MetricScore quality);
 
 }

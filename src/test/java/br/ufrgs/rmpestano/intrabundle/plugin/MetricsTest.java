@@ -1,6 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class MetricsTest extends BaseMetricsTest {
 
     @Inject
-    Metrics metrics;
+    MetricsCalculation metrics;
 
     @Test
     public void shouldCalculateMetricPointsOnMavenProject() throws Exception {

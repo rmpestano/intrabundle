@@ -1,6 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.maven.MavenCoreFacet;
@@ -35,7 +35,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     protected String version;
     protected String revision;
     private MetricScore projectMetric;
-    private Metrics metrics;
+    private MetricsCalculation metrics;
 
 
     public OSGiProjectImpl() {

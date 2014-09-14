@@ -366,4 +366,31 @@ public class OsgiPluginTest extends BaseOSGiTest {
         assertTrue(getOutput().contains("Total lines of test code:2"));
     }
 
+    @Test
+    public void shouldListModulesByQuality() throws Exception {
+        initializeOSGiProject();
+        resetOutput();
+        queueInputLines("1");
+        getShell().execute("osgi findBundlesByQuality");
+        assertTrue(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+        resetOutput();
+        queueInputLines("2");
+        getShell().execute("osgi findBundlesByQuality");
+        assertTrue(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+        resetOutput();
+        queueInputLines("3");
+        getShell().execute("osgi findBundlesByQuality");
+        assertTrue(getOutput().trim().endsWith("module1"+TestUtils.getNewLine()+"module2"));
+        assertFalse(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+        resetOutput();
+        queueInputLines("4");
+        getShell().execute("osgi findBundlesByQuality");
+        assertTrue(getOutput().trim().endsWith("module3"));
+        assertFalse(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+        resetOutput();
+        queueInputLines("5");
+        getShell().execute("osgi findBundlesByQuality");
+        assertTrue(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+    }
+
 }

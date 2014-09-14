@@ -1,7 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.jasper;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
@@ -41,7 +41,7 @@ public class JasperManager implements Serializable {
     MessageProvider provider;
 
     @Inject
-    Metrics metrics;
+    MetricsCalculation metrics;
 
 
     /**

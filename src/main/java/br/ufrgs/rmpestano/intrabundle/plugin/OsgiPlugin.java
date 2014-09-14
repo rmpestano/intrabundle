@@ -3,11 +3,12 @@ package br.ufrgs.rmpestano.intrabundle.plugin;
 import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
@@ -18,6 +19,7 @@ import org.jboss.forge.shell.plugins.*;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class OsgiPlugin implements Plugin {
     JasperManager jasperManager;
 
     @Inject
-    Metrics metrics;
+    MetricsCalculation metrics;
 
 
     private boolean sorted;
@@ -239,6 +241,20 @@ public class OsgiPlugin implements Plugin {
         out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectQuality(project.get()).name());
     }
 
+    @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")
+    public void findModulesByQuality(PipeOut out) {
+        MetricScore quality = choiceQuality();
+        List<OSGiModule> modules = metrics.getModulesByQuality(quality);
+        if(!modules.isEmpty()){
+            for (OSGiModule osGiModule : modules) {
+                out.println(osGiModule.getName());
+            }
+        } else{
+            out.println(provider.getMessage("osgi.scan.noBundlesFound"));
+        }
+
+    }
+
     private void listModuleImportedPackages(OSGiModule module, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listImported", module) + " =====");
         if (module.getImportedPackages().isEmpty()) {
@@ -289,6 +305,10 @@ public class OsgiPlugin implements Plugin {
 
     private OSGiModule choiceModule() {
         return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
+    }
+
+    private MetricScore choiceQuality() {
+        return prompt.promptChoiceTyped(provider.getMessage("quality.choice"), Arrays.asList(MetricScore.values()));
     }
 
     private boolean allModules(String allWhat) {

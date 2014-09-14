@@ -1,6 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.metric.Metrics;
+import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ public class ModuleDTO implements Serializable {
     public ModuleDTO() {
     }
 
-    public ModuleDTO(OSGiModule module, Metrics metrics) {
+    public ModuleDTO(OSGiModule module, MetricsCalculation metrics) {
         module.getNumberOfClasses();//forces visitAllClasses to be available in report as its called on demand
         module.getManifestMetadata();//forces createManifestMetadata to be available in report
         this.module = module;
