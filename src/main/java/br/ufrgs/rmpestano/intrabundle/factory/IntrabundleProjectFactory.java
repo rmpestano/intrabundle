@@ -1,5 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.factory;
 
+import br.ufrgs.rmpestano.intrabundle.locator.BundleProjectLocator;
+import br.ufrgs.rmpestano.intrabundle.locator.OSGiProjectLocator;
 import org.jboss.forge.project.locator.ProjectLocator;
 import org.jboss.forge.project.services.FacetFactory;
 import org.jboss.forge.project.services.ProjectFactory;
@@ -38,7 +40,8 @@ public class IntrabundleProjectFactory extends ProjectFactory {
      * @return current directory if its a project, null otherwise
      */
     private DirectoryResource locateInCurrentDirectory(DirectoryResource root, ProjectLocator locator){
-        if (!locator.containsProject(root)) {
+        //use only intrabundle project locators(OSGi & Bundle locators)
+        if ((locator instanceof BundleProjectLocator == false && locator instanceof OSGiProjectLocator == false) && !locator.containsProject(root)) {
             root = null;
         }
         return root;

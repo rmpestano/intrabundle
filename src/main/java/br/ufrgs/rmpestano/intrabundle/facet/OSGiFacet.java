@@ -58,7 +58,12 @@ public class OSGiFacet extends BaseFacet {
              return false;
          }
         //try to find bundles in child directories
-        for (Resource<?> child : projectRoot.listResources()) {
+        for (Resource<?> child : projectRoot.listResources(new ResourceFilter() {
+            @Override
+            public boolean accept(Resource<?> resource) {
+                return resource instanceof DirectoryResource && !resource.getName().startsWith(".");
+            }
+        })) {
             DirectoryResource directoryResource = child.reify(DirectoryResource.class);
             if(directoryResource != null){
                 if(ProjectUtils.isOsgiBundle(directoryResource)){
