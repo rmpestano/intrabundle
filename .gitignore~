@@ -40,13 +40,13 @@ test-output/
 .forge_settings
 
 #tex
-*.aux
-*.bbl
-*.blg
-*.lof
-*.log
-*.out
-*.toc
-*.gz
+.aux
+.bbl
+.blg
+.lof
+.log
+.out
+.toc
+.gz
 
 

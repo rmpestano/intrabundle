@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.ufrgs.rmpestano</groupId>
     <artifactId>intrabundle</artifactId>
-    <version>1.0.0</version>
+    <version>0.1</version>
     <name>intrabundle</name>
     <properties>
         <forge.version>1.4.4.Final</forge.version>
@@ -87,6 +87,18 @@
             <artifactId>forge-test-harness</artifactId>
             <version>${forge.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                     <groupId>junit</groupId>
+                     <artifactId>junit</artifactId>
+                </exclusion>
+	     </exclusions>
+        </dependency>
+        <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <version>4.11</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.forge</groupId>
@@ -101,6 +113,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>JBOSS_NEXUS</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -113,12 +131,17 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+	       <artifactId>maven-surefire-plugin</artifactId>
+	       <version>2.17</version>
+	       <configuration>
+		   <skipTests>false</skipTests>
+		   <runOrder>alphabetical</runOrder>
+                   <parallel>classes</parallel>
+                   <!--useUnlimitedThreads>true</useUnlimitedThreads-->
+ 	           <threadCount>4</threadCount>
+		</configuration>
+            </plugin> 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jasperreports-maven-plugin</artifactId>
@@ -175,21 +198,6 @@
     </build>
     <profiles>
         <profile>
-            <id>tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.17</version>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                            <runOrder>alphabetical</runOrder>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>jacoco</id>
             <build>
                 <plugins>
@@ -223,7 +231,7 @@
                 </plugins>
             </build>
             <properties>
-                <jacoco.version>0.7.1.201405082137</jacoco.version>
+                <jacoco.version>0.7.0.201403182114</jacoco.version>
             </properties>
             <dependencies>
                 <dependency>
@@ -258,83 +266,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>docs</id>
-            <dependencies>
-                <dependency>
-                    <groupId>rubygems</groupId>
-                    <artifactId>asciidoctor-pdf</artifactId>
-                    <version>1.5.0.alpha.4</version>
-                    <type>gem</type>
-                    <scope>provided</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>rubygems</groupId>
-                            <artifactId>asciidoctor</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-            <build>
-                <defaultGoal>process-resources</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctor-maven-plugin</artifactId>
-                        <version>1.5.0</version>
-                        <!-- Uncomment the following element to override the version of AsciidoctorJ -->
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.asciidoctor</groupId>
-                                <artifactId>asciidoctorj</artifactId>
-                                <version>1.5.1</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <sourceDirectory>src/docs/asciidoc</sourceDirectory>
-                            <!-- The gem-maven-plugin appends the scope (e.g., provided) to the gemPath defined in the plugin configuration -->
-                            <attributes>
-                                <sourcedir>${project.build.sourceDirectory}</sourcedir>
-                            </attributes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>generate-html-doc</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>process-asciidoc</goal>
-                                </goals>
-                                <configuration>
-                                    <backend>latex</backend>
-                                    <!-- WARNING callout bullets don't yet work with CodeRay -->
-                                    <sourceHighlighter>coderay</sourceHighlighter>
-                                    <attributes>
-                                        <imagesdir>./images</imagesdir>
-                                        <pagenums/>
-                                        <toc/>
-                                        <idprefix/>
-                                        <idseparator>-</idseparator>
-                                    </attributes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>rubygems-proxy-releases</id>
-            <name>RubyGems.org Proxy (Releases)</name>
-            <url>http://rubygems-proxy.torquebox.org/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>
