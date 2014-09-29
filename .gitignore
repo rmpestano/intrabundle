@@ -49,4 +49,5 @@ test-output/
 *.toc
 *.gz
 
-
+*~
+*~.
