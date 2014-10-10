@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>OSGi Quality Analisys</title>
+<date>2014-10-10</date>
+</info>
+<chapter xml:id="_work_done_and_design_decisions">
+<title>Work done and design decisions</title>
+<simpara>I&#8217;ve met Geyer and he asked me to summarize everything i did until now on our work, so here is what
+i noted down(chronologically):</simpara>
+<simpara>Didier proposed the work and shared in drive lots of resource on the subject, see <footnote><simpara><link xlink:href="https://docs.google.com/document/d/1n34Xby3qelfQgxTw5LmvjPLD28UNV1e07LYe1aTgaCc/">https://docs.google.com/document/d/1n34Xby3qelfQgxTw5LmvjPLD28UNV1e07LYe1aTgaCc/</link></simpara></footnote>.</simpara>
+<simpara>I have studied OSGi by reading Manning OSGi in Action <footnote><simpara><link xlink:href="http://www.manning.com/hall/">http://www.manning.com/hall/</link></simpara></footnote>, Kiev service coroner paper <footnote><simpara><link xlink:href="http://dl.acm.org/citation.cfm?id=1495249">http://dl.acm.org/citation.cfm?id=1495249</link></simpara></footnote> and lots of examples on internet.</simpara>
+<simpara>With the help of João Americo i&#8217;ve defined some initial metrics like loc, stale references, number of import/export packages.</simpara>
+<simpara>Talking with João i&#8217;ve decided to focus only on static code analisys and rely on open sourced projects to avoid byte code manipulation.</simpara>
+<simpara>As a part of the work consists in building a tool to get the metrics i have researched on how i
+would collect useful information from OSGi projects. My decision was based on the following aspects:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>The solution should be based on Java platform so i could leverage my knowlegde on the language;</simpara>
+</listitem>
+<listitem>
+<simpara>The tool should be lightweight cause it would analyze real, complex and huge OSGi projects;</simpara>
+</listitem>
+<listitem>
+<simpara>as the tool will most of the time being navigating throught OSGi projects source code it must use a good API for this job.</simpara>
+</listitem>
+</orderedlist>
+<simpara>After researching on how i would implement the tool i&#8217;ve came to the following ideas:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>build a javaFX application <footnote><simpara><link xlink:href="http://docs.oracle.com/javafx/">http://docs.oracle.com/javafx/</link></simpara></footnote></simpara>
+</listitem>
+<listitem>
+<simpara>create an eclipse plugin <footnote><simpara><link xlink:href="http://www.vogella.com/tutorials/EclipsePlugIn/article.html">http://www.vogella.com/tutorials/EclipsePlugIn/article.html</link></simpara></footnote></simpara>
+</listitem>
+<listitem>
+<simpara>create a maven plugin(restricted to maven projects)</simpara>
+</listitem>
+<listitem>
+<simpara>build the tool on top of Jboss Forge <footnote><simpara><link xlink:href="http://forge.jboss.org/1.x/">http://forge.jboss.org/1.x/</link></simpara></footnote></simpara>
+</listitem>
+</orderedlist>
+<simpara>I&#8217;ve chosen in favor of <emphasis role="strong">Forge</emphasis>.</simpara>
+<simpara>Forge has the following advantages over others:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>works inside and outside eclipse</simpara>
+</listitem>
+<listitem>
+<simpara>as its a command line tool its very lightweight and can analise multiple OSGi projects
+at the same time(in fact you can go to your OS root and scan all OSGi projects you have in your machine);</simpara>
+</listitem>
+<listitem>
+<simpara>The programing model is based on top of the so called CDI <footnote><simpara><link xlink:href="http://docs.jboss.org/weld/reference/1.0.0/en-US/html/">http://docs.jboss.org/weld/reference/1.0.0/en-US/html/</link></simpara></footnote> so managing Objects lifecycle and event is handled by CDI automatically;</simpara>
+</listitem>
+<listitem>
+<simpara>Has a very good file system manipulation API(based on java.io);</simpara>
+</listitem>
+<listitem>
+<simpara>it&#8217;s modular, based on Jboss modules <footnote><simpara><link xlink:href="https://docs.jboss.org/author/display/MODULES/Introduction">https://docs.jboss.org/author/display/MODULES/Introduction</link></simpara></footnote> so eg: each plugin has its own classloader;</simpara>
+</listitem>
+<listitem>
+<simpara>I had previous knowledge on Forge platform</simpara>
+</listitem>
+</orderedlist>
+<simpara>Eclipse plugin would need eclipse IDE running to work which is not as light as forge runtime which is based on CLI,
+also eclipse would require to open the OSGi projects on it before getting the metrics which would consume lots of resources
+and finally i don&#8217;t have experience in eclipse platform.</simpara>
+<simpara>JavaFX would require use standard Java file system manipulation api(java.io) which has lots of caveats/pitfalls so for example its easy to create a memory leak or too many files opens error.
+Also with JavaFX i would have to implement the interface/GUI which i have for free in Eclipse or Forge.</simpara>
+<simpara>Maven plugin is limited to maven projects.</simpara>
+</chapter>
+<chapter xml:id="_implementation_details">
+<title>Implementation details</title>
+<simpara>So i started to work on Forge, basically created two plugins(forge is based on plugins like eclipse), one for getting information from OSGi projects(basically folders holding multiple OSGi bundles) which i named <emphasis>OSGiPlugin</emphasis> and other plugin for inspecting OSGi bundles which i named <emphasis>BundlePlugin</emphasis>.</simpara>
+<simpara>Our tool source code is available at github.com at <footnote xml:id="intrabundle"><simpara><link xlink:href="http://github.com/rmpestano/intrabundle">http://github.com/rmpestano/intrabundle</link></simpara></footnote>.</simpara>
+<simpara>Forge plugins are sensible to the context so for example they can be enabled or disabled depending on certain condition, in our case OSGi plugin should be enable when user navigate to an OSGi project, i had described this process on my blog in a very simplified way at <footnote><simpara><link xlink:href="http://rpestano.wordpress.com/2014/01/30/my-forge-experience-pt1/">http://rpestano.wordpress.com/2014/01/30/my-forge-experience-pt1/</link></simpara></footnote>.</simpara>
+<simpara>So i had to find a way to tell Forge that user had entered a folder(remember, its a command line tool and user has to navigate through folders) with OSGi project or bundle. The identification of OSGi projects and bundles <u>is one of the key features of our tool</u> and the algorithm is described below:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>user enters in a filesystem directory called ROOT;</simpara>
+</listitem>
+<listitem>
+<simpara>our tools verifies if ROOT has a subfolder which is an OSGi bundle;</simpara>
+</listitem>
+<listitem>
+<simpara>if ROOT has at least one directory with one level of depth (eg: ROOT/bundle1) which is an OSGi bundle then ROOT is considered
+an OSGi project and then forge must enable <u>OSGi project</u> related commands, an example of command could be <emphasis>'osgi listBundles'</emphasis> which will list
+all bundles inside ROOT;</simpara>
+</listitem>
+<listitem>
+<simpara>To consider a folder an <u>OSGi Bundle</u> our tool verifies:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>if the folder has a manifest file with OSGi metadata inside META-INF;</simpara>
+</listitem>
+<listitem>
+<simpara>OR if its maven project and has manifest with OSGI metadata inside src/main/resources/META-INF;</simpara>
+</listitem>
+<listitem>
+<simpara>OR if its maven project and uses maven bundle plugin;</simpara>
+</listitem>
+<listitem>
+<simpara>OR if its a BND tools based project (.bnd file);</simpara>
+</listitem>
+<listitem>
+<simpara>OR finally it has bundles on each package(jitsi project layout);</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>if user navigate to an <u>OSGi bundle</u>  directory then our plugin must enable bundle related commands which are similar to OSGi <emphasis role="strong">project</emphasis> plugin commands but applying to single bundle eg: bundle staleReferences command will list classes which possibly have stale services references.</simpara>
+</listitem>
+</orderedlist>
+<simpara>Instead of user navigating from folder to folder i&#8217;ve created a command which can be executed from any filesystem directory which is 'osgi scan'
+that takes an integer parameter which is the depth of directories our tool will scan for OSGi bundles, so for example <emphasis>'osgi scan 3'</emphasis> will apply all rules described before to 3 level of folder depth.</simpara>
+<simpara>I have made a video showing the tool in action here: <link xlink:href="http://rmpestano.github.io/intrabundle/video/intrabundle-demo.ogv">http://rmpestano.github.io/intrabundle/video/intrabundle-demo.ogv</link>. In the video i first download our <u>modified forge distribution</u>, start forge via command line and begin to navigate through filesystem after OSGi projects.</simpara>
+<simpara>The forge distribution i have created, available for download at <footnote><simpara>intrabunble forge distribution <link xlink:href="http://sourceforge.net/projects/intrabundle/files/intrabundle-forge-distribution-1.4.5.zip/download">http://sourceforge.net/projects/intrabundle/files/intrabundle-forge-distribution-1.4.5.zip/download</link></simpara></footnote> is same as original forge distribution <footnote><simpara><link xlink:href="http://forge.jboss.org/1.x/docs/using/">http://forge.jboss.org/1.x/docs/using/</link></simpara></footnote> with the following modifications:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>As soon users start forge in intrabundle distribution our tool plugins are downloaded and installed from intrabundle github repository(forge distribution comes only with forge plugins and other plugins must be installed on forge runtime);</simpara>
+</listitem>
+<listitem>
+<simpara>in this customized distribution i&#8217;ve made a command to update our tool based on github source code <footnoteref linkend="intrabundle"/>, the command is named <emphasis>forge intrabundle-update</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>i&#8217;ve solved a classloding issue described here <link xlink:href="http://lists.jboss.org/pipermail/forge-dev/2014-February/003692.html">http://lists.jboss.org/pipermail/forge-dev/2014-February/003692.html</link> (it was not fixed in forge cause forge team is focused on forge 2) basically i needed to use an api which was "hidden" by another forge plugin.</simpara>
+</listitem>
+</orderedlist>
+<simpara>Well enough of implementation details.</simpara>
+<simpara>Didier shared the refcar "Patterns of Modular Architecture" <footnote><simpara><link xlink:href="http://refcardz.dzone.com/refcardz/patterns-modular-architecture">http://refcardz.dzone.com/refcardz/patterns-modular-architecture</link></simpara></footnote> where i could identify lots of metrics.</simpara>
+<simpara>Although i have been collecting useful information from OSGi projects i have not calculated the impact
+of these data on the project quality. I have just proposed a metric calculation based on quality points where each metric would
+add points to the bundle like eg imports few packages means adds 100 points, imports more packages means less points and so on, the draft of quality calculation proposition is on a email with title <emphasis>'OSGi Quality analisys - quality metrics calculation'</emphasis>.</simpara>
+</chapter>
+<chapter xml:id="_metrics_or_useful_information_already_been_collected">
+<title>Metrics or useful information already been collected</title>
+<simpara>Above metrics are already been collected from OSGi project, basically these are our Forge plugin available commands:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara><emphasis>loc</emphasis>: lines of code</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>lot</emphasis>: lines of test code</simpara>
+</listitem>
+<listitem>
+<simpara>uses <emphasis>declarative services</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>has <emphasis>staleReferences</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara>uses <emphasis>blue print</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>publishes interfaces</emphasis> - if bundle exports only its api to others bundles</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>declares permition</emphasis> (OSGI-INF with permissions.perm file - taken from Architecting software with security patterns)</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>number of classes</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>number of interfaces</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>number of abstract classes</emphasis></simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>bundle dependencies</emphasis>(calculated at OSGi project level by looking at imported and exported packages of bundles in same project)</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis>required bundles</emphasis> (bad practice cause you depend direct on other bundles and also import the implementation)</simpara>
+</listitem>
+</orderedlist>
+<simpara>The above metrics are already being collected from some real OSGi projects, you can see them at <footnote><simpara><link xlink:href="http://rmpestano.github.io/intrabundle/#reports">http://rmpestano.github.io/intrabundle/#reports</link></simpara></footnote>.</simpara>
+</chapter>
+<chapter xml:id="_metrics_calculation">
+<title>Metrics calculation</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Lines of code:
+&#8656; 300: STATE_OF_ART, &#8656; 500: VERY_GOOD, &#8656;750: GOOD,
+&#8656; 1000: REGULAR, &gt;1000: ANTI_PATTERN</simpara>
+</listitem>
+<listitem>
+<simpara>Publishes interfaces:
+yes: STATE_OF_ART, no: REGULAR</simpara>
+</listitem>
+<listitem>
+<simpara>Bundle dependencies:
+0: STATE_OF_ART, &#8656; 3: VERY_GOOD,
+     &#8656;5: GOOD, &#8656; 9: REGULAR, &gt;=10: ANTI_PATTERN</simpara>
+</listitem>
+<listitem>
+<simpara>Uses framework:
+yes: STATE_OF_ART, no: REGULAR</simpara>
+</listitem>
+<listitem>
+<simpara>Stale references:
+no stale references: STATE_OF_ART
+	  1/4 of classes has stale references: REGULAR
+	&gt; 1/4 of classes: ANTI_PATTERN</simpara>
+</listitem>
+<listitem>
+<simpara>Declares permission:
+yes: STATE_OF_ART, no: REGULAR</simpara>
+</listitem>
+</orderedlist>
+</chapter>
+<chapter xml:id="_metric_points">
+<title>Metric points</title>
+<simpara>Each metric can be classified with the following <emphasis>labels</emphasis>:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara><emphasis role="strong">STATE OF ART</emphasis>: if metric fully satisfies good practices</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong">VERY GOOD</emphasis>: satisfies most recomedations</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong">GOOD</emphasis>: satisfies recomedations</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong">REGULAR</emphasis>: satisfies some recomedations</simpara>
+</listitem>
+<listitem>
+<simpara><emphasis role="strong">ANTI_PATTERN</emphasis>: does not satisfies any recommendation and follows some bad practices</simpara>
+</listitem>
+</orderedlist>
+<simpara>Each <emphasis>label</emphasis> adds points to the bundle and bundle quality is based on average metric points.</simpara>
+</chapter>
+<chapter xml:id="_current_work">
+<title>Current work</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>writing final thesis</simpara>
+</listitem>
+<listitem>
+<simpara>researching for related work</simpara>
+</listitem>
+</orderedlist>
+</chapter>
+</book>

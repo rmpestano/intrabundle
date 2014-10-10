@@ -1,4 +1,4 @@
-:toc: right
+:toc: left
 = OSGi Quality Analisys
 
 
@@ -111,22 +111,41 @@ Above metrics are already been collected from OSGi project, basically these are 
 . _bundle dependencies_(calculated at OSGi project level by looking at imported and exported packages of bundles in same project)
 . _required bundles_ (bad practice cause you depend direct on other bundles and also import the implementation)
 
-The above metrics are already beeing collected from some real OSGi projects, you can see them at footnote:[http://rmpestano.github.io/intrabundle/#reports].
+The above metrics are already being collected from some real OSGi projects, you can see them at footnote:[http://rmpestano.github.io/intrabundle/#reports].
 
-== Schedule(for 2014)
+== Metrics calculation
 
-* 05/07 - 13/07: BND tools based OSGi projects support (ok)
-* 13/07 - 20/07: week off, i will give a workshop and need this week to prepare it
-* 21/07 - 27/07: investigate sonar integration(ok)
-* 27/07 - 03/08: add new metrics(nok)
-* 03/08 - 10/08: apply metrics calculation(nok)
-* 10/08 - 21/08: finish the tool, revisit metrics calculation
-* 21/08 - 31/08: apply metrics calculation on at least 10 real OSGi projects and analyse the result
-* September: write the paper(started)
-* October and November: write the thesis
-* December: present the thesis
+. Lines of code:
+     <= 300: STATE_OF_ART, <= 500: VERY_GOOD, <=750: GOOD,
+     <= 1000: REGULAR, >1000: ANTI_PATTERN
+. Publishes interfaces:
+     yes: STATE_OF_ART, no: REGULAR 
+. Bundle dependencies:
+ 0: STATE_OF_ART, <= 3: VERY_GOOD,
+      <=5: GOOD, <= 9: REGULAR, >=10: ANTI_PATTERN
+. Uses framework:
+      yes: STATE_OF_ART, no: REGULAR
+. Stale references:    
+no stale references: STATE_OF_ART
+	  1/4 of classes has stale references: REGULAR
+	> 1/4 of classes: ANTI_PATTERN
+. Declares permission:
+      yes: STATE_OF_ART, no: REGULAR 
+
+== Metric points
+
+Each metric can be classified with the following _labels_:
+
+. *STATE OF ART*: if metric fully satisfies good practices
+. *VERY GOOD*: satisfies most recomedations
+. *GOOD*: satisfies recomedations   
+. *REGULAR*: satisfies some recomedations   
+. *ANTI_PATTERN*: does not satisfies any recommendation and follows some bad practices
+
+Each _label_ adds points to the bundle and bundle quality is based on average metric points.
 
 == Current work
 
-. researching about paper writing, basically Latex syntax
-. implementing metrics calculation
+. writing final thesis
+. researching for related work
+ 
