@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.0">
+<meta name="generator" content="Asciidoctor 1.5.1">
 <title>OSGi Quality Analisys</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400">
 <style>
@@ -380,7 +380,7 @@ p{margin-bottom:1.25rem}
 *{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
 a{color:inherit!important;text-decoration:underline!important}
 a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
-a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after,a[href^="mailto:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
 abbr[title]:after{content:" (" attr(title) ")"}
 pre,blockquote,tr,img{page-break-inside:avoid}
 thead{display:table-header-group}
@@ -409,7 +409,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .show-for-print{display:inherit!important}}
 </style>
 </head>
-<body class="article toc2 toc-right">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>OSGi Quality Analisys</h1>
 <div id="toc" class="toc2">
@@ -418,7 +418,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_work_done_and_design_decisions">Work done and design decisions</a></li>
 <li><a href="#_implementation_details">Implementation details</a></li>
 <li><a href="#_metrics_or_useful_information_already_been_collected">Metrics or useful information already been collected</a></li>
-<li><a href="#_schedule_for_2014">Schedule(for 2014)</a></li>
+<li><a href="#_metrics_calculation">Metrics calculation</a></li>
+<li><a href="#_metric_points">Metric points</a></li>
 <li><a href="#_current_work">Current work</a></li>
 </ul>
 </div>
@@ -547,27 +548,27 @@ Also with JavaFX i would have to implement the interface/GUI which i have for fr
 </li>
 <li>
 <p>if ROOT has at least one directory with one level of depth (eg: ROOT/bundle1) which is an OSGi bundle then ROOT is considered
-an OSGi project and then forge must enable <u>OSGi project</u> related commands, an example of command could be 'osgi listBundle' which will list
+an OSGi project and then forge must enable <u>OSGi project</u> related commands, an example of command could be <em>'osgi listBundles'</em> which will list
 all bundles inside ROOT;</p>
 </li>
 <li>
-<p>To consider a folder an OSGi bundle our tool verifies:</p>
+<p>To consider a folder an <u>OSGi Bundle</u> our tool verifies:</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
 <p>if the folder has a manifest file with OSGi metadata inside META-INF;</p>
 </li>
 <li>
-<p>OR if its maven project and has manifest with OSGI metada inside src/main/resources/META-INF;</p>
+<p>OR if its maven project and has manifest with OSGI metadata inside src/main/resources/META-INF;</p>
 </li>
 <li>
-<p>OR if its maven projecs and uses maven bundle plugin;</p>
+<p>OR if its maven project and uses maven bundle plugin;</p>
 </li>
 <li>
 <p>OR if its a BND tools based project (.bnd file);</p>
 </li>
 <li>
-<p>OR finaly it has bundles on each package(jitsi project layout);</p>
+<p>OR finally it has bundles on each package(jitsi project layout);</p>
 </li>
 </ol>
 </div>
@@ -590,10 +591,10 @@ that takes an integer parameter which is the depth of directories our tool will 
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>As soon users start forge in our distribution our tool plugins are downloaded and installed from our plugin github repository(forge distribution comes only with forge plugins and other plugins must be installed on forge runtime);</p>
+<p>As soon users start forge in intrabundle distribution our tool plugins are downloaded and installed from intrabundle github repository(forge distribution comes only with forge plugins and other plugins must be installed on forge runtime);</p>
 </li>
 <li>
-<p>in this customized distribution i&#8217;ve made a command to update our tool based on github source code <span class="footnoteref">[<a class="footnote" href="#_footnote_9" title="View footnote.">9</a>]</span> code which, the command is <em>forge intrabundle-update</em></p>
+<p>in this customized distribution i&#8217;ve made a command to update our tool based on github source code <span class="footnoteref">[<a class="footnote" href="#_footnote_9" title="View footnote.">9</a>]</span>, the command is named <em>forge intrabundle-update</em></p>
 </li>
 <li>
 <p>i&#8217;ve solved a classloding issue described here <a href="http://lists.jboss.org/pipermail/forge-dev/2014-February/003692.html" class="bare">http://lists.jboss.org/pipermail/forge-dev/2014-February/003692.html</a> (it was not fixed in forge cause forge team is focused on forge 2) basically i needed to use an api which was "hidden" by another forge plugin.</p>
@@ -660,46 +661,74 @@ add points to the bundle like eg imports few packages means adds 100 points, imp
 </ol>
 </div>
 <div class="paragraph">
-<p>The above metrics are already beeing collected from some real OSGi projects, you can see them at <span class="footnote">[<a id="_footnoteref_14" class="footnote" href="#_footnote_14" title="View footnote.">14</a>]</span>.</p>
+<p>The above metrics are already being collected from some real OSGi projects, you can see them at <span class="footnote">[<a id="_footnoteref_14" class="footnote" href="#_footnote_14" title="View footnote.">14</a>]</span>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_schedule_for_2014">Schedule(for 2014)</h2>
+<h2 id="_metrics_calculation">Metrics calculation</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>05/07 - 13/07: BND tools based OSGi projects support (ok)</p>
+<p>Lines of code:
+&#8656; 300: STATE_OF_ART, &#8656; 500: VERY_GOOD, &#8656;750: GOOD,
+&#8656; 1000: REGULAR, &gt;1000: ANTI_PATTERN</p>
 </li>
 <li>
-<p>13/07 - 20/07: week off, i will give a workshop and need this week to prepare it</p>
+<p>Publishes interfaces:
+yes: STATE_OF_ART, no: REGULAR</p>
 </li>
 <li>
-<p>21/07 - 27/07: investigate sonar integration(ok)</p>
+<p>Bundle dependencies:
+0: STATE_OF_ART, &#8656; 3: VERY_GOOD,
+     &#8656;5: GOOD, &#8656; 9: REGULAR, &gt;=10: ANTI_PATTERN</p>
 </li>
 <li>
-<p>27/07 - 03/08: add new metrics(nok)</p>
+<p>Uses framework:
+yes: STATE_OF_ART, no: REGULAR</p>
 </li>
 <li>
-<p>03/08 - 10/08: apply metrics calculation(nok)</p>
+<p>Stale references:
+no stale references: STATE_OF_ART
+	  1/4 of classes has stale references: REGULAR
+	&gt; 1/4 of classes: ANTI_PATTERN</p>
 </li>
 <li>
-<p>10/08 - 21/08: finish the tool, revisit metrics calculation</p>
+<p>Declares permission:
+yes: STATE_OF_ART, no: REGULAR</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_metric_points">Metric points</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each metric can be classified with the following <em>labels</em>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>STATE OF ART</strong>: if metric fully satisfies good practices</p>
 </li>
 <li>
-<p>21/08 - 31/08: apply metrics calculation on at least 10 real OSGi projects and analyse the result</p>
+<p><strong>VERY GOOD</strong>: satisfies most recomedations</p>
 </li>
 <li>
-<p>September: write the paper(started)</p>
+<p><strong>GOOD</strong>: satisfies recomedations</p>
 </li>
 <li>
-<p>October and November: write the thesis</p>
+<p><strong>REGULAR</strong>: satisfies some recomedations</p>
 </li>
 <li>
-<p>December: present the thesis</p>
+<p><strong>ANTI_PATTERN</strong>: does not satisfies any recommendation and follows some bad practices</p>
 </li>
-</ul>
+</ol>
+</div>
+<div class="paragraph">
+<p>Each <em>label</em> adds points to the bundle and bundle quality is based on average metric points.</p>
 </div>
 </div>
 </div>
@@ -709,10 +738,10 @@ add points to the bundle like eg imports few packages means adds 100 points, imp
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>researching about paper writing, basically Latex syntax</p>
+<p>writing final thesis</p>
 </li>
 <li>
-<p>implementing metrics calculation</p>
+<p>researching for related work</p>
 </li>
 </ol>
 </div>
@@ -766,7 +795,7 @@ add points to the bundle like eg imports few packages means adds 100 points, imp
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-10 01:46:58 BRT
+Last updated 2014-10-10 15:58:33 Hora oficial do Brasil
 </div>
 </div>
 </body>

@@ -1,0 +1,11 @@
+-buildpath: osgi.core,\
+	osgi.cmpn,\
+	biz.aQute.bnd.annotation,\
+	org.eclipsecon.masterosgi.api;version=1.1,\
+	com.google.protobuf
+	
+Private-Package: org.eclipsecon.masterosgi.orderentry
+Service-Component: *
+Bundle-Activator: br.ufrgs.rmpestano.activator.Activator
+Include-Resource: help.txt
+Require-Capability: osgi.extender; filter:="(osgi.extender=helper)"; effective:=active

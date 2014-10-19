@@ -1,0 +1,53 @@
+# Eclipse
+
+.project
+
+.classpath
+
+.settings/
+
+
+
+# IntelliJ
+
+*.iml
+
+*.ipr
+
+*.iws
+
+.idea
+
+
+
+# Maven
+
+target/
+
+
+
+#Gradle
+
+.gradle
+
+
+
+# TestNG
+
+test-output/
+
+#forge
+.forge_settings
+
+#tex
+*.aux
+*.bbl
+*.blg
+*.lof
+*.log
+*.out
+*.toc
+*.gz
+
+*~
+*~.
