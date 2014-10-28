@@ -5,7 +5,7 @@
 % This is an example file and is hereby explicitly put in the
 % public domain.
 %
-\documentclass[cic,tc,english]{iiufrgs} % pode-se usar 'dipl' em vez de 'tc'
+\documentclass[cic,dipl,english]{iiufrgs} % pode-se usar 'dipl' em vez de 'tc'
 % um tipo específico de monografia pode ser informado como parâmetro opcional:
 %\documentclass[tese]{iiufrgs}
 % monografias em inglês devem receber o parâmetro `english':
@@ -26,23 +26,27 @@
 %
 % Informações gerais
 %
-\title{Um Exemplo de Monografia do Instituto de Informática da UFRGS}
+\title{Towards a Software Metric for OSGi}
 
-\author{Flaumann}{Fritz Gutenberg}
+\author{Mauricio Pestano}{Rafael}
 % alguns documentos podem ter varios autores:
 %\author{Flaumann}{Frida Gutenberg}
 %\author{Flaumann}{Klaus Gutenberg}
 
 % orientador e co-orientador são opcionais (não diga isso pra eles :))
-\advisor[Prof.~Dr.]{Lamport}{Leslie}
-%\coadvisor[Prof.~Dr.]{Knuth}{Donald Ervin}
+\advisor[Prof.~Dr.]{Fernando Resin Geyer}{Cláudio}
+\coadvisor[Prof.~Dr.]{DONSEZ}{Didier}
 
 % a data deve ser a da defesa; se nao especificada, são gerados
 % mes e ano correntes
 %\date{maio}{2001}
 
 % o nome do curso pode ser redefinido (ex. para TCs)
-%\course{Curso de Especialização em Cachaça}
+\course{Bachelor of Computer Science}
+\def\ufrgs{Federal University of Rio Grande do Sul}
+\def\ii{Informatics Institute}
+\renewcommand{\titlepagespecificinfo}{Graduation Thesis}
+
 
 % o local de realização do trabalho pode ser especificado (ex. para TCs)
 % com o comando \location:
@@ -50,8 +54,7 @@
 
 % itens individuais da nominata podem ser redefinidos com os comandos
 % abaixo:
-% \renewcommand{\nominataReit}{Prof\textsuperscript{a}.~Wrana Maria Panizzi}
-% \renewcommand{\nominataReitname}{Reitora}
+\renewcommand{\nominataCoordCICname}{Coordenador do Curso de CIC}
 % \renewcommand{\nominataPRE}{Prof.~Jos{\'e} Carlos Ferraz Hennemann}
 % \renewcommand{\nominataPREname}{Pr{\'o}-Reitor de Ensino}
 % \renewcommand{\nominataPRAPG}{Prof\textsuperscript{a}.~Joc{\'e}lia Grazia}
@@ -83,7 +86,7 @@
 % de realização (\location), é necessário redefinir a nominata,
 % pois as informações necessárias dependem do curso. Ex.:
 %\renewcommand{\nominata}{
-%        UNIVERSIDADE FEDERAL DO RIO GRANDE DO SUL\\
+%        FEDERAL UNIVERSITY OF RIO GRANDE DO SUL\\
 %        Reitora: Prof\textsuperscript{a}.~Wrana Maria Panizzi\\
 %        Pró-Reitor de Ensino: Prof.~José Carlos Ferraz Hennemann\\
 %        Diretor do Instituto de Informática: Prof.~Philippe Olivier Alexandre Navaux\\
@@ -129,9 +132,9 @@ it is because I stood on the shoulders of giants.''\\}
 
 \include{0-credits}
 
-\include{1-resumo}
 
-\include{2-abstract}
+% sumario
+\tableofcontents
 
 % lista de figuras
 \listoffigures
@@ -149,8 +152,6 @@ it is because I stood on the shoulders of giants.''\\}
         \item[ABNT] Associação Brasileira de Normas Técnicas
 \end{listofabbrv}
 
-% sumario
-\tableofcontents
 
 % idem para a lista de símbolos
 %\begin{listofsymbols}{$\alpha\beta\pi\omega$}
@@ -159,6 +160,10 @@ it is because I stood on the shoulders of giants.''\\}
 %\end{listofsymbols}
 
 % aqui comeca o texto propriamente dito
+
+\include{1-resumo}
+
+\include{2-abstract}
 
 %introdução
 \include{3-intro}
