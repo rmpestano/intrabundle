@@ -1,17 +1,34 @@
 % introducao
 \chapter{Introduction}
- 
+ This chapter will drive the reader through the context and motivation of this work followed by the objectives and later the organization of this text is presented.  
  
 
 \section{Context}
 
-This section defines the context of the work
+% stating how important quality is % 
+One of the pillars of sustainable software development is its quality which can basically be defined as functional or non-functional where the first focuses on how the software meets its specification and how it works accordingly and the second is aimed on how well the software is structured, we can generalize the first as being \emph{external quality} and second as \emph{internal quality}. To measure external quality there is the need to execute the software, also known as \emph{dynamic analysis}, either by an end user accessing the system or an automated process like for example functional testing. There is no known way to assure functional quality without executing the software. 
+
+Internal quality however can be verified by either statical analysis that is mainly the inspection of the source code itself or by executing the software like for example automated whitebox testing also known as structural testing(Beizer, 1995).   
+
+% OSGi and its importance %
+A well known and successful and way to structure software architecture is to modularize its components. In the Java ecosystem although there is a moving to modularize the JDK with the project Jigsaw(TODO reference) for now the only practical working solution for modular Java applications is OSGi, a component-based and service-oriented framework for building Java modular applications which is the \emph{de facto} standard solution for this kind of software since early 2000's. 
+
+In the context of Java modular applications and OSGi there is no way to measure software internal quality which is the main objective of this work.          
+
 
 \section{Objectives}
 
-This section defines the objectives
+This work is focused on internal OSGi projects quality mainly because of the following facts:
+\begin{enumerate}
+  \item there is no known standard way to measure OSGi internal quality.
+  \item We already have tools and approaches to measure non OSGi projects internal and external quality.
+  \item For OSGi applications measuring external quality the classical approaches like automated testing are sufficient.
+\end{enumerate}
+For measuring OSGi qualities we first will create the metrics based on good practices in the development of OSGi systems so in a second moment we can apply those metrics to real OSGi projects using a tool called \emph{intrabundle} which was created during this work and also will be presented here. In the end we will analyze the resulting output of intrabundle and analyzed projects qualities and conclude if the metrics we created have value for measuring Java modular applications or not.  
 
+ 
 \section{Organization}
 
-This section shows how this paper is organized
+This text is organized in the following way. First chapter defines the context, motivation and objectives of this work. The second chapter will introduce the main concepts in the area of software quality like quality measurement, quality metrics, program analysis and quality analysis tools. The third chapter will present Java and OSGi, how standard Java and OSGi are different in respect to quality metrics and why we need different metrics for OSGi(TODO - depending it will be merged into chapter two). The fourth chapter presents Intrabundle, a OSGi code introspection tool to measure internal quality, we will see how Intrabundle works, what kind of information it extracts and what metrics it is applying. The fifth chapter will analyses the results intrabundle produces and validate them to decide if this work has a valid contribution or not. The last chapter will present the conclusions and future work on this subject. 
+   
  
