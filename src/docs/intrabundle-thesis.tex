@@ -19,6 +19,7 @@
 \usepackage[utf8]{inputenc}   % pacote para acentuação
 \usepackage{graphicx}           % pacote para importar figuras
 \usepackage[pdftex]{thumbpdf} 
+\usepackage{verbatim}
 %\usepackage[outdir=./]{epstopdf}
 %\usepackage{epstopdf} 
 \usepackage{times}              % pacote para usar fonte Adobe Times
@@ -109,6 +110,7 @@
 \keyword{quality}
 \keyword{metrics}
 \keyword{modularity}
+\keyword{intrabundle}
 
 
 %
@@ -139,6 +141,10 @@ it is because I stood on the shoulders of giants.''\\}
 % sumario
 \tableofcontents
 
+\include{2-abstract}
+
+\include{1-resumo}
+
 % lista de figuras
 \listoffigures
 
@@ -164,10 +170,6 @@ it is because I stood on the shoulders of giants.''\\}
 
 % aqui comeca o texto propriamente dito
 
-\include{2-abstract}
-
-\include{1-resumo}
-
 %introdução
 \include{3-intro}
 % e aqui vai a parte principal
@@ -175,7 +177,7 @@ it is because I stood on the shoulders of giants.''\\}
 % \chapter{Estado da arte}
 \include{4-ch01}
 % \chapter{Mais estado da arte}
-\include{5-ch02}
+%\include{5-ch02}
 % \chapter{A minha contribuição}
 \include{6-ch03}
 % \chapter{Prova de que a minha contribuição é válida}
@@ -196,7 +198,24 @@ it is because I stood on the shoulders of giants.''\\}
 % autores, ano, e diversas combinações desses
 \begin{thebibliography}{este-parametro-nao-eh-usado-pelo-estilo-ABNT}
 
-  
+ 
+
+
+\bibitem[BEOHM and BASILI, 2001]{Beohm&Basili 2001} BEOHM, B.; BASILI, V. R.
+  Software Defect Reduction Top 10 List. \textbf{Computer}, Los Angeles, v. 34, no. 1, pp 135-137, January 2001. 
+
+\bibitem [KHAN and KHAN, 2012]{Khan&khan 2012} KHAN, M. E.; KHAN, F.
+ A Comparative Study of White Box, Black Box and Grey Box Testing Techniques. \textbf{International Journal of Advanced Computer Science and Applications}, New York, v. 3, no. 6, pp 12-15, June 2012.
+
+\bibitem[KNORR, E., 2014]{Knorr 2014} KNORR, E.
+What microservices architecture really means. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2682502/application-development/application-development-what-microservices-architecture-really-means.html}$>$. Accessed in: november 2014. 
+
+
+\bibitem[KRILL, P., 2012]{Krill 2012} KRILL, P.
+Project Jigsaw delayed until Java 9. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2617584/java/project-jigsaw-delayed-until-java-9.html}$>$. Accessed in: november 2014. 
+
+\begin{comment}
+bibitens de exemplo
 \bibitem[ASSENMACHER et~al.(1993)ASSENMACHER; BREITBACH; BUHLER;
   H{\"U}BSCH; SCHWARZ]{Assenmacher:Panda-ECOOP93} ASSENMACHER, H.;
   BREITBACH, T.; BUHLER, P.; H{\"U}BSCH, V.; SCHWARZ, R\@.
@@ -240,6 +259,7 @@ it is because I stood on the shoulders of giants.''\\}
   em Ci{\^e}ncia da Computa{\c{c}}{\~a}o) --- Instituto de
   Inform{\'a}tica, Universidade Federal do Rio Grande do Sul,
   Porto~Alegre.
+\end{comment}
 
 \end{thebibliography}
 
