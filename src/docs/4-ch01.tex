@@ -8,7 +8,7 @@ behind this solution and why standard quality metrics aren't sufficient for this
 
 \section{Software Quality}
 
-There has been many definitions of software quality(TODO REF - Metrics and Models in Software Quality Engineering) and there is even an ISO norm for it, the ISO/IEC 25010(TODO REF). All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain and the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements that can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively. 
+There has been many definitions of software quality(TODO REF - Metrics and Models in Software Quality Engineering) and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain and the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements that can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively. 
 
 Another important aspect of software quality is that it can be divided in two groups, the \textbf{external} and \textbf{internal} quality. When we talk about \textit{external quality} we are aiming to the user view which is the one that sees the software working and use it, this kind of quality is usually enforced through software testing. External quality can also be mapped to functional requirements so the greater external quality is the more usable and less defects it will have for example. The opposite is internal or structural quality that aims to how the software is architect-ed internally which is the perspective of the programmer and non functional requirements so the higher internal quality the better the code is structured, efficient, robust and maintainable it should be. Image 2.1 illustrates internal and external quality and its target audience.
 
@@ -76,12 +76,37 @@ The table 2.2 below shows some well known software metrics and its description:
 Program analysis is the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and \textit{quality measurement}.
 
 \subsubsection{Static Program Analysis}
- Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}.  
+ Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}. In this kind of analysis source code is inspected and valuable information is collected based on its internal structure and components. 
 
 \subsubsection{Dynamic Program Analysis}
+Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks} where resources are hold on system's memory and aren't released, identify arithmetic errors and extract code coverage. 
+
 
 \subsection{Quality Analysis Tools}
-This section will list most used code quality analysis tools.
+
+The table 2.3 lists some code quality analysis tools in the Java ecosystem:
+
+\begin{table}[h]
+\caption{Quality analysis tools}
+\begin{center}
+    \begin{tabular}{  p{3cm} | p{8cm} | p{2cm} }
+    \hline
+    Name & Description & Type\\  \hline
+    \href{http://www.sonarqube.org}{SonarQube} &  An open source platform for continuous inspection of code quality. & static\\ \hline
+    \href{http://findbugs.sourceforge.net/}{FindBugs} & An open-source static bytecode analyzer for Java. & static\\ \hline 
+    \href{http://checkstyle.sourceforge.net/}{Checkstyle} & A static code analysis tool used in software development for checking if Java source code complies with coding rules. & static\\ \hline 
+    \href{pmd.sourceforge.net/}{PMD} & A static ruleset based Java source code analyzer that identifies potential problems. & static\\ \hline 
+    \href{http://www.contemplateltd.com/threadsafe}{ThreadSafe} & A static analysis tool for Java focused on finding concurrency bugs. & static\\ \hline
+    \href{http://www.intooitus.com/products/infusion}{InFusion} & Full control of architecture and design quality. & static\\ \hline 
+    \href{https://code.google.com/p/javamelody/}{Javamelody} & Java or Java EE application Monitoring in QA and production environments. & dynamic\\ \hline 
+    \href{http://www-304.ibm.com/partnerworld/gsd/solutiondetails.do?solution=23517&expand=true}{Introscope} & An application management solution that helps enterprises keep their mission-critical applications high-performing and available 24x7. & dynamic\\ \hline
+
+    \end{tabular}
+    %\\*Source: \cite{sqa 2012}
+\end{center}
+\end{table}
+
+\FloatBarrier
 
 \section{Java and OSGi}
 I the context of Java modular applications...
