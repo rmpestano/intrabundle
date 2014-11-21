@@ -6,7 +6,6 @@ import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import org.jboss.forge.resources.Resource;
-import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.*;
 
 import javax.inject.Inject;
@@ -18,8 +17,6 @@ import java.util.List;
 @Alias("bundle")
 @RequiresFacet(BundleFacet.class)
 public class BundlePlugin implements Plugin {
-    @Inject
-    private ShellPrompt prompt;
 
     @Inject
     OSGiModule bundle;

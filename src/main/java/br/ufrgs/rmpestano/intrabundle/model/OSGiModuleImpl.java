@@ -14,6 +14,7 @@ import org.jboss.forge.project.facets.FacetNotFoundException;
 import org.jboss.forge.project.services.ProjectFactory;
 import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.*;
+import org.jboss.solder.logging.Logger;
 
 import javax.enterprise.inject.Typed;
 import java.util.ArrayList;
@@ -184,7 +185,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
                     }
                 }
             } catch (ResourceException ex) {
-                //log ex
+                Logger.getLogger(getClass().getCanonicalName()).error(ex);
             }
 
         }

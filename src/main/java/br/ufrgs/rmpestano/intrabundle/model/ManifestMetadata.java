@@ -140,7 +140,7 @@ public class ManifestMetadata implements Serializable {
     }
 
     private void initVersion(FileResource<?> manifest) throws IOException {
-        version = new String();
+        version = "";
         RandomAccessFile file = null;
         if (ProjectUtils.isMavenBndProject(projectRoot)) {
             try {
@@ -157,9 +157,9 @@ public class ManifestMetadata implements Serializable {
                 file = new RandomAccessFile(manifest.getFullyQualifiedName(), "r");
                 while ((line = file.readLine()) != null) {
                     if (line.contains(Constants.Manifest.BUNDLE_VERSION)) {
-                        line = line.substring(line.indexOf(":") + 1).trim();
+                        line = line.substring(line.indexOf(':') + 1).trim();
                         if (!"".equals(line)) {
-                            version = line.substring(line.indexOf(":") + 1).trim();
+                            version = line.substring(line.indexOf(':') + 1).trim();
                             break;
                         }
                     }
@@ -198,7 +198,7 @@ public class ManifestMetadata implements Serializable {
                 while ((line = file.readLine()) != null) {
                     if (line.contains(Constants.Manifest.REQUIRE_BUNDLE)) {
                         if (line.contains(":")) {
-                            line = line.substring(line.indexOf(":") + 1).trim();
+                            line = line.substring(line.indexOf(':') + 1).trim();
                         } else {
                             line = line.substring(line.indexOf(Constants.Manifest.REQUIRE_BUNDLE) + Constants.Manifest.REQUIRE_BUNDLE.length()).trim();
                         }
@@ -252,7 +252,7 @@ public class ManifestMetadata implements Serializable {
 
                     if (line.contains(Constants.Manifest.IMPORT_PACKAGE)) {
                         if (line.contains(":")) {
-                            line = line.substring(line.indexOf(":") + 1).trim();
+                            line = line.substring(line.indexOf(':') + 1).trim();
                         } else {
                             line = line.substring(line.indexOf(Constants.Manifest.IMPORT_PACKAGE) + Constants.Manifest.IMPORT_PACKAGE.length()).trim();
                         }
@@ -306,7 +306,7 @@ public class ManifestMetadata implements Serializable {
                 while ((line = file.readLine()) != null) {
                     if (line.contains(Constants.Manifest.EXPORT_PACKAGE)) {
                         if (line.contains(":")) {
-                            line = line.substring(line.indexOf(":") + 1).trim();
+                            line = line.substring(line.indexOf(':') + 1).trim();
                         } else {
                             line = line.substring(line.indexOf(Constants.Manifest.EXPORT_PACKAGE) + Constants.Manifest.EXPORT_PACKAGE.length()).trim();
                         }

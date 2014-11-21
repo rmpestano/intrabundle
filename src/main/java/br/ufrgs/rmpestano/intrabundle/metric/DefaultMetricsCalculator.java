@@ -7,6 +7,7 @@ import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
+import org.jboss.solder.logging.Logger;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -117,6 +118,7 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         try {
             return currentOSGiProject.get();
         } catch (Exception e) {
+            Logger.getLogger(getClass().getCanonicalName()).error(e);
         }
         return null;
     }

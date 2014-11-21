@@ -4,9 +4,10 @@ import br.ufrgs.rmpestano.intrabundle.annotation.CurrentLocale;
 import br.ufrgs.rmpestano.intrabundle.event.LocaleChangeEvent;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.enums.LocaleEnum;
-import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.shell.ShellPrompt;
-import org.jboss.forge.shell.plugins.*;
+import org.jboss.forge.shell.plugins.Alias;
+import org.jboss.forge.shell.plugins.DefaultCommand;
+import org.jboss.forge.shell.plugins.Plugin;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
@@ -29,9 +30,6 @@ public class LocalePlugin implements Plugin {
 
     @Inject
     Event<LocaleChangeEvent> localeEvent;
-
-    @Inject
-    private Event<InstallFacets> event;
 
     private String localeLanguage;
 

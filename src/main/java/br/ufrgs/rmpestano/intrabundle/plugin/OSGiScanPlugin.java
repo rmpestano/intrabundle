@@ -14,7 +14,6 @@ import org.jboss.forge.shell.plugins.*;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by rmpestano on 3/17/14.
@@ -36,7 +35,6 @@ public class OSGiScanPlugin implements Plugin {
 
     @Inject
     Shell shell;
-    private List<Integer> moduleLevels;
 
     @Inject
     Event<ProjectChangeEvent> projectChangeEvent;
