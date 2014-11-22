@@ -8,7 +8,7 @@ behind this solution and why standard quality metrics aren't sufficient for this
 
 \section{Software Quality}
 
-There has been many definitions of software quality(TODO REF - Metrics and Models in Software Quality Engineering) and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain and the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements that can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively. 
+There has been many definitions of software quality(TODO REF - Metrics and Models in Software Quality Engineering) and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
 
 Another important aspect of software quality is that it can be divided in two groups, the \textbf{external} and \textbf{internal} quality. When we talk about \textit{external quality} we are aiming to the user view which is the one that sees the software working and use it, this kind of quality is usually enforced through software testing. External quality can also be mapped to functional requirements so the greater external quality is the more usable and less defects it will have for example. The opposite is internal or structural quality that aims to how the software is architect-ed internally which is the perspective of the programmer and non functional requirements so the higher internal quality the better the code is structured, efficient, robust and maintainable it should be. Image 2.1 illustrates internal and external quality and its target audience.
 
@@ -18,12 +18,13 @@ Another important aspect of software quality is that it can be divided in two gr
 \centering
 \includegraphics[scale=0.5]{external-internal-quality}
 \end{figure}
+\FloatBarrier
 
 % functional quality(performed via automated testing)
 % structural quality(\textbf{this is where our work shines})
 
 \subsection{Quality Measurement}
-Quality measurement focuses on quantifying software desirable characteristics and each characteristic can have a set of measurable attributes, for example \textit{high cohesion} is a desirable characteristic and \textit{LOC - lines of code} is a measurable attribute related to cohesion. Quality measurement is close related to internal quality and in most cases is performed via static code analysis where program code is inspected to search for quality attributes to be measured but in some cases a dynamic analysis, where the program analysis is done during software execution, can be performed to measure characteristics that can be perceived only when software is running, for example performance or usability.     
+Quality measurement focuses on quantifying software desirable characteristics and each characteristic can have a set of measurable attributes, for example \textit{high cohesion} is a desirable characteristic and \textit{LOC - lines of code} is a measurable attribute related to cohesion. Quality measurement is close related to internal quality and in most cases is performed via static code analysis where program code is inspected to search for quality attributes to be measured but in some cases a dynamic analysis, where the program analysis is done during software execution, can be performed to measure characteristics that can be perceived only when software is running, for example performance or code coverage\footnote{A technique that measures the code lines that are executed for a given set of software tests, its also considered a software metric.}.     
 
 In the extent of this work the characteristics of software to be considered and measured later are listed and described in table 2.1:  
 
@@ -33,10 +34,10 @@ In the extent of this work the characteristics of software to be considered and 
     \begin{tabular}{  p{3cm} | p{8cm} | p{5cm} }
     \hline
     Characteristic & Description & OSGi example \\  \hline
-    Reliability & the degree to which a system or component performs its required functions under stated conditions for a specified period of time. & Stale service references.\\ \hline
+    Reliability & the degree to which a system or component performs its required functions under stated conditions for a specified period of time. & Bundles should not have stale service references.\\ \hline
     Performance Efficiency & Performance relative to the amount of resources used under stated conditions for a specified
 period of time. & Bundle startup time, also bundle dependency can decrease performance. \\ \hline
-    Security & the degree of protection of information and data so that unauthorized persons or systems cannot read, access or modify them. & Bundle declares permission \\ \hline
+    Security & the degree of protection of information and data so that unauthorized persons or systems cannot read, access or modify them. & Bundles should declare permissions \\ \hline
     Maintainability & The degree to which the product can be modified. & Modules should be loosely coupled, bundles should publish only interfaces etc. \\ 
     \hline
      
@@ -61,7 +62,7 @@ The table 2.2 below shows some well known software metrics and its description:
     Cohesion & measure the dependency between units of code like for example classes in object oriented programing or modules in modular programming like OSGi. \\ \hline
     Coupling & measures how well two software components are data related or how dependent they are. \\ \hline
     Lines of code (LOC) & used to measure the size of a computer program by counting the number of lines in the text of the program's source code. \\ \hline
-    Code coverage &  measures the code lines that are executed for a given set of software tests \\ \hline
+    Code coverage & measures the code lines that are executed for a given set of software tests \\ \hline
     Function point analysis (FPA) & used to measure the size (functions) of software. \\
     \hline
 
@@ -73,13 +74,13 @@ The table 2.2 below shows some well known software metrics and its description:
 \FloatBarrier
 
 \subsection{Program Analysis}
-Program analysis is the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and \textit{quality measurement}.
+Program analysis sis the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and quality measurement.
 
 \subsubsection{Static Program Analysis}
  Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}. In this kind of analysis source code is inspected and valuable information is collected based on its internal structure and components. 
 
 \subsubsection{Dynamic Program Analysis}
-Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks} where resources are hold on system's memory and aren't released, identify arithmetic errors and extract code coverage. 
+Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks}\footnote{Resources that are hold on system's memory and aren't released}, identify arithmetic errors and extract code coverage. 
 
 
 \subsection{Quality Analysis Tools}
@@ -98,7 +99,8 @@ The table 2.3 lists some code quality analysis tools in the Java ecosystem:
     \href{pmd.sourceforge.net/}{PMD} & A static ruleset based Java source code analyzer that identifies potential problems. & static\\ \hline 
     \href{http://www.contemplateltd.com/threadsafe}{ThreadSafe} & A static analysis tool for Java focused on finding concurrency bugs. & static\\ \hline
     \href{http://www.intooitus.com/products/infusion}{InFusion} & Full control of architecture and design quality. & static\\ \hline 
-    \href{http://www.eclemma.org/jacoco/}{JaCoCo} & a free code coverage library for Java. & dynamic\\ \hline 
+    \href{https://www.ej-technologies.com/products/jprofiler/overview.html}{JProfiler} & helps you resolve performance bottlenecks, pin down memory leaks and understand threading issues & dynamic \\ \hline
+    \href{http://www.eclemma.org/jacoco/}{JaCoCo} & A free code coverage library for Java. & dynamic\\ \hline 
     \href{https://code.google.com/p/javamelody/}{Javamelody} & Java or Java EE application Monitoring in QA and production environments. & dynamic\\ \hline 
     \href{http://www-304.ibm.com/partnerworld/gsd/solutiondetails.do?solution=23517&expand=true}{Introscope} & An application management solution that helps enterprises keep their mission-critical applications high-performing and available 24x7. & dynamic\\ \hline
 
@@ -109,7 +111,7 @@ The table 2.3 lists some code quality analysis tools in the Java ecosystem:
 
 \FloatBarrier
 
-Figure 2.2 shows the execution of static analysis on \textit{Intrabundle} using \textbf{PMD}, note that PMD is based on rules and Intrabundle break some of them like \textbf{Unused variables}, \textbf{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
+Figure 2.2 shows the execution of static analysis on \textit{Intrabundle} using \textbf{PMD}, note that PMD is based on rules and Intrabundle break some of them(intentionally) like \textbf{Unused variables}, \textbf{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
 
 \begin{figure}[h]
 \caption{Intrabundle PMD rule violation}
@@ -131,4 +133,29 @@ The rules are totally customizable via xml configuration, Intrabundle PMD rules 
 \FloatBarrier
 
 \section{Java and OSGi}
-I the context of Java programming language and modular applications 
+
+In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications this section will introduce the Java language and OSGi framework.
+
+\subsection{The Java language}
+Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is a abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM} and converts it into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure 2.4 illustrates how JVM works:
+
+\begin{figure}[h]
+\caption{JVM architecture}
+\centering
+\includegraphics[scale=0.5]{jvm}
+\end{figure}  
+\FloatBarrier
+
+Other aspects of Java are listed below:   
+
+\begin{itemize}
+\item Type safe\footnote{Type safety is the extent to which a programming language discourages or prevents type errors} 
+\item Dynamic: during the execution of a program, Java can dynamically load classes 
+\item Strong memory management(no explicit pointer)
+\item Automatic garbage collection to release unused objects from memory
+\item Robust: extensive compile-time checking so bugs can be found early
+\item Multithreaded\footnote{Multithreading is a program’s capability to perform several tasks simultaneously}
+\item Distributed: networking capability is inherently integrated into Java
+\end{itemize}
+
+\subsection{The OSGi framework}
