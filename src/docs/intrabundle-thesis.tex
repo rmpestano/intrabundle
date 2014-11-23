@@ -5,7 +5,7 @@
 % This is an example file and is hereby explicitly put in the
 % public domain.
 %
-\documentclass[cic,dipl,english]{iiufrgs} % pode-se usar 'dipl' em vez de 'tc'
+\documentclass[cic,tc,english]{iiufrgs} % pode-se usar 'dipl' em vez de 'tc'
 % um tipo específico de monografia pode ser informado como parâmetro opcional:
 %\documentclass[tese]{iiufrgs}
 % monografias em inglês devem receber o parâmetro `english':
@@ -126,7 +126,6 @@
 % a folha de rosto:
 % \renewcommand{\coordname}{Coordenadora do Curso}
 \maketitle
-
 % dedicatoria
 \clearpage
 \begin{flushright}
@@ -200,99 +199,51 @@ it is because I stood on the shoulders of giants.''\\}
 % observe também o estilo meio estranho de alguns labels; isso é
 % devido ao uso do pacote `natbib', que permite fazer citações de
 % autores, ano, e diversas combinações desses
+
+
 \begin{thebibliography}{este-parametro-nao-eh-usado-pelo-estilo-ABNT}
 
- 
+\bibitem[BEOHM et al., 2001]{Beohm 2001} BEOHM, B.; BASILI, V. R.
+Software Defect Reduction Top 10 List. \textbf{Computer}, Los Angeles, v. 34, no. 1, pp 135-137, January 2001.
 
-
-\bibitem[BEOHM and BASILI, 2001]{Beohm 2001} BEOHM, B.; BASILI, V. R.
-  Software Defect Reduction Top 10 List. \textbf{Computer}, Los Angeles, v. 34, no. 1, pp 135-137, January 2001. 
-
-\bibitem [KHAN and KHAN, 2012]{Khan 2012} KHAN, M. E.; KHAN, F.
- A Comparative Study of White Box, Black Box and Grey Box Testing Techniques. \textbf{International Journal of Advanced Computer Science and Applications}, New York, v. 3, no. 6, pp 12-15, June 2012.
+\bibitem [KHAN et al., 2012]{Khan 2012} KHAN, M. E.; KHAN, F.
+A Comparative Study of White Box, Black Box and Grey Box Testing Techniques. \textbf{International Journal of Advanced Computer Science and Applications}, New York, v. 3, no. 6, pp 12-15, June 2012.
 
 \bibitem[KNORR, E., 2014]{Knorr 2014} KNORR, E.
-What microservices architecture really means. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2682502/application-development/application-development-what-microservices-architecture-really-means.html}$>$. Accessed in: November 2014. 
+What microservices architecture really means. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2682502/application-development/application-development-what-microservices-architecture-really-means.html}$>$. Accessed in: November 2014.
 
 \bibitem[KRILL, P., 2012]{Krill 2012} KRILL, P.
-Project Jigsaw delayed until Java 9. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2617584/java/project-jigsaw-delayed-until-java-9.html}$>$. Accessed in: November 2014. 
+Project Jigsaw delayed until Java 9. \textbf{InfoWorld}, Available at:$<$\url{http://www.infoworld.com/article/2617584/java/project-jigsaw-delayed-until-java-9.html}$>$. Accessed in: November 2014.
 
-\bibitem [Hamza, Sadou and Fleurquin, 2013]{Hamza 2013} HAMZA, S.; SADOU, S.; FLEURQUIN, R.
- Measuring Qualities for OSGi Component-Based Applications. \textbf{International Conference on Quality Software}, Najing, pp 25-34, July 2013.
+\bibitem [Hamza et al., 2013]{Hamza2013} HAMZA, S.; SADOU, S.; FLEURQUIN, R.
 
+Measuring Qualities for OSGi Component-Based Applications. \textbf{International Conference on Quality Software}, Najing, pp 25-34, July 2013.
 \bibitem[CISQ, 2013]{cisq 2012} CISQ.
- Specification for Automated Quality Characteristic Measures. \textbf{CISQ quality standard version 2.1}. Available at:$<$\url{http://it-cisq.org/wp-content/uploads/2012/09/CISQ-Specification-for-Automated-Quality-Characteristic-Measures.pdf}$>$. Accessed in: November 2014.
+Specification for Automated Quality Characteristic Measures. \textbf{CISQ quality standard version 2.1}. Available at:$<$\url{http://it-cisq.org/wp-content/uploads/2012/09/CISQ-Specification-for-Automated-Quality-Characteristic-Measures.pdf}$>$. Accessed in: November 2014.
 
 \bibitem [SQA, 2012]{sqa 2012} SQA.
-Software Quality Metrics. [S.l.:s.n]. Available at:$<$\url{http://www.sqa.net/softwarequalitymetrics.html}$>$. Accessed in: November 2014 
+Software Quality Metrics. [S.l.:s.n]. Available at:$<$\url{http://www.sqa.net/softwarequalitymetrics.html}$>$. Accessed in: November 2014
 
 \bibitem[ISO25010, 2011]{iso 2011} ISO25010:2011
-System and software quality models. \textbf{Systems and software Quality Requirements and Evaluation (SQuaRE)}. Available at:$<$\url{http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=35733}$>$. Accessed in: November 2014. 
+System and software quality models. \textbf{Systems and software Quality Requirements and Evaluation (SQuaRE)}. Available at:$<$\url{http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=35733}$>$. Accessed in: November 2014.
 
-
-\bibitem [Wichmann, Canning, Clutterbuck, Winsbarrow, Ward and Marsh, 1995]{Wichmann 1995} 
+\bibitem [Wichmann et al., 1995]{Wichmann 1995}
 Wichmann, B. A.; Canning, A. A.; Clutterbuck, D. L.; Winsbarrow, L. A.; Ward, N. J.; Marsh, D. W. R.
 Industrial Perspective on Static Analysis. \textbf{Software Engineering Journal}, [S.l], v. 10, pp 69–75, Mar 1995.
 
 \bibitem [intrabundle ruleset, 2014]{intrabundle pmd 2014}
-Intrabundle PMD ruleset. Available at:$<$\url{https://github.com/rmpestano/intrabundle/tree/master/src/test/resources/rulesets/pmd.xml}$>$. Accessed in: November 2014. 
+Intrabundle PMD ruleset. Available at:$<$\url{https://github.com/rmpestano/intrabundle/tree/master/src/test/resources/rulesets/pmd.xml}$>$. Accessed in: November 2014.
 
 \bibitem[dan, 2011]{dan 2011} Dan Allen.
-Arquillian - A Component Model for Integration Testing. \textbf{Jaxenter}, Mar 2011. Available at:$<$\url{http://jaxenter.com/arquillian-a-component-model-for-integration-testing-103003.html}$>$. Accessed in: November 2014. 
+Arquillian - A Component Model for Integration Testing. \textbf{Jaxenter}, Mar 2011. Available at:$<$\url{http://jaxenter.com/arquillian-a-component-model-for-integration-testing-103003.html}$>$. Accessed in: November 2014.
 
-\bibitem [IEEE Spectrum, 2014]{ieee spectrum 2014} IEEE Spectrum. 
-Top 10 Programming Languages. \textbf{Spectrum’s 2014 Ranking}, Jul 2014. Available at:$<$\url{http://spectrum.ieee.org/computing/software/top-10-programming-languages}$>$. Accessed in: November 2014. 
+\bibitem [IEEE Spectrum, 2014]{ieee spectrum 2014} IEEE Spectrum.
+Top 10 Programming Languages. \textbf{Spectrum’s 2014 Ranking}, Jul 2014. Available at:$<$\url{http://spectrum.ieee.org/computing/software/top-10-programming-languages}$>$. Accessed in: November 2014.
 
 \bibitem [ARN05, 2005] {Arnold 2005} K. Arnold, J. Gosling and D. Holmes.
- \textbf{THE Java™ Programming Language}. 4th Edition. [S.l]:Addison Wesley Professional, 2005
 
+\textbf{THE Java™ Programming Language}. 4th Edition. [S.l]:Addison Wesley Professional, 2005
 
-\begin{comment}
-bibitens de exemplo
-\bibitem[ASSENMACHER et~al.(1993)ASSENMACHER; BREITBACH; BUHLER;
-  H{\"U}BSCH; SCHWARZ]{Assenmacher:Panda-ECOOP93} ASSENMACHER, H.;
-  BREITBACH, T.; BUHLER, P.; H{\"U}BSCH, V.; SCHWARZ, R\@.
-  Panda---supporting distributed programming in {C}++. In: EUROPEAN
-  CONFERENCE ON OBJECT-ORIENTED PROGRAMMING, 7., 1993, Kaiserslautern,
-  Germany. \textbf{Proceedings{\ldots}} Berlin: Springer-Verlag, 1993.
-  p.361--383. (Lecture Notes in Computer Science, v.707).
-
-\bibitem[BAKER; SMITH, 1996]{Baker:PP-96} BAKER, L.; SMITH,
-  B.~J\@. \textbf{Parallel programming}. New~York: McGraw-Hill,
-  1996. 381p.
-
-\bibitem[CAROMEL; KLAUSER; VAYSSIERE, 1998]{Caromel:TSC-CPE-10-11-98}
-  CAROMEL, D.; KLAUSER, W.; VAYSSIERE, J\@. Towards seamless computing
-  and metacomputing in {J}ava.  \textbf{Concurrency: Practice and
-  Experience}, West~Sussex, v.10, n.11--13, p.1043--1061,
-  Sept./Nov.~1998.
-
-\bibitem[FURMENTO; ROUDIER; SIEGEL, 1995]{Furmento:PDC-95} FURMENTO,
-  N.; ROUDIER, Y.; SIEGEL, G\@. \textbf{Parall{\'e}lisme et
-  distribution en {C}++}: une revue des langages existants. Valbonne,
-  FR: I3S, Universit\'{e} de Nice Sophia-Antipolis, 1995. (RR~95-02).
-
-\bibitem[INSTITUTE OF ELECTRICAL AND ELECTRONIC ENGINEERS,
-  1995]{IEEE:Pthreads-95} INSTITUTE OF ELECTRICAL AND ELECTRONIC
-  ENGINEERS\@. \textbf{Information Technology---Portable Operating
-  System Interface (POSIX), Threads Extension [C Language]},
-  \mbox{IEEE}~1003.1c-1995.  New~York, 1995.
-
-\bibitem[SILBERSCHATZ; PETERSON; GALVIN, 1991]{Silberschatz:OSC-3-91}
-  SILBERSCHATZ, A.; PETERSON, J.~L.; GALVIN, P.~B\@. \textbf{Operating
-  system concepts}. 3.ed.  Reading, USA: Addison-Wesley, 1991. 696p.
-
-\bibitem[UTUG(2001)UTUG]{UTUG:Homepage-01} UTUG\@. \textbf{Página do grupo
-  de usuários {\TeX} da {UFRGS}}. Disponível em:
-  $<$http://www.inf.ufrgs.br/utug$>$. Acesso em: maio 2001.
-
-\bibitem[WILSON, 2001]{Wilson:MME-01} WILSON, P.~C\@. \textbf{Um
-  método ótimo para o preparo de café em laboratório baseado na
-  reciclagem de filtros}. 2001. 123p.  Disserta{\c{c}}{\~a}o (Mestrado
-  em Ci{\^e}ncia da Computa{\c{c}}{\~a}o) --- Instituto de
-  Inform{\'a}tica, Universidade Federal do Rio Grande do Sul,
-  Porto~Alegre.
-\end{comment}
 
 \end{thebibliography}
 
