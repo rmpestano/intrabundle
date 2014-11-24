@@ -47,8 +47,22 @@ period of time. & Bundle startup time, also bundle dependency can decrease perfo
 \end{table}
 \FloatBarrier
 
-\subsection{Software Metric}
-A software metric is the measurement of a software attribute which in turn is a quantitative calculation of a characteristic.
+\subsection{Software Metrics}
+A software metric is the measurement of a software attribute which in turn is a quantitative calculation of a characteristic. Software metrics can be classified into three categories: product metrics\footnote{Product metrics describe the characteristics of the product such as size, complexity, design features, performance}, process metrics\footnote{Process metrics can be used to improve software development and maintenance.Examples include the effectiveness of defect removal during development and response time of bug fixing}, and project metrics\footnote{Project metrics describe the project characteristics and execution. Examples include the number of
+software developers, cost, schedule, and productivity}. Software quality metrics are a subset of software metrics that focus on the quality aspects of the product, process, and project.\citep{Kan 2002}.
+
+
+\subsubsection{Good Software Metrics}
+Good metrics may have the following aspects:
+
+\begin{itemize}
+  \item \emph{Linear}: metric values should follow a intuitive way to compare its values like for example higher values should correspond to better quality whereas lower values to worse quality and vice versa. 
+  \item \emph{Independent}: two metric values should not interfere on each other.
+  \item \emph{Repeatable}: this is a very important aspect in continuous quality management where software is changing all the time and we want to measure quality on every change.
+  \item \emph{Accurate}: the metric should be meaningful and should help answer how good a software attribute is, for example using latency\footnote{The delay incurred in communicating a message, the time the message spends “on the wire”} to calculate response time\footnote{The total time it takes from when a user makes a request until they receive a response} in a web application isn't accurate.       
+\end{itemize}
+
+
 \subsubsection{Common Software Metrics}
 The table 2.2 below shows some well known software metrics and its description:
 
@@ -74,7 +88,7 @@ The table 2.2 below shows some well known software metrics and its description:
 \FloatBarrier
 
 \subsection{Program Analysis}
-Program analysis sis the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and quality measurement.
+Program analysis is the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and quality measurement.
 
 \subsubsection{Static Program Analysis}
  Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}. In this kind of analysis source code is inspected and valuable information is collected based on its internal structure and components. 
@@ -134,7 +148,7 @@ The rules are totally customizable via xml configuration, Intrabundle PMD rules 
 
 \section{Java and OSGi}
 
-In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications this section will introduce the Java language and OSGi framework.
+In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications\footnote{A software design technique that emphasizes separating the functionality of a program into independent, interchangeable modules which represent a separation of concerns and improves maintainability} this section will introduce the Java language and OSGi framework.
 
 \subsection{The Java language}
 Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is a abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM} and converts it into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure 2.4 illustrates how JVM works:
@@ -159,3 +173,4 @@ Other aspects of Java are listed below:
 \end{itemize}
 
 \subsection{The OSGi framework}
+Java doesn’t have explicit support for building modular systems beyond ordinary object-oriented data encapsulation\citep[p. 3]{Hall 2011}
