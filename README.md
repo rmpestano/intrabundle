@@ -1,7 +1,7 @@
-[OSGi analisys](http://rmpestano.github.io/intrabundle/)
+[OSGi analysis](http://rmpestano.github.io/intrabundle/)
 ===========
 
-introspect OSGi projects via Forge plugins
+introspect OSGi projects via JBoss Forge plugins.
 
 
 [Travis-CI](https://travis-ci.org/rmpestano/intrabundle) build :
