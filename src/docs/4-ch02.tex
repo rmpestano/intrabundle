@@ -208,7 +208,7 @@ Import-Package: org.acme.api;version="1.1.0"
 
 Looking at manifest OSGi can ensure its most important aspect, \emph{modularity}, so for example our \textbf{Hello World} bundle will only be started(later we will explore bundle lifecycle) if and only if there is a bundle (in resolved or installed state) that exports \emph{org.acme.api} package, this is called \textbf{explicit boundaries}.
 
-With OSGi, you modularize applications into bundles. Each bundle is a tightly coupled, dynamically loadable collection of classes, JARs, and configuration files that explicitly declare any external dependencies. All these characteristics are provided in OSGi by three conceptual layers that will be briefly presented here, \emph{Module}, \emph{Lifecycle} and \emph{Service}.
+With OSGi, you modularize applications into bundles. Each bundle is a tightly coupled, dynamically loadable collection of classes packed in JARs\footnote{acronym for Java Archive, a file that used to aggregate many Java class files and associated metadata and resources (text, images, etc.) into one file to distribute}, and configuration files that explicitly declare any external dependencies. All these characteristics are provided in OSGi by three conceptual layers that will be briefly presented here, \emph{Module}, \emph{Lifecycle} and \emph{Service}.
 
 \subsubsection{Module layer}
 This layer is the basis for others as modularization is the key concept of OSGi. The module layer defines OSGi module concept - bundle, which is a JAR file with extra metadata. It also handles the packaging and sharing of Java packages between bundles and the hiding of packages from other bundles. The OSGi framework dynamically resolves dependencies among bundles and performs bundle resolution to match imported and exported packages. This layer ensures that class loading happens in a consistent and predictable way.
@@ -220,9 +220,10 @@ This layer is the basis for others as modularization is the key concept of OSGi.
 \includegraphics{module-layer}
 \\*Source: \cite{conceptual layers 2011}
 \end{figure}
+\FloatBarrier
 
 \subsubsection{Lifecycle layer}
-Provides access to the underlying OSGi framework through the \emph{Bundle Context} object. This layer handles the lifecycle of individual bundles so you can manage your application dynamically, including starting and stopping bundles to manage and evolve bundles over time. Bundles can be dynamically installed, started, updated, stopped and uninstalled. Figure \ref{bundle lifecycle} shows bundle lifecycle and its possible states where transitions are performed by OSGi commands like \emph{start} or \emph{stop} for example and states are represented in squares:
+Provides access to the underlying OSGi framework through the \emph{Bundle Context} object. This layer handles the lifecycle of individual bundles so you can manage your application dynamically, including starting and stopping bundles to manage and evolve them over time. Bundles can be dynamically installed, started, updated, stopped and uninstalled. Figure \ref{bundle lifecycle} shows bundle lifecycle and its possible states where transitions are performed by OSGi commands like \emph{start} or \emph{stop} for example and states are represented in squares:
 
 \begin{figure}[h]
 \label{bundle lifecycle}
@@ -230,6 +231,7 @@ Provides access to the underlying OSGi framework through the \emph{Bundle Contex
 \centering
 \includegraphics{bundle-lifecycle}
 \end{figure}
+\FloatBarrier
 
 If OSGi were a car, module layer would provide modules such as tire, seat, etc, and the lifecycle layer would provide electrical wiring which makes the car run. 
 
@@ -240,6 +242,7 @@ If OSGi were a car, module layer would provide modules such as tire, seat, etc, 
 \includegraphics{lifecycle-layer}
 \\*Source: \cite{conceptual layers 2011}
 \end{figure}
+\FloatBarrier
 
 \subsubsection{Service layer}
 This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state\citep{Evans 2003}} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
@@ -252,10 +255,11 @@ This is like a service-oriented architecture (SOA) which has been largely used i
 \centering
 \includegraphics[scale=0.5]{service-layer}
 \end{figure}
+\FloatBarrier
 
 
 \subsection{Vanilla Java vs OSGi}
-The main motivation behind OSgi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes}, also known as \textbf{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \textbf{Jar Hell}footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes and/or packages are merged based on their order of appearance in the class path.
+The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
 
 
 \begin{figure}[h]
@@ -268,7 +272,7 @@ The main motivation behind OSgi and advantage over standard Java application, as
 \FloatBarrier
 
 
- In the OSGi environment instead of a \emph{flat classpath} each bundle has its classloader and its classpath. See Figure \ref{bundle classpath}where Bundle A’s classpath is defined as the union of its bundle classpath with its imported packages, which selected for imported packages, that are provided by bundle B’s exports.
+ In the OSGi environment instead of a \emph{flat classpath} each bundle has its classloader and its classpath. See Figure \ref{bundle classpath} where Bundle A’s classpath is defined as the union of its bundle classpath with its imported packages, which are provided by bundle B’s exports.
 
 
 \begin{figure}[h]
@@ -280,5 +284,5 @@ The main motivation behind OSgi and advantage over standard Java application, as
 \end{figure}  
 \FloatBarrier
 
-We can say we have a graph of classpath that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles) in OSGi runtime. This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments\citep{semantic versioning 2010}.   
+In OSGi runtime we can say we have a graph of classpaths that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles). This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments\citep{semantic versioning 2010}.   
 
