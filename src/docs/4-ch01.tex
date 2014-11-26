@@ -56,7 +56,7 @@ software developers, cost, schedule, and productivity}. Software quality metrics
 Good metrics may have the following aspects:
 
 \begin{itemize}
-  \item \emph{Linear}: metric values should follow a intuitive way to compare its values like for example higher values should correspond to better quality whereas lower values to worse quality and vice versa. 
+  \item \emph{Linear}: metric values should follow an intuitive way to compare its values like for example higher values should correspond to better quality whereas lower values to worse quality and vice versa. 
   \item \emph{Independent}: two metric values should not interfere on each other.
   \item \emph{Repeatable}: this is a very important aspect in continuous quality management where software is changing all the time and we want to measure quality on every change.
   \item \emph{Accurate}: the metric should be meaningful and should help answer how good a software attribute is, for example using latency\footnote{The delay incurred in communicating a message, the time the message spends “on the wire”} to calculate response time\footnote{The total time it takes from when a user makes a request until they receive a response} in a web application isn't accurate.       
@@ -64,10 +64,11 @@ Good metrics may have the following aspects:
 
 
 \subsubsection{Common Software Metrics}
-The table 2.2 below shows some well known software metrics and its description:
+The table \ref{common metrics} below shows some well known software metrics and its description:
 
 \begin{table}[h]
 \caption{Common Software metrics}
+\label{common metrics}
 \begin{center}
     \begin{tabular}{  p{3cm} | p{8cm} }
     \hline
@@ -87,6 +88,7 @@ The table 2.2 below shows some well known software metrics and its description:
 
 \FloatBarrier
 
+
 \subsection{Program Analysis}
 Program analysis is the process of automatically analyzing the behavior of computer programs. Two main approaches in program analysis are \textbf{static program analysis} and \textbf{dynamic program analysis}. Main applications of program analysis are program correctness, program optimization and quality measurement.
 
@@ -99,10 +101,11 @@ Is a technique that analyze the system's behavior on the fly, while it is execut
 
 \subsection{Quality Analysis Tools}
 
-The table 2.3 lists some code quality analysis tools in the Java ecosystem:
+The table \ref{quality tools} lists some code quality analysis tools in the Java ecosystem:
 
 \begin{table}[h]
 \caption{Quality analysis tools}
+\label{quality tools}
 \begin{center}
     \begin{tabular}{  p{3cm} | p{8cm} | p{2cm} }
     \hline
@@ -125,9 +128,10 @@ The table 2.3 lists some code quality analysis tools in the Java ecosystem:
 
 \FloatBarrier
 
-Figure 2.2 shows the execution of static analysis on \textit{Intrabundle} using \textbf{PMD}, note that PMD is based on rules and Intrabundle break some of them(intentionally) like \textbf{Unused variables}, \textbf{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
+Figure \ref{pmd violation} shows the execution of static analysis on \textit{Intrabundle} using \textbf{PMD}, note that PMD is based on rules and Intrabundle break some of them(intentionally) like \textbf{Unused variables}, \textbf{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
 
 \begin{figure}[h]
+\label{pmd violation}
 \caption{Intrabundle PMD rule violation}
 \centering
 \includegraphics[scale=0.5]{intrabundle-pmd-build-failure}
@@ -135,9 +139,10 @@ Figure 2.2 shows the execution of static analysis on \textit{Intrabundle} using 
 
 \FloatBarrier
 
-The rules are totally customizable via xml configuration, Intrabundle PMD rules are shown in figure 2.3:
+The rules are totally customizable via xml configuration, Intrabundle PMD rules are shown in Figure \ref{pmd ruleset}:
 
 \begin{figure}[h]
+\label{pmd ruleset}
 \caption{Intrabunde PMD ruleset}
 \centering
 \includegraphics[scale=0.5]{intrabundle-pmd-ruleset}
@@ -151,10 +156,11 @@ The rules are totally customizable via xml configuration, Intrabundle PMD rules 
 In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications\footnote{A software design technique that emphasizes separating the functionality of a program into independent, interchangeable modules which represent a separation of concerns and improves maintainability} this section will introduce the Java language and OSGi framework.
 
 \subsection{The Java language}
-Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is a abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM} and converts it into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure 2.4 illustrates how JVM works:
+Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is a abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM} and converts it into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure \ref{jvm} illustrates how JVM works:
 
 \begin{figure}[h]
 \caption{JVM architecture}
+\label{jvm}
 \centering
 \includegraphics[scale=0.5]{jvm}
 \end{figure}  
@@ -172,5 +178,107 @@ Other aspects of Java are listed below:
 \item Distributed: networking capability is inherently integrated into Java
 \end{itemize}
 
-\subsection{The OSGi framework}
-Java doesn’t have explicit support for building modular systems beyond ordinary object-oriented data encapsulation\citep[p. 3]{Hall 2011}
+\subsection{The OSGi service platform}
+OSGi is a component based service oriented platform specification maintained by \emph{OSGi Alliance}\footnote{A non profit worldwide consortium of technology innovators}. As of November 2014 the specification is at version 6 and currently has four implementations\footnote{\href{http://felix.apache.org}{Apache Felix}, \href{http://eclipse.org/equinox/}{Eclipse Equinox}, \href{http://www.knopflerfish.org}{Knopflerfish} and \href{http://www.prosyst.com}{ProSyst}}. It is composed by \emph{OSGi framework} and \emph{OSGi standard services}. The framework is the runtime that provides the basis of all OSGi module system functionalities like modules management for example and standard services define some reusable apis and extension points to easy development of OSGi based applications. Figure \ref{osgi architecture} illustrates OSGi platform architecture:
+
+\begin{figure}[h]
+\caption{OSGi architecture}
+\label{osgi architecture}
+\centering
+\includegraphics{osgi-architecture}
+\end{figure}  
+\FloatBarrier
+
+
+
+\subsubsection{Bundles}
+Bundles are the building blocks of OSGi applications. A bundle\footnote{Also known as module} is a group of Java classes and resources packed as .jar extension with additional metadata in manifest MANIFEST.MF file describing its module boundaries like for example the packages it imports and exports. Below is an OSGi manifest file example:
+
+\begin{lstlisting}
+Bundle-Name: Hello World
+Bundle-SymbolicName: org.wikipedia.helloworld
+Bundle-Description: A Hello World bundle
+Bundle-ManifestVersion: 2
+Bundle-Version: 1.0.0
+Bundle-Activator: org.wikipedia.Activator
+Export-Package: org.wikipedia.helloworld;version="1.0.0"
+Import-Package: org.acme.api;version="1.1.0"
+\end{lstlisting} 
+\FloatBarrier
+
+Looking at manifest OSGi can ensure its most important aspect, \emph{modularity}, so for example our \textbf{Hello World} bundle will only be started(later we will explore bundle lifecycle) if and only if there is a bundle (in resolved or installed state) that exports \emph{org.acme.api} package, this is called \textbf{explicit boundaries}.
+
+With OSGi, you modularize applications into bundles. Each bundle is a tightly coupled, dynamically loadable collection of classes, JARs, and configuration files that explicitly declare any external dependencies. All these characteristics are provided in OSGi by three conceptual layers that will be briefly presented here, \emph{Module}, \emph{Service} and \emph{Lifecycle}.
+
+\subsubsection{Module layer}
+This layer is the basis for others as modularization is the key concept of OSGi. The module layer defines OSGi module concept - bundle, which is a JAR file with extra metadata. It also handles the packaging and sharing of Java packages between bundles and the hiding of packages from other bundles. The OSGi framework dynamically resolves dependencies among bundles and performs bundle resolution to match imported and exported packages. This layer ensures that class loading happens in a consistent and predictable way.
+
+\begin{figure}[h]
+\label{module layer}
+\caption{Module Layer}
+\centering
+\includegraphics{module-layer}
+\\*Source: \cite{conceptual layers 2011}
+\end{figure}
+
+\subsubsection{Lifecycle layer}
+Provides access to the underlying OSGi framework through the \emph{Bundle Context} object. This layer handles the lifecycle of individual bundles so you can manage your application dynamically, including starting and stopping bundles to manage and evolve bundles over time. Bundles can be dynamically installed, started, updated, stopped and uninstalled. Figure \ref{bundle lifecycle} shows bundle lifecycle and its possible states where transitions are performed by OSGi commands like \emph{start} or \emph{stop} for example and states are represented in squares:
+
+\begin{figure}[h]
+\label{bundle lifecycle}
+\caption{OSGi bundle Lifecycle}
+\centering
+\includegraphics{bundle-lifecycle}
+\end{figure}
+
+If OSGi were a car, module layer would provide modules such as tire, seat, etc, and the lifecycle layer would provide electrical wiring which makes the car run. 
+
+\begin{figure}[h]
+\label{lifecycle layer}
+\caption{Lifecycle Layer}
+\centering
+\includegraphics{lifecycle-layer}
+\\*Source: \cite{conceptual layers 2011}
+\end{figure}
+
+\subsubsection{Service layer}
+This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state\citep{Evans 2003}} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
+
+This is like a service-oriented architecture (SOA) which has been largely used in web services. Here OSGi services are local to a single VM, so it is sometimes called SOA in a VM.
+
+\begin{figure}[h]
+\label{service layer}
+\caption{Service Layer}
+\centering
+\includegraphics[scale=0.5]{service-layer}
+\end{figure}
+
+
+\subsubsection{Vanilla Java vs OSGi}
+The main motivation behind OSgi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes}, also known as \textbf{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \textbf{Jar Hell}footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes and/or packages are merged based on their order of appearance in the class path.
+
+
+\begin{figure}[h]
+\caption{Java jar hell}
+\label{jar hell}
+\centering
+\includegraphics[scale=0.5]{jar-hell}
+\\*Source: \cite[p. 7]{Hall 2011}
+\end{figure}  
+\FloatBarrier
+
+
+ In the OSGi environment instead of a \emph{flat classpath} each bundle has its classloader and its classpath. See Figure \ref{bundle classpath}where Bundle A’s classpath is defined as the union of its bundle classpath with its imported packages, which selected for imported packages, that are provided by bundle B’s exports.
+
+
+\begin{figure}[h]
+\caption{Bundle classpath}
+\label{bundle classpath}
+\centering
+\includegraphics[scale=0.5]{bundle-classpath}
+\\*Source: \cite[p. 59]{Hall 2011}
+\end{figure}  
+\FloatBarrier
+
+We can say we have a graph of classpath that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles) in OSGi runtime. This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments\citep{semantic versioning 2010}.   
+
