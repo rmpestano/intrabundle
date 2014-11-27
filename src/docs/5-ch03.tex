@@ -28,6 +28,13 @@ Eclipse projects and BND\footnote{\href{http://bndtools.org/}{BND} is a tool to 
 
 The following alternatives were evaluated:
 
+\begin{enumerate}
+\item Build a javaFX application\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications}
+\item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE}
+\item Create a  Maven plugin\footnote{Maven consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.}(restricted to maven projects)
+\item build the tool on top of JBoss Forge.
+\end{enumerate}
+
 
 
 \section{Implementation Overview}
@@ -66,7 +73,7 @@ Intrabunde external quality is assured by automated whitebox tests so we can ver
 As of November 2014 Intrabundle performs 62 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up and running during tests and that is done by Arquillian \citep{dan 2011}, an integration test platform. Figure 3.2 shows the result of integration tests execution:
 
 \begin{figure}[h]
-\caption{Intrabundle external tests}
+\caption{Intrabundle integration tests}
 \includegraphics[scale=0.5]{intrabundle-external-quality}
 \end{figure}
 
