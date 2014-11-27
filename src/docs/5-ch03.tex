@@ -1,28 +1,51 @@
 \chapter{Intrabundle - An OSGi Bundle Introspection Tool}
 
-With was clear in previous chapters that with all the presented differences between modular and non modular applications that the first need different approaches 
 
 \section{Introduction}
+With was clear in previous chapters that modular and non modular applications have many differences and specific features hence the need for dedicated approach for quality analysis. This chapter presents a tool called \emph{Intrabundle}\citep{intrabundle github 2014}, an open source Java based application created in the context of this work. Intrabundle introspects OSGi projects collecting useful information and calculates OSGi bundle and project \textbf{internal quality}.  
+
 
 \section{Design Decisions}
-To analyze large code bases of OSGi projects which can vary from KLOCs to thousands of KLOCs we needed a lightweight approach with the following functional requirements:
+To analyze and extract data from large code bases of OSGi projects which can vary from KLOCs to thousands of KLOCs we needed a lightweight approach with the following non functional requirements:
 
-- 
+\begin{itemize}
+\item Only open sourced projects because we focus on internal quality where the code is important;
+\item The tool should be lightweight to analyze real, complex and huge OSGi projects;
+\item 
+\item Use Java to leverage the author's experience in the language.
+\end{itemize}
+
+Some functional requirements were:
+
+\begin{itemize}
+\item Analyze different formats of OSGi projects like Maven\footnote{\href{http://maven.apache.org/index.html}{Maven} is a build tool for Java}, 
+Eclipse projects and BND\footnote{\href{{http://bndtools.org/}{BND} is a tool to easy OSGi projects development}; 
+\item Find and Introspect manifest files
+\item It should be able to dive deep into projects source code like counting methods calls, differentiate classes and interfaces and so on;  
+\item Get general informations like project version, revision or latest commit in source repository
+\item 
+\end{itemize}
 
 The following alternatives were evaluated:
 
--
 
-\section{JBoss Forge}
 
 \section{Implementation Overview}
+identify OSGI project/bundle
+extract information
+feed metrics
+calculate quality
+
+\section{Identifying OSGi Projects and Bundles}
 
 \section{Collecting Bundle Data}
 
 \section{Metrics Calculation}
+The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality  
 
 \section{Intrabundle Quality}
-In this section we will see how Intrabundle's quality is managed and how some concepts of \textit{section \ref{sec:quality}} were applied to the project.
+In this section we will see how Intrabundle's quality is managed and how some concepts of \textit{section \ref{sec:quality}} were applied to the project. As the project is not OSGi based we can't apply Intrabundle's metrics on itself so we used classical approaches to assure the quality of the project.
+
 \subsection{Internal quality}
 Intrabundle internal is managed by PMD and JaCoCo. PMD is an static analysis tool and JaCoCo a dynamic analysis one. Both were presented at Chapter two in section \textit{Quality Analysis Tools} with the objective to guarantee non functional requirements.
 

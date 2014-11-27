@@ -2,8 +2,7 @@
 This chapter presents an overview of the concepts and technologies that were studied and used on the development of this work. 
 In section \textit{2.1 - Software Quality}, will be presented general aspects of software quality such as \textit{quality measurement},  \textit{software metrics}, \textit{program analysis} and some tools that are used in this area.  
 
-Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications as well the motivation 
-behind this solution and why standard quality metrics aren't sufficient for this kind of application. 
+Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications. Finally section \ref{sec:forge} will introduce JBoss Forge, a Java framework used as runtime for Intrabundle.   
 
 
 \section{Software Quality}
@@ -259,7 +258,8 @@ This is like a service-oriented architecture (SOA) which has been largely used i
 
 
 \subsection{Vanilla Java vs OSGi}
-The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
+The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java app
+lications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
 
 
 \begin{figure}[h]
@@ -286,3 +286,9 @@ The main motivation behind OSGi and advantage over standard Java application, as
 
 In OSGi runtime we can say we have a graph of classpaths that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles). This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments\citep{semantic versioning 2010}.   
 
+\section{JBoss Forge}
+\label{sec:forge}
+\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a plugin based general purpose command line development tool. 
+A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting\footnote{term used to refer as publishing messages to the twitter social media.} the status of your latest source-code commit, or even sending commands to a home-automation system or any computing task, the sky is the limit!.
+
+Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later on this work.
