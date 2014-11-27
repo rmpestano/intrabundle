@@ -11,8 +11,8 @@ To analyze and extract data from large code bases of OSGi projects which can var
 \begin{itemize}
 \item Only open sourced projects because we focus on internal quality where the code is important;
 \item The tool should be lightweight to analyze real, complex and huge OSGi projects;
-\item 
 \item Use Java to leverage the author's experience in the language.
+\item ...
 \end{itemize}
 
 Some functional requirements were:
@@ -23,14 +23,14 @@ Eclipse projects and BND\footnote{\href{http://bndtools.org/}{BND} is a tool to 
 \item Find and Introspect manifest files
 \item It should be able to dive deep into projects source code like counting methods calls, differentiate classes and interfaces and so on;  
 \item Get general informations like project version, revision or latest commit in source repository
-\item 
+\item ...
 \end{itemize}
 
 The following alternatives were evaluated:
 
 \begin{enumerate}
 \item Build a javaFX application\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications}
-\item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE}
+\item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE}
 \item Create a  Maven plugin\footnote{Maven consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.}(restricted to maven projects)
 \item build the tool on top of JBoss Forge.
 \end{enumerate}
