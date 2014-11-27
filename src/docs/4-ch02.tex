@@ -2,12 +2,12 @@
 This chapter presents an overview of the concepts and technologies that were studied and used on the development of this work. 
 In section \textit{2.1 - Software Quality}, will be presented general aspects of software quality such as \textit{quality measurement},  \textit{software metrics}, \textit{program analysis} and some tools that are used in this area.  
 
-Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications. Finally section \ref{sec:forge} will introduce JBoss Forge, a Java framework used as runtime for Intrabundle.   
+Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications. Finally section \ref{sec:forge} will introduce JBoss Forge, a Java framework used as runtime\footnote{Is software designed to support the execution of computer programs written in some computer language} for Intrabundle\footnote{A Java based project that will be presented later on this work}.   
 
 
 \section{Software Quality}
 \label{sec:quality}
-There has been many definitions of software quality(TODO REF - Metrics and Models in Software Quality Engineering) and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
+There has been many definitions of software quality\citep[p. 23]{Kan 2002} and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
 
 Another important aspect of software quality is that it can be divided in two groups, the \textbf{external} and \textbf{internal} quality. When we talk about \textit{external quality} we are aiming to the user view which is the one that sees the software working and use it, this kind of quality is usually enforced through software testing. External quality can also be mapped to functional requirements so the greater external quality is the more usable and less defects it will have for example. The opposite is internal or structural quality that aims to how the software is architect-ed internally which is the perspective of the programmer and non functional requirements so the higher internal quality the better the code is structured, efficient, robust and maintainable it should be. Image 2.1 illustrates internal and external quality and its target audience.
 
@@ -127,7 +127,7 @@ The table \ref{quality tools} lists some code quality analysis tools in the Java
 
 \FloatBarrier
 
-Figure \ref{pmd violation} shows the execution of static analysis on \textit{Intrabundle} using \textbf{PMD}, note that PMD is based on rules and Intrabundle break some of them(intentionally) like \textbf{Unused variables}, \textbf{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
+Figure \ref{pmd violation} shows the execution of static analysis on \textit{Intrabundle} using \emph{PMD}, note that it is based on rules and Intrabundle break some of them(intentionally) like \emph{Unused variables}, \emph{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
 
 \begin{figure}[h]
 \label{pmd violation}
