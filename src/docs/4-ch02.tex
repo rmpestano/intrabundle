@@ -7,7 +7,7 @@ Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build s
 
 \section{Software Quality}
 \label{sec:quality}
-There has been many definitions of software quality\citep[p. 23]{Kan 2002} and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
+There has been many definitions of software quality \citep[p. 23]{Kan 2002} and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
 
 Another important aspect of software quality is that it can be divided in two groups, the \textbf{external} and \textbf{internal} quality. When we talk about \textit{external quality} we are aiming to the user view which is the one that sees the software working and use it, this kind of quality is usually enforced through software testing. External quality can also be mapped to functional requirements so the greater external quality is the more usable and less defects it will have for example. The opposite is internal or structural quality that aims to how the software is architect-ed internally which is the perspective of the programmer and non functional requirements so the higher internal quality the better the code is structured, efficient, robust and maintainable it should be. Image 2.1 illustrates internal and external quality and its target audience.
 
@@ -48,7 +48,7 @@ period of time. & Bundle startup time, also bundle dependency can decrease perfo
 
 \subsection{Software Metrics}
 A software metric is the measurement of a software attribute which in turn is a quantitative calculation of a characteristic. Software metrics can be classified into three categories: product metrics\footnote{Product metrics describe the characteristics of the product such as size, complexity, design features, performance}, process metrics\footnote{Process metrics can be used to improve software development and maintenance.Examples include the effectiveness of defect removal during development and response time of bug fixing}, and project metrics\footnote{Project metrics describe the project characteristics and execution. Examples include the number of
-software developers, cost, schedule, and productivity}. Software quality metrics are a subset of software metrics that focus on the quality aspects of the product, process, and project.\citep{Kan 2002}.
+software developers, cost, schedule, and productivity}. Software quality metrics are a subset of software metrics that focus on the quality aspects of the product, process, and project \citep{Kan 2002}.
 
 
 \subsubsection{Good Software Metrics}
@@ -244,7 +244,7 @@ If OSGi were a car, module layer would provide modules such as tire, seat, etc, 
 \FloatBarrier
 
 \subsubsection{Service layer}
-This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state\citep{Evans 2003}} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
+This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state \citep{Evans 2003}} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
 
 This is like a service-oriented architecture (SOA) which has been largely used in web services. Here OSGi services are local to a single VM, so it is sometimes called SOA in a VM.
 
@@ -284,13 +284,13 @@ lications. In standard Java, user classes\footnote{Classes that are defined by d
 \end{figure}  
 \FloatBarrier
 
-In OSGi runtime we can say we have a graph of classpaths that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles). This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments\citep{semantic versioning 2010}.   
+In OSGi runtime we can say we have a graph of classpaths that allows powerful versioning mechanisms so for example we can have multiple versions of the same class or resource loaded at the same time(used by different bundles). This enables independent evolution of dependent artifacts which, in the Java world, is unique to OSGi environments \citep{semantic versioning 2010}.   
 
 \section{JBoss Forge}
 \label{sec:forge}
-\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a plugin based general purpose command line development tool. 
+\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications} plugin based general purpose command line development tool. 
 A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting\footnote{term used to refer as publishing messages to the twitter social media.} the status of your latest source-code commit, or even sending commands to a home-automation system. The sky is the limit!.
 
-Forge can be used as a command line tool or integrated in main IDEs like Eclipse and IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}}.    
+Forge can be used as a command line tool or integrated in main IDEs like Eclipse, Netbeans or IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}}.    
 
 Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later on this work.

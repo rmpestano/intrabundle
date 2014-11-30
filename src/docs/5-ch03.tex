@@ -2,39 +2,61 @@
 
 
 \section{Introduction}
-With was clear in previous chapters that modular and non modular applications have many differences and specific features hence the need for dedicated approach for quality analysis. This chapter presents a tool called \emph{Intrabundle}\citep{intrabundle github 2014}, an open source Java based application created in the context of this work. Intrabundle introspects OSGi projects collecting useful information and calculates OSGi bundle and project \textbf{internal quality}.  
+With was clear in previous chapters that modular and non modular applications have many differences and specific features hence the need for dedicated approach for quality analysis. This chapter presents a tool called \emph{Intrabundle} \citep{intrabundle github 2014}, an open source Java based application created in the context of this work. Intrabundle introspects OSGi projects collecting useful information and calculates OSGi bundle and project \textbf{internal quality}.  
 
 
 \section{Design Decisions}
-To analyze and extract data from large code bases of OSGi projects which can vary from KLOCs to thousands of KLOCs we needed a lightweight approach with the following non functional requirements:
+To analyze and extract data from large code bases of OSGi projects, which can vary from KLOCs to thousands of KLOCs, there was the need of a lightweight approach. Some \emph{functional requirements} were:
 
 \begin{itemize}
-\item Only open sourced projects because we focus on internal quality where the code is important;
-\item The tool should be lightweight to analyze real, complex and huge OSGi projects;
-\item Use Java to leverage the author's experience in the language.
-\item ...
-\end{itemize}
-
-Some functional requirements were:
-
-\begin{itemize}
-\item Analyze different formats of OSGi projects like Maven\footnote{\href{http://maven.apache.org/index.html}{Maven} is a build tool for Java}, 
-Eclipse projects and BND\footnote{\href{http://bndtools.org/}{BND} is a tool to easy OSGi projects development}; 
-\item Find and Introspect manifest files
+\item Analyze different formats of OSGi projects like Maven\footnote{\href{http://maven.apache.org/index.html}{Maven} is a build tool for Java}, Eclipse projects and BND\footnote{\href{http://bndtools.org/}{BND} is a tool to easy OSGi projects development}; 
 \item It should be able to dive deep into projects source code like counting methods calls, differentiate classes and interfaces and so on;  
-\item Get general informations like project version, revision or latest commit in source repository
-\item ...
+\item Get general informations like project version, revision or latest commit in source repository;
+\item Should be easy analyze lots of projects;
+\item Should output a detailed Human readable quality report so the extracted information can be analyzed.
 \end{itemize}
+
+and the following \emph{non functional requirements}:
+
+\begin{itemize}
+\item Only open sourced projects\footnote{Projects that have its source code made available with a license in which the copyright holder provides the rights to study, change and distribute the software to anyone and for any purpose} because we focus on internal quality where the code is important;
+\item The tool should be lightweight to analyze real, complex and huge OSGi projects;
+\item Find and Introspect manifest files where valuable OSGi information rely; 
+\item Should be testable
+\item Use Java to leverage the author's experience in the language;
+\item Use a good file system API\footnote{An API expresses a software component in terms of its operations, inputs, outputs, and underlying types.} because file manipulation is one of the most frequent tasks the tool should perform.\\*
+\end{itemize}
+ 
 
 The following alternatives were evaluated:
 
 \begin{enumerate}
-\item Build a javaFX application\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications}
-\item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE}
-\item Create a  Maven plugin\footnote{Maven consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.}(restricted to maven projects)
-\item build the tool on top of JBoss Forge.
+\item Build a standalone Java client application using javaFX\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications};
+\item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE};
+\item Create a  Maven plugin\footnote{Maven is a build tool that consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.} which is restricted to maven projects;
+\item build the tool on top of JBoss Forge;
+\item extend an existing static/internal analysis tool like PMD.
 \end{enumerate}
 
+The chosen among the above was JBoss Forge, due to the following facts:
+
+\begin{itemize}
+\item Works inside and outside eclipse;
+\item Works regardless of build tool;
+\item As its a command line tool its very lightweight and can analyze multiple OSGi projects at the same time;
+\item The programing model is based on top of the so called CDI\footnote{Context and Dependency Injection for the Java platform. CDI is a dependency injection framework where instead of dependencies construct themselves they are injected by some external means, in cae CDI} so managing Objects lifecycle and event is handled by CDI automatically;
+\item Forge has a very well established and documented file system manipulation api based on java.io;
+\item Forge is very flexible so generating quality reports is a matter of using a report API inside it;  
+\item The author already had experience with JBoss forge and CDI. 
+\end{itemize}
+
+Creating an eclipse plugin for analyzing OSGi projects could be not as lightweight as forge plugin. We would need eclipse started and OSGi projects imported inside IDE so the eclipse plugin could identify the project resources.
+
+JavaFX would require use standard Java file system manipulation api(java.io) which has many caveats and pitfalls so for example its easy to create a memory leak or too many files opens error. Also with JavaFX there the need to implement the interface/GUI which is already well done in Eclipse or Forge.
+
+Maven plugins are limited to maven projects.
+
+PMD\footnote{a very nice tool for static code analysis. It is based on rules that can be created via xml or xpath expression. When a rule is violated it can output warns or errors to the console} has a very limited API so it could be hard to generate reports or analyze multiple projects using it. 
 
 
 \section{Implementation Overview}
