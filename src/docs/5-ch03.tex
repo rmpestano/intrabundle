@@ -61,13 +61,22 @@ PMD\footnote{a very nice tool for static code analysis. It is based on rules tha
 
 \section{Implementation Overview}
 
-Intrabundle is composed by 4 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugin. The first \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible of scanning OSGi bundles recursively in file system and the last is \emph{MetricsPlugin} that calculates bundle and OSGi project metrics and quality.
+Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugin. The first \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible of scanning OSGi bundles recursively in file system. Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on metrics produced by OSGiPlugin and BundlePlugin.
 
-Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about forge facets. BundleFacet and OSGiFacets, both restricts commands provided by BundlePlugin and OSGiPlugin im the context of OSGi bundle and project respectively.
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. OSGiFacet is active when user enter on a directory that contains an OSGiBundle and OSGiFacet is active when user in on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
 
-Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object representing and gathering data related to OSGi bundle when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OGiBundle.          
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is actvated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
 
-TODO image about Intrabundle architecture
+Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
+
+\begin{figure}[h]
+\caption{Intrabundle Architecture}
+\label{intrabundle-arch}
+\centering
+\includegraphics{intrabundle-arch}
+\end{figure}  
+\FloatBarrier
+
 
 \section{Identifying OSGi Projects and Bundles}
 
