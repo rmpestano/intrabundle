@@ -288,9 +288,78 @@ In OSGi runtime we can say we have a graph of classpaths that allows powerful ve
 
 \section{JBoss Forge}
 \label{sec:forge}
+\subsection{Introduction}
 \href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications} plugin based general purpose command line development tool. 
-A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting\footnote{term used to refer as publishing messages to the twitter social media.} the status of your latest source-code commit, or even sending commands to a home-automation system. The sky is the limit!.
 
+\subsection{Forge Plugin}
+\label{sec:forge:plugin}
+A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting\footnote{Term used to refer as publishing messages to the twitter social media.} the status of your latest source-code commit, or even sending commands to a home-automation system. The sky is the limit!. 
+
+Every plugin offers a set o commands that may be restricted by a facet.
+
+\subsubsection{Example}
+Below is a simple Forge plugin named \emph{hello-world} with a command named \emph{sayHello} that prints "Hello World" when executed:
+
+\begin{lstlisting}[language=java]
+@Alias("hello-world")
+public class HelloWorldPlugin implements Plugin {
+
+    @Command(value = "sayHello")
+    public void countBundles(PipeOut out) {
+        out.println("Hello World" );
+    }
+
+}
+\end{lstlisting}
+
+Plugin is just a marker interface so Forge can identify plugins. To fire the sayHello command one have to start forge, install the HelloPlugin and then can use the command by typing \emph{hello-world sayHello} in Forge console and so "Hello World" should be printed in console.
+
+\subsection{Facets}
+\label{sec:forge:facet}
+A Facet in the Forge environment is responsible for restricting the usage of a plugin. It is in fact an interface\footnote{In object oriented programming is a contract that defines which methods the implementors of the interface must provide} with a method with return type boolean that must decide if the facet is installed.
+
+\subsubsection{Example}
+Below is an example of facet that restricts the usage of hello-world plugin, in the example the command should be only available when user is in a directory named \emph{hello}.
+
+\begin{lstlisting}[language=java]
+
+public class HelloFacet implements Facet {
+
+    @Inject 
+    Project project;
+
+   @Override
+    public boolean isInstalled() {
+         return project != null && project.getProjectRoot().getName().equals("hello");
+    }
+
+
+}
+\end{lstlisting}
+
+So the idea of a facet is that it is active when isInstalled method return true. In HelloFacet only when user current directory is
+named "hello". To get user current directory we ask forge, through dependency injection, for the current project. Project is a java object that holds information of the current user project like its directory. 
+
+To activate the facet we must annotate HelloWorld plugin with RequiresFacet:
+
+\begin{lstlisting}[language=java]
+@Alias("hello-world")
+@RequiresFacet(HelloFacet.class)
+public class HelloWorldPlugin implements Plugin {
+
+    @Command(value = "sayHello")
+    public void countBundles(PipeOut out) {
+        out.println("Hello World" );
+    }
+
+}
+\end{lstlisting}
+
+\subsection{Project Locator}
+\label{sec:forge:locator}
+ A project locator is a component responsible for creating Java objects that represent useful information in the forge runtime, they are called \emph{project} in forge. Forge calls all locators available when user change directory in command line and the first locator that is matched will create a Java object representing the current Project. Its the same idea of facets but instead of restricting plugin commands it creates object and made them available for Forge runtime. That was how we could inject current user project in HelloFacet before.
+
+\subsection{Applications}
 Forge can be used as a command line tool or integrated in main IDEs like Eclipse, Netbeans or IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}}.    
 
 Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later on this work.

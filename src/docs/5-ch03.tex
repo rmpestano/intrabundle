@@ -60,10 +60,14 @@ PMD\footnote{a very nice tool for static code analysis. It is based on rules tha
 
 
 \section{Implementation Overview}
-identify OSGI project/bundle
-extract information
-feed metrics
-calculate quality
+
+Intrabundle is composed by 4 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugin. The first \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible of scanning OSGi bundles recursively in file system and the last is \emph{MetricsPlugin} that calculates bundle and OSGi project metrics and quality.
+
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about forge facets. BundleFacet and OSGiFacets, both restricts commands provided by BundlePlugin and OSGiPlugin im the context of OSGi bundle and project respectively.
+
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object representing and gathering data related to OSGi bundle when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OGiBundle.          
+
+TODO image about Intrabundle architecture
 
 \section{Identifying OSGi Projects and Bundles}
 

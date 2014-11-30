@@ -22,7 +22,7 @@ public class BundleFacet extends BaseFacet {
 
     @Override
     public boolean isInstalled() {
-         return project != null && ProjectUtils.isOsgiBundle(project.getProjectRoot());
+         return project != null && project.getProjectRoot().getName().equals("hello") ProjectUtils.isOsgiBundle(project.getProjectRoot());
     }
 
 
