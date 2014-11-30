@@ -127,22 +127,22 @@ The table \ref{quality tools} lists some code quality analysis tools in the Java
 
 \FloatBarrier
 
-Figure \ref{pmd violation} shows the execution of static analysis on \textit{Intrabundle} using \emph{PMD}, note that it is based on rules and Intrabundle break some of them(intentionally) like \emph{Unused variables}, \emph{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
+Figure \ref{pmd_violation} shows the execution of static analysis on \textit{Intrabundle} using \emph{PMD}, note that it is based on rules and Intrabundle break some of them(intentionally) like \emph{Unused variables}, \emph{EmptyCatchBlock} so PMD consider them compile failure and the project cannot be compiled until the rules are fixed in code:
 
 \begin{figure}[h]
-\label{pmd violation}
 \caption{Intrabundle PMD rule violation}
+\label{pmd_violation}
 \centering
 \includegraphics[scale=0.5]{intrabundle-pmd-build-failure}
 \end{figure}
 
 \FloatBarrier
 
-The rules are totally customizable via xml configuration, Intrabundle PMD rules are shown in Figure \ref{pmd ruleset}:
+The rules are totally customizable via xml configuration, Intrabundle PMD rules are shown in Figure \ref{pmd_ruleset}:
 
 \begin{figure}[h]
-\label{pmd ruleset}
 \caption{Intrabunde PMD ruleset}
+\label{pmd_ruleset}
 \centering
 \includegraphics[scale=0.5]{intrabundle-pmd-ruleset}
 \\*Source: \cite{intrabundle pmd 2014}
@@ -213,8 +213,8 @@ With OSGi, you modularize applications into bundles. Each bundle is a tightly co
 This layer is the basis for others as modularization is the key concept of OSGi. The module layer defines OSGi module concept - bundle, which is a JAR file with extra metadata. It also handles the packaging and sharing of Java packages between bundles and the hiding of packages from other bundles. The OSGi framework dynamically resolves dependencies among bundles and performs bundle resolution to match imported and exported packages. This layer ensures that class loading happens in a consistent and predictable way.
 
 \begin{figure}[h]
-\label{module layer}
 \caption{Module Layer}
+\label{module layer}
 \centering
 \includegraphics{module-layer}
 \\*Source: \cite{conceptual layers 2011}
@@ -225,8 +225,8 @@ This layer is the basis for others as modularization is the key concept of OSGi.
 Provides access to the underlying OSGi framework through the \emph{Bundle Context} object. This layer handles the lifecycle of individual bundles so you can manage your application dynamically, including starting and stopping bundles to manage and evolve them over time. Bundles can be dynamically installed, started, updated, stopped and uninstalled. Figure \ref{bundle lifecycle} shows bundle lifecycle and its possible states where transitions are performed by OSGi commands like \emph{start} or \emph{stop} for example and states are represented in squares:
 
 \begin{figure}[h]
-\label{bundle lifecycle}
 \caption{OSGi bundle Lifecycle}
+\label{bundle lifecycle}
 \centering
 \includegraphics{bundle-lifecycle}
 \end{figure}
@@ -300,7 +300,7 @@ Every plugin offers a set o commands that may be restricted by a facet.
 \subsubsection{Example}
 Below is a simple Forge plugin named \emph{hello-world} with a command named \emph{sayHello} that prints "Hello World" when executed:
 
-\begin{lstlisting}[language=java]
+\begin{lstlisting}[language=java,label=forge-plugin,caption=Forge plugin example]
 @Alias("hello-world")
 public class HelloWorldPlugin implements Plugin {
 
@@ -321,26 +321,26 @@ A Facet in the Forge environment is responsible for restricting the usage of a p
 \subsubsection{Example}
 Below is an example of facet that restricts the usage of hello-world plugin, in the example the command should be only available when user is in a directory named \emph{hello} otherwise Forge will claim that the command does not exist in current context.
 
-\begin{lstlisting}[language=java]
+\begin{lstlisting}[language=java,label=hello-facet,caption=Forge facet example]
 
 public class HelloFacet implements Facet {
 
-    @Inject 
-    Project project;
+   @Inject 
+   Project project;
 
    @Override
-    public boolean isInstalled() {
-         return project.getProjectRoot().getName().equals("hello");
+   public boolean isInstalled() {
+      return project.getProjectRoot().getName().equals("hello");
     }
 }
 \end{lstlisting}
 
-So the idea of a facet is that it is active when isInstalled method return true. In HelloFacet only when user current directory is
+So the idea of a facet is that it is active when isInstalled method return true. In case of HelloFacet only when user current directory is
 named "hello". To get user current directory we ask forge, through dependency injection, for the current project. Project is a Java object that holds information of the current user project like its directory. 
 
 To activate the facet we must annotate HelloWorld plugin with RequiresFacet:
 
-\begin{lstlisting}[language=java]
+\begin{lstlisting}[language=java,label=forge-plugin-facet,caption=Forge plugin with facet example]
 @Alias("hello-world")
 @RequiresFacet(HelloFacet.class)
 public class HelloWorldPlugin implements Plugin {
@@ -359,4 +359,4 @@ public class HelloWorldPlugin implements Plugin {
 \subsection{Applications}
 Forge can be used as a command line tool or integrated in main IDEs like Eclipse, Netbeans or IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}}.    
 
-Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later on this work.
+Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later.
