@@ -2,7 +2,7 @@
 
 
 \section{Introduction}
-With was clear in previous chapters that modular and non modular applications have many differences and specific features hence the need for dedicated approach for quality analysis. This chapter presents a tool called \emph{Intrabundle} \citep{intrabundle github 2014}, an open source Java based application created in the context of this work. Intrabundle introspects OSGi projects collecting useful information and calculates OSGi bundle and project \textbf{internal quality}.  
+It was clear in previous chapters that modular and non modular applications have many differences and specific features hence the need for dedicated approach for quality analysis. This chapter presents a tool called \emph{Intrabundle} \citep{intrabundle github 2014}, an open source Java based application created in the context of this work. Intrabundle introspects OSGi projects collecting useful information and calculates OSGi bundle and project \textbf{internal quality}.  
 
 
 \section{Design Decisions}
@@ -22,7 +22,8 @@ and the following \emph{non functional requirements}:
 \item Only open sourced projects\footnote{Projects that have its source code made available with a license in which the copyright holder provides the rights to study, change and distribute the software to anyone and for any purpose} because we focus on internal quality where the code is important;
 \item The tool should be lightweight to analyze real, complex and huge OSGi projects;
 \item Find and Introspect manifest files where valuable OSGi information rely; 
-\item Should be testable
+\item Should be testable;
+\item Fast;
 \item Use Java to leverage the author's experience in the language;
 \item Use a good file system API\footnote{An API expresses a software component in terms of its operations, inputs, outputs, and underlying types.} because file manipulation is one of the most frequent tasks the tool should perform.\\*
 \end{itemize}
@@ -33,12 +34,12 @@ The following alternatives were evaluated:
 \begin{enumerate}
 \item Build a standalone Java client application using javaFX\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications};
 \item Create an eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE};
-\item Create a  Maven plugin\footnote{Maven is a build tool that consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.} which is restricted to maven projects;
-\item build the tool on top of JBoss Forge;
-\item extend an existing static/internal analysis tool like PMD.
+\item Create a  Maven plugin\footnote{Maven is a build tool that consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.};
+\item Build the tool on top of JBoss Forge;
+\item Extend an existing static/internal analysis tool like PMD.
 \end{enumerate}
 
-The chosen among the above was JBoss Forge, due to the following facts:
+The chosen among the above options was JBoss Forge, due to the following facts:
 
 \begin{itemize}
 \item Works inside and outside eclipse;
@@ -47,7 +48,7 @@ The chosen among the above was JBoss Forge, due to the following facts:
 \item The programing model is based on top of the so called CDI\footnote{Context and Dependency Injection for the Java platform. CDI is a dependency injection framework where instead of dependencies construct themselves they are injected by some external means, in cae CDI} so managing Objects lifecycle and event is handled by CDI automatically;
 \item Forge has a very well established and documented file system manipulation api based on java.io;
 \item Forge is very flexible so generating quality reports is a matter of using a report API inside it;  
-\item The author already had experience with JBoss forge and CDI. 
+\item The author already had experience with JBoss Forge and CDI. 
 \end{itemize}
 
 Creating an eclipse plugin for analyzing OSGi projects could be not as lightweight as forge plugin. We would need eclipse started and OSGi projects imported inside IDE so the eclipse plugin could identify the project resources.
@@ -56,16 +57,16 @@ JavaFX would require use standard Java file system manipulation api(java.io) whi
 
 Maven plugins are limited to maven projects.
 
-PMD\footnote{a very nice tool for static code analysis. It is based on rules that can be created via xml or xpath expression. When a rule is violated it can output warns or errors to the console} has a very limited API so it could be hard to generate reports or analyze multiple projects using it. 
+PMD\footnote{A very nice tool for static code analysis. It is based on rules that can be created via xml or xpath expression. When a rule is violated it can output warns or errors to the console} has a very limited API so it could be hard to generate reports or analyze multiple projects using it. 
 
 
 \section{Implementation Overview}
 
-Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugin. The first \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible of scanning OSGi bundles recursively in file system. Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on metrics produced by OSGiPlugin and BundlePlugin.
+Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible for scanning OSGi bundles recursively in file system. Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on metrics produced by OSGiPlugin and BundlePlugin.
 
-Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. OSGiFacet is active when user enter on a directory that contains an OSGiBundle and OSGiFacet is active when user in on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. OSGiFacet is active when user enter on a directory containing an OSGiBundle and OSGiFacet is active when user in on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
 
-Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is actvated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
 
 Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
