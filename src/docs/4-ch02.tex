@@ -319,7 +319,7 @@ Plugin is just a marker interface so Forge can identify plugins. To fire the say
 A Facet in the Forge environment is responsible for restricting the usage of a plugin. It is in fact an interface\footnote{In object oriented programming is a contract that defines which methods the implementors of the interface must provide} with a method with return type boolean that must decide if the facet is installed.
 
 \subsubsection{Example}
-Below is an example of facet that restricts the usage of hello-world plugin, in the example the command should be only available when user is in a directory named \emph{hello}.
+Below is an example of facet that restricts the usage of hello-world plugin, in the example the command should be only available when user is in a directory named \emph{hello} otherwise Forge will claim that the command does not exist in current context.
 
 \begin{lstlisting}[language=java]
 
@@ -330,15 +330,13 @@ public class HelloFacet implements Facet {
 
    @Override
     public boolean isInstalled() {
-         return project != null && project.getProjectRoot().getName().equals("hello");
+         return project.getProjectRoot().getName().equals("hello");
     }
-
-
 }
 \end{lstlisting}
 
 So the idea of a facet is that it is active when isInstalled method return true. In HelloFacet only when user current directory is
-named "hello". To get user current directory we ask forge, through dependency injection, for the current project. Project is a java object that holds information of the current user project like its directory. 
+named "hello". To get user current directory we ask forge, through dependency injection, for the current project. Project is a Java object that holds information of the current user project like its directory. 
 
 To activate the facet we must annotate HelloWorld plugin with RequiresFacet:
 
@@ -351,7 +349,6 @@ public class HelloWorldPlugin implements Plugin {
     public void countBundles(PipeOut out) {
         out.println("Hello World" );
     }
-
 }
 \end{lstlisting}
 
