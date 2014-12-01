@@ -80,7 +80,28 @@ Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
 
 \section{Identifying OSGi Projects and Bundles}
+One important task that both \emph{facets} and \emph{locators}, provided by Intrabundle, perform is identifying OSGi bundles. To do that the tool searches for OSGi meta data in \emph{MANIFEST} file\footnote{The manifest is a special file that can contain information about the files packaged in a JAR file. By tailoring this "meta" information that the manifest contains, you enable the JAR file to serve a variety of purposes.}. So identifying bundles is as simple as locating the Manifest and verifies if it's content has OSGi information. The main problem is that the manifest location can vary depending on the project format. Table \ref{osgi-project-type} lists the types of OSGi projects Intrabundle recognizes:     
 
+\begin{table}[h]
+\caption{Supported types of OSGi projects}
+\label{osgi-project-type}
+\begin{center}
+    \begin{tabular}{  p{4cm} | p{6cm} }
+    \hline
+    Type & Manifest location \\  \hline
+    Maven projects & /src/main/resource/META-INF.\\ \hline
+    Maven using BND tools & pom.xml with maven-bundle-plugin.\\ \hline
+    Standard Eclipse Java projects & /META-INF\\ \hline
+    Standard BND Tools & bnd.bnd file in any subfolder.\\ \hline
+    Package based bundles(Jitsi project) & each package has a manifest.\\ \hline
+    \hline
+
+    \end{tabular}
+\end{center}
+\end{table}
+
+
+When an OSGi project is found a message is printed in Forge console, as shown in Figure \ref{osgi-project-msg}. When users changes current directory to a bundle then the message shown in Figure \ref{osgi-bundle-msg} is printed.
 
 \section{Collecting Bundle Data}
 
