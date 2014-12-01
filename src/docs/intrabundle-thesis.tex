@@ -20,12 +20,14 @@
 \usepackage{graphicx}           % pacote para importar figuras
 \graphicspath{ {images/} }
 \usepackage[pdftex]{thumbpdf} 
+\usepackage[toc,page]{appendix}
 \usepackage[section]{placeins}
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{makecell}
 \usepackage{caption}
 \DeclareCaptionFont{white}{\color{white}}
 \DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
@@ -330,5 +332,18 @@ OSGi Framework Architecture - Three Conceptual Layers. Available at: \url{http:/
 
 
 \end{thebibliography}
+
+\begin{appendices}
+\chapter{Intrabundle Usage Example}
+
+\section{Setup environment}
+
+- instaling forge;\\*- instaling intrabundle; \\*- starting forge;\\*- download OSGi example project 
+
+\section{Begin Introspection}
+- fire some commands at project and bundle level\\*- OSGi Scan \\*- generate some reports
+
+\end{appendices}
+
 
 \end{document}

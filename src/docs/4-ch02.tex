@@ -31,14 +31,14 @@ In the extent of this work the characteristics of software to be considered and 
 \caption{Quality characteristics to be considered}
 \begin{center}
     \begin{tabular}{  p{3cm} | p{8cm} | p{5cm} }
-    \hline
+    \Xhline{2\arrayrulewidth}
     Characteristic & Description & OSGi example \\  \hline
     Reliability & the degree to which a system or component performs its required functions under stated conditions for a specified period of time. & Bundles should not have stale service references.\\ \hline
     Performance Efficiency & Performance relative to the amount of resources used under stated conditions for a specified
 period of time. & Bundle startup time, also bundle dependency can decrease performance. \\ \hline
     Security & the degree of protection of information and data so that unauthorized persons or systems cannot read, access or modify them. & Bundles should declare permissions \\ \hline
     Maintainability & The degree to which the product can be modified. & Modules should be loosely coupled, bundles should publish only interfaces etc. \\ 
-    \hline
+    \Xhline{2\arrayrulewidth}
      
     \end{tabular}
     Source: \cite{cisq 2012}
@@ -107,7 +107,7 @@ The table \ref{quality tools} lists some code quality analysis tools in the Java
 \label{quality tools}
 \begin{center}
     \begin{tabular}{  p{3cm} | p{8cm} | p{2cm} }
-    \hline
+    \Xhline{2\arrayrulewidth}
     Name & Description & Type\\  \hline
     \href{http://www.sonarqube.org}{SonarQube} &  An open source platform for continuous inspection of code quality. & static\\ \hline
     \href{http://findbugs.sourceforge.net/}{FindBugs} & An open-source static bytecode analyzer for Java. & static\\ \hline 
@@ -118,7 +118,8 @@ The table \ref{quality tools} lists some code quality analysis tools in the Java
     \href{https://www.ej-technologies.com/products/jprofiler/overview.html}{JProfiler} & helps you resolve performance bottlenecks, pin down memory leaks and understand threading issues & dynamic \\ \hline
     \href{http://www.eclemma.org/jacoco/}{JaCoCo} & A free code coverage library for Java. & dynamic\\ \hline 
     \href{https://code.google.com/p/javamelody/}{Javamelody} & Java or Java EE application Monitoring in QA and production environments. & dynamic\\ \hline 
-    \href{http://www-304.ibm.com/partnerworld/gsd/solutiondetails.do?solution=23517&expand=true}{Introscope} & An application management solution that helps enterprises keep their mission-critical applications high-performing and available 24x7. & dynamic\\ \hline
+    \href{http://www-304.ibm.com/partnerworld/gsd/solutiondetails.do?solution=23517&expand=true}{Introscope} & An application management solution that helps enterprises keep their mission-critical applications high-performing and available 24x7. & dynamic\\ 
+    \Xhline{2\arrayrulewidth}
 
     \end{tabular}
     %\\*Source: \cite{sqa 2012}
@@ -289,7 +290,17 @@ In OSGi runtime we can say we have a graph of classpaths that allows powerful ve
 \section{JBoss Forge}
 \label{sec:forge}
 \subsection{Introduction}
-\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications} plugin based general purpose command line development tool. 
+\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications} plugin based general purpose command line tool(CLI). Forge can be started through command line or be integrated in an IDE. Figure \ref{forge-cli} shows Forge initial screen:
+
+\begin{figure}[h]
+\caption{Forge initial screen}
+\label{forge-cli}
+\centering
+\includegraphics[scale=0.5]{forge-cli}
+\end{figure}  
+\FloatBarrier
+
+Forge runs on any operating system that can run Java and have built in startup scripts\footnote{Executable files that initiate a process or system} for Windows, Linux and MacOS.
 
 \subsection{Forge Plugin}
 \label{sec:forge:plugin}

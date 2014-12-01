@@ -64,9 +64,9 @@ PMD\footnote{A very nice tool for static code analysis. It is based on rules tha
 
 Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible for scanning OSGi bundles recursively in file system. Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on metrics produced by OSGiPlugin and BundlePlugin.
 
-Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. OSGiFacet is active when user enter on a directory containing an OSGiBundle and OSGiFacet is active when user in on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory containing an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
 
-Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
 
 Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
@@ -80,31 +80,63 @@ Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
 
 \section{Identifying OSGi Projects and Bundles}
-One important task that both \emph{facets} and \emph{locators}, provided by Intrabundle, perform is identifying OSGi bundles. To do that the tool searches for OSGi meta data in \emph{MANIFEST} file\footnote{The manifest is a special file that can contain information about the files packaged in a JAR file. By tailoring this "meta" information that the manifest contains, you enable the JAR file to serve a variety of purposes.}. So identifying bundles is as simple as locating the Manifest and verifies if it's content has OSGi information. The main problem is that the manifest location can vary depending on the project format. Table \ref{osgi-project-type} lists the types of OSGi projects Intrabundle recognizes:     
+One important task that both \emph{facets} and \emph{locators}, provided by Intrabundle, perform is identifying OSGi bundles or OSGi projects. To do that the tool searches for OSGi meta data in \emph{MANIFEST} file\footnote{The manifest is a special file that can contain information about the files packaged in a JAR file. By tailoring this "meta" information that the manifest contains, you enable the JAR file to serve a variety of purposes.}. So identifying bundles is as simple as locating the Manifest and verifies if it's content has OSGi information. The main problem is that the manifest location can vary depending on the project format. Table \ref{osgi-project-type} lists the types of OSGi projects Intrabundle recognizes:     
 
 \begin{table}[h]
 \caption{Supported types of OSGi projects}
 \label{osgi-project-type}
 \begin{center}
     \begin{tabular}{  p{4cm} | p{6cm} }
-    \hline
+    \Xhline{2\arrayrulewidth}
     Type & Manifest location \\  \hline
     Maven projects & /src/main/resource/META-INF.\\ \hline
-    Maven using BND tools & pom.xml with maven-bundle-plugin.\\ \hline
+    Maven using BND tools & pom.xml\footnote{It's a xml configuration file responsible for project build life cycle and dependencies} with maven-bundle-plugin.\\ \hline
     Standard Eclipse Java projects & /META-INF\\ \hline
     Standard BND Tools & bnd.bnd file in any subfolder.\\ \hline
-    Package based bundles(Jitsi project) & each package has a manifest.\\ \hline
-    \hline
+    Package based bundles(Jitsi project) & each package has a manifest.\\  
+   \Xhline{2\arrayrulewidth}
 
     \end{tabular}
 \end{center}
 \end{table}
+\FloatBarrier
 
-
-When an OSGi project is found a message is printed in Forge console, as shown in Figure \ref{osgi-project-msg}. When users changes current directory to a bundle then the message shown in Figure \ref{osgi-bundle-msg} is printed.
+In the extent of this work, \textbf{OSGi projects} are collections of OSGi bundles in the same directory.
 
 \section{Collecting Bundle Data}
+After identifying OSGi bundles and OSGi projects Intrabundle needs to extract useful information from them. Table \ref{extracted-data} shows which information the tool is collecting:
 
+\begin{table}[h]
+\caption{Extracted data from OSGi projects}
+\label{extracted-data}
+\begin{center}
+    \begin{tabular}{  p{4cm} | p{8cm} }
+    \Xhline{2\arrayrulewidth}
+    Name & Description\\  \hline
+    Loc & Lines of code.\\ \hline
+    Declarative services & Verifies if bundles uses declarative service\footnote{Is a component model that simplifies the creation of components that publish and/or reference OSGi Services.}.\\ \hline
+    Ipojo & Verify if bundles uses Ipojo\footnote{Is a service component runtime aiming to simplify OSGi application development} \\ \hline
+    Blueprint & Verify if bundles uses Blueprint\footnote{Is a way of instantiating and consuming services provided by others by means of an external XML configuration file} \\ \hline
+    Stale References & Looks for possible Stale services references.\\ \hline
+    Publishes Interface & Verifies if bundle exposes only its interfaces(API).\\ \hline
+    Declares permission & Verifies if bundle declares permission.\\ \hline
+    Number of classes & Counts bundle's classes.\\ \hline
+    Number of abstract classes & Counts bundle's abstract classes.\\ \hline
+    Number of interfaces & Counts bundle's interfaces.\\ \hline
+    Bundle dependencies & Gather bundle dependencies.\\ \hline
+    Required bundles & Gather bundle required bundles.\\ \Xhline{2\arrayrulewidth}
+    \end{tabular}
+\end{center}
+\end{table}
+\FloatBarrier 
+
+Some observations about collected data. \textbf{Lines of code} are an indicative of high or low cohesion, if the component has too much lines of code its an evidence that it is probably doing more work then it should. LoC is a classical software metric that was adapted in this work to OSGi Bundles. 
+\textbf{IPojo}, \textbf{Blueprint} and \textbf{Declarative Services} are recommended for managing OSGi services because they hide the "dirty work" of publishing and consuming services which sometimes may lead to incorrect behavior. For example forgetting to release a service when bundle is stopped.  
+\textbf{Stale Services References}\footnote{Refers to code that may retain OSGi service references even when the providing bundles are gone \citep{Gama 2012}} are detected via approximation, in other words, Intrabundle counts the number of gets and ungets\footnote{Operations that consume and release a service reference respectively} a bundle perform.
+\textbf{Bundle dependencies} are calculated by looking at OSGi Manifest file in exported and imported packages. If bundle A \emph{imports} package \emph{x.y.z} and bundle B \emph{exports} package \emph{x.y.z} we say that bundle A depends on bundle B. 
+\textbf{Required bundles} just counts the number of required bundles declared in manifest.
+\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only imports interfaces. %It is a good practice expose only the API and hide the implementation.
+\textbf{Declares permission} verifies if bundle implements security by contract via permission.perm file.
 
 \section{Metrics Calculation}
 The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality  
@@ -116,10 +148,11 @@ In this section we will see how Intrabundle's quality is managed and how some co
 Intrabundle internal quality is managed by PMD and JaCoCo. PMD is an static analysis tool and JaCoCo a dynamic analysis one. Both were presented in section \ref{ch2:qatools} with the objective to guarantee non functional requirements.
 
 \subsubsection{Example}
- PMD was already illustrated at Chapter 2 as an example of static analysis tool. JaCoCo is used to calculate code coverage to track files and methods that automated tests are covering. Figure 3.1 shows JaCoCo code coverage report for Intrabundle:
+ PMD was already illustrated at Chapter 2 as an example of static analysis tool. JaCoCo is used to calculate code coverage to track files and methods that automated tests are covering. Figure \ref{intrabundle-code-cover} shows JaCoCo code coverage report for Intrabundle:
 
 \begin{figure}[h]
 \caption{Intrabundle code coverage}
+\label{intrabundle-code-cover}
 \includegraphics[scale=0.5]{intrabundle-code-coverage}
 \end{figure}
 
@@ -129,10 +162,11 @@ Intrabundle internal quality is managed by PMD and JaCoCo. PMD is an static anal
 Intrabunde external quality is assured by automated whitebox tests so we can verify if Intrabundle is working as expected, if it meets its functional requirements.
 
 \subsubsection{Example}
-As of November 2014 Intrabundle performs 62 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up and running during tests and that is done by Arquillian \citep{dan 2011}, an integration test platform. Figure 3.2 shows the result of integration tests execution:
+As of November 2014 Intrabundle performs 62 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up and running during tests and that is done by Arquillian \citep{dan 2011}, an integration test platform. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
 
 \begin{figure}[h]
 \caption{Intrabundle integration tests}
+\label{intrabundle-integ-tests}
 \includegraphics[scale=0.6]{intrabundle-external-quality}
 \centering
 \end{figure}
