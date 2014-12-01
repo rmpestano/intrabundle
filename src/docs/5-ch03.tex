@@ -68,7 +68,7 @@ Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for detail
 
 Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
 
-Image \ref{intrabundle-arch} illustrates Intrabundle architecture:
+Figure \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
 \begin{figure}[h]
 \caption{Intrabundle Architecture}
@@ -138,8 +138,59 @@ Some observations about collected data. \textbf{Lines of code} are an indicative
 \textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only imports interfaces. %It is a good practice expose only the API and hide the implementation.
 \textbf{Declares permission} verifies if bundle implements security by contract via permission.perm file.
 
+Each information retrieved by Intrabundle is usually mapped to a Forge command, see Listing \ref{forge_command_example} which is the command that prints bundle exported packages to the Forge console:
+\pagebreak
+\begin{lstlisting}[language=java,label=forge_command_example,caption=Exported packages command]
+ @Command(value = "exportedPackages",help = "list bundle exported packages")
+ public void exportedPackages(PipeOut out){
+      if(bundle.getExportedPackages().isEmpty()){
+            out.println(messageProvider.getMessage("module.noExportedPackages"));
+        }
+      else{
+          for (String s : bundle.getExportedPackages()) {
+               out.println(s);
+           }
+       }
+    }
+\end{lstlisting}
+
+
+All the logic is inside \textbf{bundle} object, which is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. The bundle variable is provided by a Forge locator when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}. 
+
 \section{Metrics Calculation}
-The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality  
+The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality. We saw on section \ref{sec:soft_metrics} that a software metric is a quantitative calculation of a software attribute. This section shows which metrics were created based on extracted information.  
+
+\section{Intrabundle Reports}
+\label{sec:intrabundle-reports}
+The tool generates two reports based on information it collects from bundles so the it can be analyzed carefully in one place. The reports can be generated in various formats (txt, pdf, html, csv and excel). Figure \ref{intrabundle-report1} shows an example report:  
+
+\begin{figure}[h]
+\caption{Intrabundle Report part 1}
+\label{intrabundle-report1}
+\centering
+\includegraphics[scale=0.8]{intrabundle-report}
+\end{figure}  
+\FloatBarrier
+
+The first section of the report gives an overall idea of the project, second part lists information of each bundles, see Figure \ref{intrabundle-report2} 
+
+\begin{figure}[h]
+\caption{Intrabundle Report part 2}
+\label{intrabundle-report2}
+\centering
+\includegraphics[scale=0.8]{intrabundle-report2}
+\end{figure}  
+\FloatBarrier
+
+Another report Intrabundle generates is a metric report that details the punctuation of each metric, see Figure \ref{intrabundle-metric-report}:  
+
+\begin{figure}[h]
+\caption{Intrabundle Metric Report}
+\label{intrabundle-metric-report}
+\centering
+\includegraphics[scale=0.8]{intrabundle-metric-report}
+\end{figure}  
+\FloatBarrier
 
 \section{Intrabundle Quality}
 In this section we will see how Intrabundle's quality is managed and how some concepts of \textit{section \ref{sec:quality}} were applied to the project. As the project is not OSGi based we can't apply Intrabundle's metrics on itself so we used classical approaches to assure the quality of the project.
