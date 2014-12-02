@@ -132,11 +132,11 @@ After identifying OSGi bundles and OSGi projects Intrabundle needs to extract us
 
 Some observations about collected data. \textbf{Lines of code} are an indicative of high or low cohesion, if the component has too much lines of code its an evidence that it is probably doing more work then it should. LoC is a classical software metric that was adapted in this work to OSGi Bundles. 
 \textbf{IPojo}, \textbf{Blueprint} and \textbf{Declarative Services} are recommended for managing OSGi services because they hide the "dirty work" of publishing and consuming services which sometimes may lead to incorrect behavior. For example forgetting to release a service when bundle is stopped.  
-\textbf{Stale Services References}\footnote{Refers to code that may retain OSGi service references even when the providing bundles are gone \citep{Gama 2012}} are detected via approximation, in other words, Intrabundle counts the number of gets and ungets\footnote{Operations that consume and release a service reference respectively} a bundle perform.
+\textbf{Stale Services References}\footnote{Refers to code that may retain OSGi service references even when the providing bundles are gone \citep{Gama 2012}} are detected via approximation, in other words, Intrabundle counts the number of services \emph{gets} and \emph{ungets}\footnote{Operations that consume and release a service reference respectively} for each class a bundle has. If the number of gets and ungets are equal then the class have no stale references, otherwise it is considered as having stale references.
 \textbf{Bundle dependencies} are calculated by looking at OSGi Manifest file in exported and imported packages. If bundle A \emph{imports} package \emph{x.y.z} and bundle B \emph{exports} package \emph{x.y.z} we say that bundle A depends on bundle B. 
 \textbf{Required bundles} just counts the number of required bundles declared in manifest.
-\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only imports interfaces. %It is a good practice expose only the API and hide the implementation.
-\textbf{Declares permission} verifies if bundle implements security by contract via permission.perm file.
+\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only imports interfaces.
+\textbf{Declares permission} verifies if bundle implements security by contract searching for \emph{permission.perm} file.
 
 Each information retrieved by Intrabundle is usually mapped to a Forge command, see Listing \ref{forge_command_example} which is the command that prints bundle exported packages to the Forge console:
 \pagebreak
@@ -153,12 +153,108 @@ Each information retrieved by Intrabundle is usually mapped to a Forge command, 
        }
     }
 \end{lstlisting}
+\FloatBarrier
+
+All the logic is inside \textbf{bundle} variable, which is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. The bundle variable is provided by a Forge locator when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}. 
+
+\section{Quality Calculation}
+The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality. We saw on section \ref{sec:soft_metrics} that a software metric is a quantitative calculation of a software attribute. This section shows which metrics were created based on extracted information.
 
 
-All the logic is inside \textbf{bundle} object, which is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. The bundle variable is provided by a Forge locator when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}. 
+\subsection{Metric Points}
+Every created metric in this work can be classified into the following quality \emph{labels}:
 
-\section{Metrics Calculation}
-The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality. We saw on section \ref{sec:soft_metrics} that a software metric is a quantitative calculation of a software attribute. This section shows which metrics were created based on extracted information.  
+\begin{enumerate}
+\item \textbf{STATE OF ART}: Metric fully satisfies good practices;
+\item \textbf{VERY GOOD}: Satisfies most recommendations;
+\item \textbf{GOOD}: Satisfies recommendations;
+\item \textbf{REGULAR}: Satisfies some recommendations;
+\item \textbf{ANTI PATTERN}: Does not satisfies any recommendation and follows some bad practices.
+\end{enumerate}
+
+\subsection{Metrics Created}
+
+The first metric created is \textbf{LoC}, its the simplest one. LoC is based on bundle lines of code meaning that the less lines of code more \emph{cohesion} the bundle has and easier to maintain it should be. To classify LoC metric we use the following rule:\newline
+
+
+\(\text{LoC}=\begin{cases}
+\text{STATE OF ART}& \text{if LoC <= 300},\\
+\text{VERY GOOD}& \text{if LoC <= 500}, \\
+\text{GOOD}& \text{if LoC <= 750}, \\
+\text{REGULAR}& \text{if LoC <= 100}, \\
+\text{ANTI PATTERN}& \text{if LoC > 1000}. \\
+\end{cases} \)\newline  
+
+Second metric is \textbf{Publishes interfaces} meaning that bundles should hide their implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline
+
+\(\text{Publishes interfaces}=\begin{cases}
+\text{STATE OF ART}& \text{if publishes only interfaces},\\
+\text{REGULAR}& \text{if not publishes only interfaces}, \\
+\end{cases} \)  \newline
+
+Next metric is \textbf{Bundle dependencies}, it evaluates the coupling between bundles. The less coupled a bundle is the more reusable and maintainable it will be. It is considered a base pattern called \emph{Manage Relationships} in \citep{Knoernschild 2012}. Here is how this metric is calculated by Intrabundle:\newline
+
+
+\(\text{Bundle dependencies}=\begin{cases}
+\text{STATE OF ART}& \text{if Bundle dependencies = 0},\\
+\text{VERY GOOD}& \text{if Bundle dependencies <= 3}, \\
+\text{GOOD}& \text{if Bundle dependencies <= 5}, \\
+\text{REGULAR}& \text{if Bundle dependencies <= 9}, \\
+\text{ANTI PATTERN}& \text{if Bundle dependencies >= 10}. \\
+\end{cases} \)\newline 
+
+Next one is \textbf{Uses framework}, in complex application it is important to usa a framework to manage bundle services. This metrics takes into account 3 well known frameworks by OSGi application: \emph{IPojo}, \emph{Declarative services} and \emph{Blueprint}: \newline
+
+\(\text{Uses framework}=\begin{cases}
+\text{STATE OF ART}& \text{if uses framework},\\
+\text{REGULAR}& \text{if not using framework}, \\
+\end{cases} \)  \newline
+
+Next metric is \textbf{Stale references}, it focus on a very common problem in OSGi which can lead to resource and memory leaks \citep{Gama 2011}. Intrabundle calculate this metric by counting specific methods calls to OSGi services in a bundle. What Intrabundle does is an approximation and may lead to false positives. To get a real value for this software attribute one have to calculate it by dynamic analysis like done in \citep{Gama 2012}:\newline
+
+\(NC = \sum_{i=1}^{n} \) where \textbf{n} = number of classes a bundle have. \newline
+\(NS = \sum_{i=1}^{n} \) where \textbf{n} = number of stale references found. \newline
+
+\(\text{Stale references}=\begin{cases}
+\text{STATE OF ART}& \text{no stale references},\\
+\text{REGULAR}& \frac{NS}{NC} < 0.4, \\
+\text{ANTI PATTERN}& \frac{NS}{NC} > 0.4. \\
+\end{cases} \)\newline     
+
+In other words if no stale references is found then this metric receives a \emph{state of art}, if less then 40\% of bundle classes have stale references(number of get and unget doesn't match) then it is \emph{regular} but if > 40\% then its considered an \emph{anti pattern}. 
+
+The last metric created in this work is \textbf{Declares permission}, it is concerned with security. In this metric Intrabundle searches for permissions.perm file in the bundle, if it finds it then the metric is considered state of art: \newline
+
+
+\(\text{Declares permission}=\begin{cases}
+\text{STATE OF ART}& \text{if declares permission},\\
+\text{REGULAR}& \text{if not declares permission}, \\
+\end{cases} \)  \newline
+
+\subsection{Quality Formula}
+
+Each quality \emph{label} adds points to bundle final quality and bundle quality is based on percentage of quality points(QP) obtained. \emph{State of art} add 20QP, \emph{Very good} 15QP, \emph{Good} metric adds 10QP, \emph{Regular} 5QP and \emph{Anti pattern} metrics adds 0QP. 
+
+Final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP}, the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
+
+\(MQP = \sum_{i=1}^{n} t_i = 20 \) where \textbf{n} = number of metrics. \newline
+
+\(TQP = \sum_{i=1}^{n} t_i = q(i) \) where \textbf{n} = number of metrics and \textbf{q(i)} is QP obtained in metric \textbf{i}. \newline
+
+ 
+\(
+f(q) = \frac{TQP}{MQP};
+\)
+\newline
+\newline
+ if \( 1 <= f(q) > 0.9 \) then State of Art; \\*
+ if \( 0.9 <= f(q) > 0.75 \) then Very Good; \\*
+ if \( 0.75 <= f(q) > 0.6 \) then Good; \\*
+ if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
+ if \( 0.4 <= f(q) \) then Anti Pattern;\\*
+
+In terms of percentage of points obtained, more than 90\% of TQP is considered State of Art, between 90\% and 75\% is Very good quality, from 60\% to 75\% is Good, 40\% to 60\% is Regular and less than 40\% of TQP a bundle is considered Anti pattern in terms of software quality. 
+
 
 \section{Intrabundle Reports}
 \label{sec:intrabundle-reports}

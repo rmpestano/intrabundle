@@ -96,7 +96,7 @@ Program analysis is the process of automatically analyzing the behavior of compu
  Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}. In this kind of analysis source code is inspected and valuable information is collected based on its internal structure and components. 
 
 \subsubsection{Dynamic Program Analysis}
-Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks}\footnote{Resources that are hold on system's memory and aren't released}, identify arithmetic errors and extract code coverage. 
+Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks}\footnote{Resources that are hold on system's memory and aren't released}, identify arithmetic errors and extract code coverage and measure performance. 
 
 
 \subsection{Quality Analysis Tools}
@@ -260,8 +260,7 @@ This is like a service-oriented architecture (SOA) which has been largely used i
 
 
 \subsection{Vanilla Java vs OSGi}
-The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java app
-lications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
+The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
 
 
 \begin{figure}[h]
