@@ -181,7 +181,7 @@ The first metric created is \textbf{LoC}, its the simplest one. LoC is based on 
 \text{STATE OF ART}& \text{if LoC <= 300},\\
 \text{VERY GOOD}& \text{if LoC <= 500}, \\
 \text{GOOD}& \text{if LoC <= 750}, \\
-\text{REGULAR}& \text{if LoC <= 100}, \\
+\text{REGULAR}& \text{if LoC <= 1000}, \\
 \text{ANTI PATTERN}& \text{if LoC > 1000}. \\
 \end{cases} \)\newline  
 
@@ -237,9 +237,9 @@ Each quality \emph{label} adds points to bundle final quality and bundle quality
 
 Final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP}, the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
 
-\(MQP = \sum_{i=1}^{n} t_i = 20 \) where \textbf{n} = number of metrics. \newline
+\(MQP = \sum_{i=1}^{n} 20 \) where \textbf{n} = number of metrics. \newline
 
-\(TQP = \sum_{i=1}^{n} t_i = q(i) \) where \textbf{n} = number of metrics and \textbf{q(i)} is QP obtained in metric \textbf{i}. \newline
+\(TQP = \sum_{i=1}^{n} q(i) \) where \textbf{n} = number of metrics and \textbf{q(i)} is QP obtained in metric \textbf{i}. \newline
 
  
 \(

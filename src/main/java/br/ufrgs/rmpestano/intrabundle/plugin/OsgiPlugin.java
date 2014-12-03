@@ -238,7 +238,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "projectMetric", help = "returns OSGi project average metric score based on each bundle score")
     public void projectMetric(PipeOut out) {
-        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectQuality(project.get()).name());
+        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectModeQuality(project.get()).name());
     }
 
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")

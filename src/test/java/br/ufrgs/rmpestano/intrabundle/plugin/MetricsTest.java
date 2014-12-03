@@ -56,7 +56,7 @@ public class MetricsTest extends BaseMetricsTest {
     public void shouldCalculateMetricOfOSGiProject() throws Exception {
         initializeOSGiMavenProject();
         resetOutput();
-        MetricScore projectScore = metrics.calculateProjectQuality();
+        MetricScore projectScore = metrics.calculateProjectModeQuality();
         assertEquals(projectScore, MetricScore.GOOD);
     }
 

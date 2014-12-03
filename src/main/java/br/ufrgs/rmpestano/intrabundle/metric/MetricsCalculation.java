@@ -55,17 +55,30 @@ public interface MetricsCalculation {
     MetricPoints calculateBundleQuality(OSGiModule bundle);
 
     /**
-     * get average project metric score
+     * get most frequent project metric score
      * @param osGiProject
      * @return
      */
-    MetricScore calculateProjectQuality(OSGiProject osGiProject);
+    MetricScore calculateProjectModeQuality(OSGiProject osGiProject);
 
     /**
-     * get average project metric score on current OSGiProject
+     * get most frequent project metric score on current OSGiProject
      * @return
      */
-    MetricScore calculateProjectQuality();
+    MetricScore calculateProjectModeQuality();
+
+    /**
+     * get absolute project metric score
+     * @param osGiProject
+     * @return
+     */
+    MetricScore calculateProjectAbsoluteQuality(OSGiProject osGiProject);
+
+    /**
+     * get absolute project metric score on current OSGiProject
+     * @return
+     */
+    MetricScore calculateProjectAbsoluteQuality();
 
     List<OSGiModule> getModulesByQuality(MetricScore quality);
 

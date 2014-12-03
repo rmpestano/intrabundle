@@ -139,38 +139,38 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     }
 
-    public MetricScore calculateProjectQuality(OSGiProject osGiProject) {
+    public MetricScore calculateProjectModeQuality(OSGiProject osGiProject) {
         Map<MetricScore, Integer> metricScores = new HashMap<MetricScore, Integer>();//counts metricScore of each bundle where:
-        metricScores.put(MetricScore.ANTI_PATTERN,0);
-        metricScores.put(MetricScore.REGULAR,0);
-        metricScores.put(MetricScore.GOOD,0);
-        metricScores.put(MetricScore.VERY_GOOD,0);
-        metricScores.put(MetricScore.STATE_OF_ART,0);
+        metricScores.put(MetricScore.ANTI_PATTERN, 0);
+        metricScores.put(MetricScore.REGULAR, 0);
+        metricScores.put(MetricScore.GOOD, 0);
+        metricScores.put(MetricScore.VERY_GOOD, 0);
+        metricScores.put(MetricScore.STATE_OF_ART, 0);
         for (OSGiModule osGiModule : osGiProject.getModules()) {
 
             MetricScore bundleScore = this.calculateBundleQuality(osGiModule).getFinalScore();
-            switch (bundleScore){
+            switch (bundleScore) {
                 case ANTI_PATTERN: {
                     Integer count = metricScores.get(MetricScore.ANTI_PATTERN);
                     metricScores.put(MetricScore.ANTI_PATTERN, ++count);
                     break;
                 }
-                case REGULAR:{
+                case REGULAR: {
                     Integer count = metricScores.get(MetricScore.REGULAR);
                     metricScores.put(MetricScore.REGULAR, ++count);
                     break;
                 }
-                case GOOD:{
+                case GOOD: {
                     Integer count = metricScores.get(MetricScore.GOOD);
                     metricScores.put(MetricScore.GOOD, ++count);
                     break;
                 }
-                case VERY_GOOD:{
+                case VERY_GOOD: {
                     Integer count = metricScores.get(MetricScore.VERY_GOOD);
                     metricScores.put(MetricScore.VERY_GOOD, ++count);
                     break;
                 }
-                case STATE_OF_ART:{
+                case STATE_OF_ART: {
                     Integer count = metricScores.get(MetricScore.STATE_OF_ART);
                     metricScores.put(MetricScore.STATE_OF_ART, ++count);
                     break;
@@ -179,11 +179,11 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         }
         MetricScore mostFrequent = MetricScore.ANTI_PATTERN;
         for (MetricScore metricScore : metricScores.keySet()) {
-            if(metricScores.get(metricScore) > metricScores.get(mostFrequent)){
+            if (metricScores.get(metricScore) > metricScores.get(mostFrequent)) {
                 mostFrequent = metricScore;
                 //let the higher score to prevail if most frequent scores are tie
-            }else if(metricScores.get(metricScore).equals(metricScores.get(mostFrequent))){
-                if(metricScore.getValue() > mostFrequent.getValue()){
+            } else if (metricScores.get(metricScore).equals(metricScores.get(mostFrequent))) {
+                if (metricScore.getValue() > mostFrequent.getValue()) {
                     mostFrequent = metricScore;
                 }
             }
@@ -191,18 +191,46 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         return mostFrequent;
     }
 
-    public List<OSGiModule> getModulesByQuality(MetricScore quality){
+    public List<OSGiModule> getModulesByQuality(MetricScore quality) {
         List<OSGiModule> result = new ArrayList<OSGiModule>(getCurrentOSGiProject().getModules().size());
         for (OSGiModule osGiModule : getCurrentOSGiProject().getModules()) {
             MetricPoints points = calculateBundleQuality(osGiModule);
-            if(points.getFinalScore().equals(quality)){
+            if (points.getFinalScore().equals(quality)) {
                 result.add(osGiModule);
             }
         }
         return result;
     }
 
-    public MetricScore calculateProjectQuality(){
-        return calculateProjectQuality(getCurrentOSGiProject());
+    public MetricScore calculateProjectModeQuality() {
+        return calculateProjectModeQuality(getCurrentOSGiProject());
+    }
+
+    @Override
+    public MetricScore calculateProjectAbsoluteQuality(OSGiProject osGiProject) {
+        int maxPoints = osGiProject.getModules().size() * MetricScore.STATE_OF_ART.getValue();
+        int projectPoints = 0;
+        for (OSGiModule osGiModule : osGiProject.getModules()) {
+            projectPoints += calculateBundleQuality(osGiModule).getBundlePoints();
+        }
+
+        if (projectPoints >= maxPoints * 0.9) {
+            return MetricScore.STATE_OF_ART;
+        } else if (projectPoints >= maxPoints * 0.75) {
+            return MetricScore.VERY_GOOD;
+        } else if (projectPoints >= maxPoints * 0.60) {
+            return MetricScore.GOOD;
+        } else if (projectPoints >= maxPoints * 0.4) {
+            return MetricScore.REGULAR;
+        } else {
+            return MetricScore.ANTI_PATTERN;
+        }
+
+
+    }
+
+    @Override
+    public MetricScore calculateProjectAbsoluteQuality() {
+        return calculateProjectAbsoluteQuality(getCurrentOSGiProject());
     }
 }
