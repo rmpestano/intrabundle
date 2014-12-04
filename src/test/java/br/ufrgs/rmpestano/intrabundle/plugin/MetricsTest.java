@@ -23,9 +23,9 @@ public class MetricsTest extends BaseMetricsTest {
       OSGiModule module1 = metrics.getCurrentOSGiProject().getModules().get(0);
       OSGiModule module2 = metrics.getCurrentOSGiProject().getModules().get(1);
       OSGiModule module3 = metrics.getCurrentOSGiProject().getModules().get(2);
-      assertEquals(metrics.calculateBundleQuality(module1).getFinalScore().name(), MetricScore.GOOD.name());
-      assertEquals(metrics.calculateBundleQuality(module2).getFinalScore().name(), MetricScore.GOOD.name());
-      assertEquals(metrics.calculateBundleQuality(module3).getFinalScore().name(), MetricScore.VERY_GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module1).getFinalScore().name(), MetricScore.VERY_GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module2).getFinalScore().name(), MetricScore.VERY_GOOD.name());
+      assertEquals(metrics.calculateBundleQuality(module3).getFinalScore().name(), MetricScore.STATE_OF_ART.name());
     }
 
     @Test
@@ -35,7 +35,8 @@ public class MetricsTest extends BaseMetricsTest {
         queueInputLines("n");
         queueInputLines("1");
         getShell().execute("osgi bundleMetrics");
-        assertTrue(getOutput().contains("Points obtained: 85 of 120. Average score: GOOD"));
+
+        assertTrue(getOutput().contains("Points obtained: 23 of 30. Final score: VERY_GOOD"));
         assertTrue(getOutput().contains("Lines of code:STATE_OF_ART"));
         assertTrue(getOutput().contains("Bundle dependencies:VERY_GOOD"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
@@ -49,7 +50,7 @@ public class MetricsTest extends BaseMetricsTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi projectMetric");
-        assertTrue(getOutput().startsWith("Project metric:GOOD"));
+        assertTrue(getOutput().startsWith("Project Frequent metric: VERY_GOOD, Final metric: VERY_GOOD"));
     }
 
     @Test
@@ -57,7 +58,9 @@ public class MetricsTest extends BaseMetricsTest {
         initializeOSGiMavenProject();
         resetOutput();
         MetricScore projectScore = metrics.calculateProjectModeQuality();
-        assertEquals(projectScore, MetricScore.GOOD);
+        MetricScore projectFinalScore = metrics.calculateProjectAbsoluteQuality();
+        assertEquals(projectScore, MetricScore.VERY_GOOD);
+        assertEquals(projectFinalScore, MetricScore.VERY_GOOD);
     }
 
 
@@ -67,8 +70,10 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi bundleMetrics");
+
+
         getOutput().contains("Metrics of module1:" + TestUtils.getNewLine() +
-                "Points obtained: 85 of 120. Average score: GOOD" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30. Final score: VERY_GOOD" + TestUtils.getNewLine() +
                 "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
@@ -76,15 +81,15 @@ public class MetricsTest extends BaseMetricsTest {
                 "Publishes interfaces:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Stale references:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Metrics of module2:" + TestUtils.getNewLine() +
-                "Points obtained: 90 of 120. Average score: VERY_GOOD" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30. Final score: VERY_GOOD" + TestUtils.getNewLine() +
                 "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
-                "Bundle dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
+                "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
                 "Uses framework to manage services:REGULAR" + TestUtils.getNewLine() +
                 "Publishes interfaces:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Stale references:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Metrics of module3:" + TestUtils.getNewLine() +
-                "Points obtained: 105 of 120. Average score: VERY_GOOD"+ TestUtils.getNewLine() +
+                "Points obtained: 27 of 30. Final score: STATE_OF_ART"+ TestUtils.getNewLine() +
                 "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
@@ -103,7 +108,7 @@ public class MetricsTest extends BaseMetricsTest {
         assertTrue(getOutput().contains("Stale references:STATE_OF_ART"));
         assertTrue(getOutput().contains("Uses framework to manage services:REGULAR"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
-        assertTrue(getOutput().contains("Points obtained: 70 of 100. Average score: GOOD"));
+        assertTrue(getOutput().contains("Points obtained: 19 of 25. Final score: VERY_GOOD"));
     }
 
     @Test
@@ -112,7 +117,7 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         getShell().execute("bundle metrics");
         assertTrue(getOutput().contains("Lines of code:ANTI_PATTERN"));
-        assertTrue(getOutput().contains("Points obtained: 30 of 100. Average score: ANTI_PATTERN"));
+        assertTrue(getOutput().contains("Points obtained: 11 of 25. Final score: REGULAR"));
     }
 
 }

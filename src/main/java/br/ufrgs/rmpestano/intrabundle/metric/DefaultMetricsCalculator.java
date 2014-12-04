@@ -211,7 +211,7 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         int maxPoints = osGiProject.getModules().size() * MetricScore.STATE_OF_ART.getValue();
         int projectPoints = 0;
         for (OSGiModule osGiModule : osGiProject.getModules()) {
-            projectPoints += calculateBundleQuality(osGiModule).getBundlePoints();
+            projectPoints += calculateBundleQuality(osGiModule).getFinalScore().getValue();
         }
 
         if (projectPoints >= maxPoints * 0.9) {
