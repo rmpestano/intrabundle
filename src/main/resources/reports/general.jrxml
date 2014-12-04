@@ -204,7 +204,7 @@
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[Project frequent quality:]]></text>
+				<text><![CDATA[Project most frequent quality:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="3c53eaf9-8620-4d73-aa52-216bb9b69ff5" x="3" y="240" width="293" height="20" isRemoveLineWhenBlank="true"/>
@@ -212,7 +212,7 @@
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
 				</textElement>
-				<text><![CDATA[Project absolute quality:]]></text>
+				<text><![CDATA[Project final quality:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="bc6fd13a-1eb6-45dc-a85e-6d1141437d59" x="319" y="240" width="453" height="20" isRemoveLineWhenBlank="true"/>

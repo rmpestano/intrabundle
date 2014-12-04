@@ -162,7 +162,7 @@ The data collected earlier will be materialized into six metrics that will be us
 
 
 \subsection{Metric Points}
-Every created metric in this work can be classified into the following quality \emph{labels}:
+Every created metric in this work can be classified into the following \emph{quality labels}:
 
 \begin{enumerate}
 \item \textbf{STATE OF ART}: Metric fully satisfies good practices;
@@ -233,11 +233,12 @@ The last metric created in this work is \textbf{Declares permission}, it is conc
 
 \subsection{Quality Formula}
 
-Each quality \emph{label} adds points to bundle final quality and bundle quality is based on percentage of quality points(QP) obtained. \emph{State of art} add 20QP, \emph{Very good} 15QP, \emph{Good} metric adds 10QP, \emph{Regular} 5QP and \emph{Anti pattern} metrics adds 0QP. 
+OSGi \emph{project} quality and \emph{bundle} quality are calculated by Intrabundle using the quality labels. Each quality \emph{label} adds points to bundle and project final quality which is based on percentage of quality points(QP) obtained. \emph{State of art} add 5QP, \emph{Very good} 4QP, \emph{Good} adds 3QP, \emph{Regular} 2QP and \emph{Anti pattern} adds 1QP
 
-Final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP}, the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
+\subsubsection{Bundle Quality}
+Bundle final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP}, the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
 
-\(MQP = \sum_{i=1}^{n} 20 \) where \textbf{n} = number of metrics. \newline
+\(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of metrics. \newline
 
 \(TQP = \sum_{i=1}^{n} q(i) \) where \textbf{n} = number of metrics and \textbf{q(i)} is QP obtained in metric \textbf{i}. \newline
 
@@ -255,6 +256,25 @@ f(q) = \frac{TQP}{MQP};
 
 In terms of percentage of points obtained, more than 90\% of TQP is considered State of Art, between 90\% and 75\% is Very good quality, from 60\% to 75\% is Good, 40\% to 60\% is Regular and less than 40\% of TQP a bundle is considered Anti pattern in terms of software quality. 
 
+\subsubsection{Project Quality}
+In Intrabundle, the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundles quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
+
+\(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of bundles in the project. \newline
+
+\(TQP = \sum_{i=1}^{n} q(i) \) where \textbf{n} = number of bundles and \textbf{q(i)} is QP obtained by bundle \textbf{i}. \newline
+
+ 
+\(
+f(q) = \frac{TQP}{MQP};
+\)
+\newline
+\newline
+ if \( 1 <= f(q) > 0.9 \) then State of Art; \\*
+ if \( 0.9 <= f(q) > 0.75 \) then Very Good; \\*
+ if \( 0.75 <= f(q) > 0.6 \) then Good; \\*
+ if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
+ if \( 0.4 <= f(q) \) then Anti Pattern;\\*
+
 
 \section{Intrabundle Reports}
 \label{sec:intrabundle-reports}
@@ -264,7 +284,7 @@ The tool generates two reports based on information it collects from bundles so 
 \caption{Intrabundle report part 1}
 \label{intrabundle-report1}
 \centering
-\includegraphics[scale=0.5]{intrabundle-report}
+\includegraphics[scale=0.6]{intrabundle-report}
 \end{figure}  
 \FloatBarrier
 
@@ -284,7 +304,7 @@ Another report Intrabundle generates is a metric report that details the punctua
 \caption{Intrabundle metric report}
 \label{intrabundle-metric-report}
 \centering
-\includegraphics[scale=0.5]{intrabundle-metric-report}
+\includegraphics[scale=0.6]{intrabundle-metric-report}
 \end{figure}  
 \FloatBarrier
 
