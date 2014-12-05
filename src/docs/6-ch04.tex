@@ -1,4 +1,23 @@
 \chapter{Bundle Introspection Results}
 
-Intrabundle metrics were applied to 10 real OSGi projects. In this chapter will be presented the results 
+Intrabundle was used to introspect and apply its metrics to 10 real OSGi projects, the projects are all open sourced and vary and size, teams and domain. Table \ref{osgi-analyzed-projects} shows analyzed projects:
+
+\begin{table}[h]
+\caption{OSGi projects analyzed by Intrabundle}
+\label{osgi-analyzed-projects}
+\begin{center}
+    \begin{tabular}{  p{4cm} | p{6cm} | p{4cm} | p{4cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & Description & Number of bundles & LoC \\  \hline
+    Maven projects & /src/main/resource/META-INF.\\ \hline
+    Maven using BND tools & pom.xml\footnote{It's a xml configuration file responsible for project build life cycle and dependencies} with maven-bundle-plugin.\\ \hline
+    Standard Eclipse Java projects & /META-INF\\ \hline
+    Standard BND Tools & bnd.bnd file in any subfolder.\\ \hline
+    Package based bundles(Jitsi project) & each package has a manifest.\\  
+   \Xhline{2\arrayrulewidth}
+
+    \end{tabular}
+\end{center}
+\end{table}
+\FloatBarrier 
 

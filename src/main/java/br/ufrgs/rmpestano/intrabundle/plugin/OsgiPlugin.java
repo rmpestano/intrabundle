@@ -238,7 +238,7 @@ public class OsgiPlugin implements Plugin {
 
     @Command(value = "projectMetric", help = "returns OSGi project mode and absolute metric score based on each bundle score")
     public void projectMetric(PipeOut out) {
-        out.println(provider.getMessage("osgi.metric",metrics.calculateProjectModeQuality(project.get()).name(), metrics.calculateProjectAbsoluteQuality(project.get()).name()));
+        out.println(provider.getMessage("osgi.metric",metrics.calculateProjectModeQuality().name(), metrics.calculateProjectAbsoluteQuality().name()));
     }
 
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")

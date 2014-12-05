@@ -21,4 +21,10 @@ public interface OSGiProject extends Serializable{
 
     String getVersion();
 
+    /**
+     *
+     * @return max quality point a project can have
+     */
+    int getMaxPoints();
+
 }

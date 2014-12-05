@@ -21,6 +21,7 @@ import java.util.Map;
  * Created by rmpestano on 8/17/14.
  */
 @Singleton
+//TODO move everything to OSGiProjectImple and deprecate MetricsCalculator(a project knows how to calculates its quality)
 public class DefaultMetricsCalculator implements MetricsCalculation {
 
     @Inject
@@ -28,6 +29,10 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     @Inject
     MessageProvider provider;
+
+    Map<OSGiProject, List<MetricScore>> projectBundleQualities;//stores each project bundle quality
+
+    int projectQualityPonts;
 
     public Metric getLocMetric(OSGiModule bundle) {
         MetricName name = MetricName.LOC;
@@ -123,6 +128,7 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         return null;
     }
 
+
     public MetricPoints calculateBundleQuality(OSGiModule bundle) {
         List<Metric> bundleMetrics = new ArrayList<Metric>();
         bundleMetrics.add(getLocMetric(bundle));
@@ -139,16 +145,15 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     }
 
-    public MetricScore calculateProjectModeQuality(OSGiProject osGiProject) {
+    public MetricScore calculateProjectModeQuality() {
         Map<MetricScore, Integer> metricScores = new HashMap<MetricScore, Integer>();//counts metricScore of each bundle where:
         metricScores.put(MetricScore.ANTI_PATTERN, 0);
         metricScores.put(MetricScore.REGULAR, 0);
         metricScores.put(MetricScore.GOOD, 0);
         metricScores.put(MetricScore.VERY_GOOD, 0);
         metricScores.put(MetricScore.STATE_OF_ART, 0);
-        for (OSGiModule osGiModule : osGiProject.getModules()) {
+        for (MetricScore bundleScore : getBundleQualityList()) {
 
-            MetricScore bundleScore = this.calculateBundleQuality(osGiModule).getFinalScore();
             switch (bundleScore) {
                 case ANTI_PATTERN: {
                     Integer count = metricScores.get(MetricScore.ANTI_PATTERN);
@@ -202,17 +207,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         return result;
     }
 
-    public MetricScore calculateProjectModeQuality() {
-        return calculateProjectModeQuality(getCurrentOSGiProject());
+    public int getProjectQualityPonts() {
+        int total = 0;
+        for (MetricScore metricScore : getBundleQualityList()) {
+            total += metricScore.getValue();
+        }
+        return total;
     }
 
+
     @Override
-    public MetricScore calculateProjectAbsoluteQuality(OSGiProject osGiProject) {
-        int maxPoints = osGiProject.getModules().size() * MetricScore.STATE_OF_ART.getValue();
-        int projectPoints = 0;
-        for (OSGiModule osGiModule : osGiProject.getModules()) {
-            projectPoints += calculateBundleQuality(osGiModule).getFinalScore().getValue();
-        }
+    public MetricScore calculateProjectAbsoluteQuality() {
+        int maxPoints = getCurrentOSGiProject().getMaxPoints();
+
+        int projectPoints = getProjectQualityPonts();
 
         if (projectPoints >= maxPoints * 0.9) {
             return MetricScore.STATE_OF_ART;
@@ -229,8 +237,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     }
 
-    @Override
-    public MetricScore calculateProjectAbsoluteQuality() {
-        return calculateProjectAbsoluteQuality(getCurrentOSGiProject());
+
+    private Map<OSGiProject,List<MetricScore>> calculateBundleQualities(OSGiProject osGiProject){
+        Map<OSGiProject, List<MetricScore>> result = new HashMap<OSGiProject, List<MetricScore>>();
+        result.put(osGiProject, new ArrayList<MetricScore>());
+        for (OSGiModule osGiModule : osGiProject.getModules()) {
+            result.get(osGiProject).add(calculateBundleQuality(osGiModule).getFinalScore());
+        }
+        return result;
+    }
+
+    public List<MetricScore> getBundleQualityList() {
+        if(projectBundleQualities == null || !projectBundleQualities.containsKey(getCurrentOSGiProject()) || projectBundleQualities.size() > 2) {//only cache two projects bundles quality at a time
+            projectBundleQualities = calculateBundleQualities(getCurrentOSGiProject());
+        }
+        return projectBundleQualities.get(getCurrentOSGiProject());
     }
 }
