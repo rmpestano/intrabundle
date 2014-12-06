@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="356"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<style name="table">
@@ -171,9 +171,7 @@
 				<text><![CDATA[N° of bundles:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="2c4c5570-f97d-4840-938e-4d23b1eb7366" x="320" y="155" width="453" height="20" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject().getRevision() != null]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="2c4c5570-f97d-4840-938e-4d23b1eb7366" x="320" y="155" width="453" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -286,11 +284,11 @@
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Points obtained >= " + 0.9 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + ": STATE_OF_ART\n"+
-"Points obtained >= " + 0.75 * ((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + ": VERY_GOOD\n"+
-"Points obtained >= " + 0.60 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + ": GOOD\n"+
-"Points obtained >= " + 0.40 * ((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + ": REGULAR\n"+
-"Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + ": ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Points obtained >= " + 0.9 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(90%): STATE_OF_ART\n"+
+"Points obtained >= " + 0.75 * ((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(75%): VERY_GOOD\n"+
+"Points obtained >= " + 0.60 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(60%): GOOD\n"+
+"Points obtained >= " + 0.40 * ((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(40%): REGULAR\n"+
+"Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(40%): ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="cbebd637-b450-4bcf-aaad-d1e575a315d0" x="6" y="472" width="211" height="20"/>
@@ -374,11 +372,11 @@
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Points obtained >= " + 0.9 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": STATE_OF_ART\n"+
-"Points obtained >= " + 0.75 * ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": VERY_GOOD\n"+
-"Points obtained >= " + 0.60 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": GOOD\n"+
-"Points obtained >= " + 0.40 * ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": REGULAR\n"+
-"Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + ": ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Points obtained >= " + 0.9 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(90%): STATE_OF_ART\n"+
+"Points obtained >= " + 0.75 * ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(75%): VERY_GOOD\n"+
+"Points obtained >= " + 0.60 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(60%): GOOD\n"+
+"Points obtained >= " + 0.40 * ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(40%): REGULAR\n"+
+"Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(40%): ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="2a7da679-f7e0-45d1-b237-330f47b42ee7" x="9" y="221" width="287" height="20" isRemoveLineWhenBlank="true"/>
