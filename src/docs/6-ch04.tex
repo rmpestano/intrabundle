@@ -8,17 +8,17 @@ In this section is presented an overview of projects that were analyzed during t
 \begin{table}[h]
 \caption{OSGi projects analyzed by Intrabundle}
 \label{osgi-analyzed-projects}
-\begin{center}
+\begin{center}      
     \begin{tabular}{  p{5cm} | p{5cm} | p{4cm}}
     \Xhline{2\arrayrulewidth}
-    Name & Number of bundles\tablefootnote{Number in parenthesis is considering bundles with zero lines of code} & LoC\tablefootnote{Lines of code considering only .java files removing comment lines} \\  \hline
+    Name & Number of bundles & LoC \\  \hline
     \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436\\ \hline
-    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690\\ \hline
-    \href{https://eclipse.org/webtools/dali/}{Eclipse Dali} & 35 (46) & 1,058,16\\ \hline
+    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,16\\ \hline
     \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144\\ \hline
     \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940\\ \hline
     \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743\\ \hline
     \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492\\ \hline
+    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690\\ \hline
     \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480\\ \hline 
     \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494\\ \hline
     \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859\\ 
@@ -30,26 +30,73 @@ In this section is presented an overview of projects that were analyzed during t
 \end{table}
 \FloatBarrier 
 
+Note that number of bundle in parenthesis is considering bundles with zero lines of code. Also note that lines of code is considering only .java files removing comment lines.
+
 Below is a brief description of each project:
 
 \begin{enumerate}
 \item \textbf{BIRT}: is an open source software project that provides the BIRT technology platform to create data visualizations and reports that can be embedded into rich client and web applications, especially those based on Java and Java EE;
-\item \textbf{OSEE}: The Open System Engineering Environment is an integrated, extensible tool environment for large engineering projects. It provides a tightly integrated environment supporting lean principles across a product's full life-cycle in the context of an overall systems engineering approach;
 \item \textbf{Dali}: The Dali Java Persistence Tools Project provides extensible frameworks and tools for the definition and editing of Object-Relational (O/R) mappings for Java Persistence API (JPA) entities;
 \item \textbf{Jitsi}: is an audio/video Internet phone and instant messenger written in Java. It supports some of the most popular instant messaging and telephony protocols such as SIP, Jabber/XMPP (and hence Facebook and Google Talk), AIM, ICQ, MSN, Yahoo! Messenger;
 \item \textbf{JOnAS}: is a leading edge open source Java EE 6 Web Profile certified OSGi Enterprise Server;
 \item \textbf{Karaf}: Apache Karaf is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed
 \item \textbf{Openhab}: a open source home automation software for integrating different home automation systems and technologies into one single solution that allows over-arching automation rules and that offers uniform user interfaces;
+\item \textbf{OSEE}: The Open System Engineering Environment is an integrated, extensible tool environment for large engineering projects. It provides a tightly integrated environment supporting lean principles across a product's full life-cycle in the context of an overall systems engineering approach;
 \item \textbf{Pax CDI}: brings the power of Context and Dependency Injection(CDI) to the OSGi platform; 
 \item \textbf{Tuscany SCA}: is a programming model for abstracting business functions as components and using them as building blocks to assemble business solutions; 
 \item \textbf{Virgo}: is a completely module-based Java application server that is designed to run enterprise Java applications and Spring-powered applications with a high degree of flexibility and reliability; 
 \end{enumerate}
 
 
-\section{Projects Quality}
-In this section will be presented the resulting qualities of analyzed projects and some comparisons. All projects quality reports are available online, see \cite{intrabundle reports 2014} for detailed information.
+\section{Projects Quality Results}
+In this section will be presented the resulting qualities of analyzed projects and some comparisons. First comparison groups all analyzed  projects comparing their \emph{bundle quality} and \emph{metric quality}. Later the projects are separated by groups in terms of size of LoC and number of bundles.
 
-The first table shows general projects qualities:
+All projects quality reports that provided data for all comparisons are available online, see \cite{intrabundle reports 2014} for detailed information. 
 
+\subsection{General quality comparison}
 
+The first table shows general projects qualities, it is ordered by quality points percentage. Its important to note that each projects maximum quality points(MQP) is different because it depends on the number of bundles, see \ref{sec:project-quality-} for further information:
 
+\begin{table}[h]
+\caption{Projects general quality}
+\label{projects-general-quality}
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{4cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label \\  \hline
+    Pax CDI & 84 & 105 & 80\% & Very Good\\ \hline 
+    Openhab & 	666 & 905 & 73.6\% & Good\\ \hline
+    Virgo & 132 & 180 & 73.3\% & Good\\ 
+    Karaf & 211 & 290 & 72.8\% & Good\\ \hline
+    OSEE & 596 & 915 & 65.1\% & Good\\ \hline
+    Tuscany Sca & 433 & 690 & 62.8\% & Good\\ \hline
+    JOnAS & 356 & 585 & 60.9\%  & Good\\ \hline
+    Jitsi & 414 & 775 & 53.4\% & Regular\\ \hline
+    Dali & 86 & 175 & 49.1\%  & Regular\\ \hline
+    BIRT & 315 & 645 & 48.8\% & Regular\\ \hline
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+\end{table}
+\FloatBarrier 
+
+The winner on general category, considering Intrabundle metrics, is \textbf{Pax CDI} project which obtained 80\% of quality points and received a \emph{Very Good quality label}. Pax CDI is a project from \emph{OPS4J - Open Participation Software for Java} which is a community that is trying to build a new, more open model for Open Source development, where not only the usage is Open and Free, but the Participation is Open as well. 
+
+\subsection{Metric quality comparison}
+
+The next category analyzes how good the projects are on each metric. It's important to note that each project maximum quality in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. 
+
+\begin{table}[h]
+\caption{Projects quality by metrics}
+\label{projects-metrics-quality}
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
+    \Xhline{2\arrayrulewidth}
+    Name & 1\tablefootnote{LoC metric} & 2\tablefootnote{Publishes interfaces metric} & 3\tablefootnote{Uses framework metric} & 4\tablefootnote{Bundle dependency metric} & 5\tablefootnote{Stale references metric} & 6\tablefootnote{Declares permission metric} \\  \hline
+    BIRT & 45.6\% & 60.9\% & 40\% & 47.6\% & 99.8\% & 40.5\%\\ 
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+\end{table}
+\FloatBarrier   
+
+% winner by metrics(who is best on each metric)
+% winner by loc size (small 0 - 100000, 10000 - 500000, 500000+ )
+% winner by organization (apache, eclipse, general)
+% winner by number of bundles(0-100, > 100)
