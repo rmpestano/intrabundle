@@ -182,56 +182,23 @@ public class JasperManager implements Serializable {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
-        params.put("projectQuality",metrics.calculateProjectModeQuality().name());
-        params.put("projectAbsoluteQuality",metrics.calculateProjectAbsoluteQuality().name());
-        MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.LOC);
-        int maxPoints = metricPoints.getMaxPoints();
-        int obtainedPoints = metricPoints.getBundlePoints();
-        double percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("loc",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+        params.put("projectQuality", metrics.calculateProjectModeQuality().name());
+        params.put("projectAbsoluteQuality", metrics.calculateProjectAbsoluteQuality().name());
 
-        metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
-        maxPoints = metricPoints.getMaxPoints();
-        obtainedPoints = metricPoints.getBundlePoints();
-        percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("staleReferences",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+        addMetricsQuality(params);
 
-        metricPoints = metrics.calculateMetricQuality(MetricName.USES_FRAMEWORK);
-        maxPoints = metricPoints.getMaxPoints();
-        obtainedPoints = metricPoints.getBundlePoints();
-        percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("usesFramework",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
-
-        metricPoints = metrics.calculateMetricQuality(MetricName.BUNDLE_DEPENDENCIES);
-        maxPoints = metricPoints.getMaxPoints();
-        obtainedPoints = metricPoints.getBundlePoints();
-        percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("bundleDependency",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
-
-        metricPoints = metrics.calculateMetricQuality(MetricName.DECLARES_PERMISSION);
-        maxPoints = metricPoints.getMaxPoints();
-        obtainedPoints = metricPoints.getBundlePoints();
-        percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("declaresPermission",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
-
-        metricPoints = metrics.calculateMetricQuality(MetricName.PUBLISHES_INTERFACES);
-        maxPoints = metricPoints.getMaxPoints();
-        obtainedPoints = metricPoints.getBundlePoints();
-        percentage = getPercentage(obtainedPoints,maxPoints);;
-        params.put("publishesInterfaces",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
-
-        maxPoints = project.getMaxPoints();
+        int maxPoints = project.getMaxPoints();
         int projectPoints = metrics.getProjectQualityPonts();
-        percentage = metrics.getProjectQualityPointsPercentage();
-        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        params.put("projectQualityPoints", provider.getMessage("osgi.project-points", projectPoints, maxPoints, percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         this.reportName(reportName).filename(project.toString() + "_" + reportName).type(type).data(getModulesToReport(project)).params(params).build();
     }
 
     private double getPercentage(int obtainedPoints, int maxPoints) {
-        BigDecimal bd = new BigDecimal(obtainedPoints/(double)maxPoints);
+        BigDecimal bd = new BigDecimal(obtainedPoints / (double) maxPoints);
         bd = bd.setScale(3, RoundingMode.HALF_UP);
-        return bd.doubleValue()*100;
+        return bd.doubleValue() * 100;
     }
 
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
@@ -247,12 +214,15 @@ public class JasperManager implements Serializable {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
-        params.put("projectQuality",metrics.calculateProjectModeQuality().name());
-        params.put("projectAbsoluteQuality",metrics.calculateProjectAbsoluteQuality().name());
+        params.put("projectQuality", metrics.calculateProjectModeQuality().name());
+        params.put("projectAbsoluteQuality", metrics.calculateProjectAbsoluteQuality().name());
+
+        addMetricsQuality(params);
+
         int maxPoints = project.getMaxPoints();
         int projectPoints = metrics.getProjectQualityPonts();
         double percentage = metrics.getProjectQualityPointsPercentage();
-        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints, percentage));
+        params.put("projectQualityPoints", provider.getMessage("osgi.project-points", projectPoints, maxPoints, percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         for (String s : reportsName) {
             this.reportName(s).filename(project.toString() + "_" + s).type(type).data(getModulesToReport(project)).params(params).build();
@@ -260,14 +230,53 @@ public class JasperManager implements Serializable {
     }
 
     private void removeZeroLinesOfCodeModules(OSGiProject projectFound) {
-        if(projectFound != null || projectFound.getModules() != null){
+        if (projectFound != null || projectFound.getModules() != null) {
             Iterator<OSGiModule> i = projectFound.getModules().iterator();
-            while(i.hasNext()){
+            while (i.hasNext()) {
                 OSGiModule module = i.next();
-                if(!module.hasLinesOfCode()){
+                if (!module.hasLinesOfCode()) {
                     i.remove();
                 }
             }
         }
+    }
+
+    private void addMetricsQuality(Map<String, Object> params) {
+        MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.LOC);
+        int maxPoints = metricPoints.getMaxPoints();
+        int obtainedPoints = metricPoints.getBundlePoints();
+        double percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("loc", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("staleReferences", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.USES_FRAMEWORK);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("usesFramework", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.BUNDLE_DEPENDENCIES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("bundleDependency", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.DECLARES_PERMISSION);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("declaresPermission", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.PUBLISHES_INTERFACES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints, maxPoints);
+        params.put("publishesInterfaces", provider.getMessage("metrics.quality", obtainedPoints, maxPoints, percentage, metricPoints.getFinalScore().name()));
+
     }
 }
