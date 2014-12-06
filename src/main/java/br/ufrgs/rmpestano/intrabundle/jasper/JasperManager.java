@@ -2,11 +2,9 @@ package br.ufrgs.rmpestano.intrabundle.jasper;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
-import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport;
+import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
@@ -17,6 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Singleton
@@ -184,12 +184,54 @@ public class JasperManager implements Serializable {
         params.put("provider", provider);
         params.put("projectQuality",metrics.calculateProjectModeQuality().name());
         params.put("projectAbsoluteQuality",metrics.calculateProjectAbsoluteQuality().name());
-        int maxPoints = project.getMaxPoints();
+        MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.LOC);
+        int maxPoints = metricPoints.getMaxPoints();
+        int obtainedPoints = metricPoints.getBundlePoints();
+        double percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("loc",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("staleReferences",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.USES_FRAMEWORK);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("usesFramework",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.BUNDLE_DEPENDENCIES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("bundleDependency",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.DECLARES_PERMISSION);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("declaresPermission",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.PUBLISHES_INTERFACES);
+        maxPoints = metricPoints.getMaxPoints();
+        obtainedPoints = metricPoints.getBundlePoints();
+        percentage = getPercentage(obtainedPoints,maxPoints);;
+        params.put("publishesInterfaces",provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+
+        maxPoints = project.getMaxPoints();
         int projectPoints = metrics.getProjectQualityPonts();
-        double percentage = metrics.getProjectQualityPointsPercentage();
+        percentage = metrics.getProjectQualityPointsPercentage();
         params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         this.reportName(reportName).filename(project.toString() + "_" + reportName).type(type).data(getModulesToReport(project)).params(params).build();
+    }
+
+    private double getPercentage(int obtainedPoints, int maxPoints) {
+        BigDecimal bd = new BigDecimal(obtainedPoints/(double)maxPoints);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        return bd.doubleValue()*100;
     }
 
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
