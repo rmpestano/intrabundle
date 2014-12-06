@@ -116,8 +116,8 @@ public class MetricsTest extends BaseMetricsTest {
         initializeOSGiBundleWithModuleWithManyLoc();
         resetOutput();
         getShell().execute("bundle metrics");
-        assertTrue(getOutput().contains("Lines of code:ANTI_PATTERN"));
-        assertTrue(getOutput().contains("Points obtained: 11 of 25. Final score: REGULAR"));
+        assertTrue(getOutput().trim().contains("Lines of code:ANTI_PATTERN"));
+        assertTrue(getOutput().contains("Points obtained: 12 of 25. Final score: REGULAR"));
     }
 
 }

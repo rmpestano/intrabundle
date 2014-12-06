@@ -32,22 +32,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     Map<OSGiProject, List<MetricScore>> projectBundleQualities;//stores each project bundle quality
 
-    int projectQualityPonts;
-
     public Metric getLocMetric(OSGiModule bundle) {
         MetricName name = MetricName.LOC;
         long linesOfCode = bundle.getLinesOfCode();
 
-        if (linesOfCode <= 300) {
+        if (linesOfCode <= 500) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (linesOfCode <= 500) {
-            return new Metric(name, MetricScore.VERY_GOOD);
         } else if (linesOfCode <= 750) {
-            return new Metric(name, MetricScore.GOOD);
+            return new Metric(name, MetricScore.VERY_GOOD);
         } else if (linesOfCode <= 1000) {
+            return new Metric(name, MetricScore.GOOD);
+        } else if (linesOfCode <= 1500) {
             return new Metric(name, MetricScore.REGULAR);
         }
-        // lines of code greater than 1000
+        // lines of code greater than 1500
         return new Metric(name, MetricScore.ANTI_PATTERN);
     }
 
@@ -102,10 +100,17 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         int nroOfStaleReferences = bundle.getStaleReferences().size();
         if (nroOfStaleReferences == 0) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.25)) {
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.10)) {
+            // 10% of classes has stale references
+            return new Metric(name, MetricScore.VERY_GOOD);
+        }  else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.25)) {
+            // 25% of classes has stale references
+            return new Metric(name, MetricScore.GOOD);
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.50)) {
             // 25% of classes has stale references
             return new Metric(name, MetricScore.REGULAR);
         }
+
         // more than 25% of classes contains staleReferences
         return new Metric(name, MetricScore.ANTI_PATTERN);
     }

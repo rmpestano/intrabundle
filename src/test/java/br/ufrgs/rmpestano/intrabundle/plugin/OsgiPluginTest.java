@@ -380,12 +380,11 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("3");
         getShell().execute("osgi findBundlesByQuality");
-        assertTrue(getOutput().trim().endsWith(TestUtils.getNewLine()+"module1"));
-        assertFalse(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
+        assertTrue(getOutput().trim().endsWith(provider.getMessage("osgi.scan.noBundlesFound")));
         resetOutput();
         queueInputLines("4");
         getShell().execute("osgi findBundlesByQuality");
-        assertTrue(getOutput().trim().endsWith("module2"));
+        assertTrue(getOutput().trim().endsWith(TestUtils.getNewLine()+"module1"+TestUtils.getNewLine()+"module2"));
         assertFalse(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
         resetOutput();
         queueInputLines("5");

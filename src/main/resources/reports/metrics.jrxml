@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="588"/>
+	<property name="ireport.y" value="540"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<style name="table">
@@ -235,7 +235,7 @@
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["<= 300: STATE_OF_ART, <= 500: VERY_GOOD, <=750: GOOD,\n <= 1000: REGULAR, >1000: ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<= 500: STATE_OF_ART, <= 750: VERY_GOOD, <=1000: GOOD,\n <= 1500: REGULAR, >1500: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="70548bc7-60db-41c1-9fe2-6a23daae3aa7" x="8" y="705" width="211" height="20"/>
@@ -277,7 +277,7 @@
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["no stale references: STATE_OF_ART\n 1/4 of classes has stale references: REGULAR\n > 1/4 of classes: ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["no stale references: STATE_OF_ART\n <= 1/10 of classes has stale references: VERY_GOOD\n <= 1/4 of classes: GOOD\n < 1/2 of classes: REGULAR\n >= 1/2: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="3c212b02-d2b7-4aa2-8a7e-53279d85eafa" x="239" y="443" width="539" height="20"/>

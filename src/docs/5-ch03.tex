@@ -178,11 +178,11 @@ The first metric created is \textbf{LoC}, its the simplest one. LoC is based on 
 
 
 \(\text{LoC}=\begin{cases}
-\text{STATE OF ART}& \text{if LoC <= 300},\\
-\text{VERY GOOD}& \text{if LoC <= 500}, \\
-\text{GOOD}& \text{if LoC <= 750}, \\
-\text{REGULAR}& \text{if LoC <= 1000}, \\
-\text{ANTI PATTERN}& \text{if LoC > 1000}. \\
+\text{STATE OF ART}& \text{if LoC <= 500},\\
+\text{VERY GOOD}& \text{if LoC <= 750}, \\
+\text{GOOD}& \text{if LoC <= 1000}, \\
+\text{REGULAR}& \text{if LoC <= 1500}, \\
+\text{ANTI PATTERN}& \text{if LoC > 1500}. \\
 \end{cases} \)\newline  
 
 Second metric is \textbf{Publishes interfaces} meaning that bundles should hide their implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline
@@ -217,11 +217,13 @@ Next metric is \textbf{Stale references}, it focus on a very common problem in O
 
 \(\text{Stale references}=\begin{cases}
 \text{STATE OF ART}& \text{no stale references},\\
-\text{REGULAR}& \frac{NS}{NC} < 0.4, \\
-\text{ANTI PATTERN}& \frac{NS}{NC} > 0.4. \\
+\text{GOOD}& \frac{NS}{NC} < 0.1, \\
+\text{GOOD}& \frac{NS}{NC} < 0.25, \\
+\text{REGULAR}& \frac{NS}{NC} < 0.5, \\
+\text{ANTI PATTERN}& \frac{NS}{NC} >= 0.5. \\
 \end{cases} \)\newline     
 
-In other words if no stale references is found then this metric receives a \emph{state of art}, if less then 40\% of bundle classes have stale references(number of get and unget doesn't match) then it is \emph{regular} but if > 40\% then its considered an \emph{anti pattern}. 
+In other words if no stale references is found then this metric receives a \emph{state of art} quality label, if less then 10\% of bundle classes have stale references(number of get and unget doesn't match) then it receives \emph{very good} quality label, if > 10\% and < 25\% then it is \emph{good}, if the number of stale references is between 25\% and 50\% its is \emph{regular} but if it has 50\% or more classes with stale references then its considered an \emph{anti pattern}. 
 
 The last metric created in this work is \textbf{Declares permission}, it is concerned with security. In this metric Intrabundle searches for permissions.perm file in the bundle, if it finds it then the metric is considered state of art: \newline
 
