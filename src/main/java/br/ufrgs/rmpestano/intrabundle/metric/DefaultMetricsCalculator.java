@@ -12,6 +12,8 @@ import org.jboss.solder.logging.Logger;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,22 +32,22 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
     @Inject
     MessageProvider provider;
 
-    Map<OSGiProject, List<MetricScore>> projectBundleQualities;//stores each project bundle quality
+    Map<OSGiProject, List<MetricScore>> projectBundleQualities = new HashMap<OSGiProject,List<MetricScore>>();//stores each project bundle quality
 
     public Metric getLocMetric(OSGiModule bundle) {
         MetricName name = MetricName.LOC;
         long linesOfCode = bundle.getLinesOfCode();
 
-        if (linesOfCode <= 500) {
+        if (linesOfCode <= 700) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (linesOfCode <= 750) {
-            return new Metric(name, MetricScore.VERY_GOOD);
         } else if (linesOfCode <= 1000) {
-            return new Metric(name, MetricScore.GOOD);
+            return new Metric(name, MetricScore.VERY_GOOD);
         } else if (linesOfCode <= 1500) {
+            return new Metric(name, MetricScore.GOOD);
+        } else if (linesOfCode <= 2000) {
             return new Metric(name, MetricScore.REGULAR);
         }
-        // lines of code greater than 1500
+        // lines of code greater than 2000
         return new Metric(name, MetricScore.ANTI_PATTERN);
     }
 
@@ -220,6 +222,13 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         return total;
     }
 
+    @Override
+    public double getProjectQualityPointsPercentage() {
+        BigDecimal bd = new BigDecimal(getProjectQualityPonts()/(double)getCurrentOSGiProject().getMaxPoints());
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        return bd.doubleValue()*100;
+    }
+
 
     @Override
     public MetricScore calculateProjectAbsoluteQuality() {
@@ -243,18 +252,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
     }
 
 
-    private Map<OSGiProject,List<MetricScore>> calculateBundleQualities(OSGiProject osGiProject){
-        Map<OSGiProject, List<MetricScore>> result = new HashMap<OSGiProject, List<MetricScore>>();
-        result.put(osGiProject, new ArrayList<MetricScore>());
+    private List<MetricScore> calculateBundleQualities(OSGiProject osGiProject){
+        List<MetricScore> bundleQualities = new ArrayList<MetricScore>();
         for (OSGiModule osGiModule : osGiProject.getModules()) {
-            result.get(osGiProject).add(calculateBundleQuality(osGiModule).getFinalScore());
+            bundleQualities.add(calculateBundleQuality(osGiModule).getFinalScore());
         }
-        return result;
+        return bundleQualities;
     }
 
     public List<MetricScore> getBundleQualityList() {
-        if(projectBundleQualities == null || !projectBundleQualities.containsKey(getCurrentOSGiProject()) || projectBundleQualities.size() > 2) {//only cache two projects bundles quality at a time
-            projectBundleQualities = calculateBundleQualities(getCurrentOSGiProject());
+        if(projectBundleQualities.size() == 5){//only cache 10 projects bundles qualities
+            projectBundleQualities.clear();
+        }
+        if(!projectBundleQualities.containsKey(getCurrentOSGiProject())) {
+            projectBundleQualities.put(getCurrentOSGiProject(),calculateBundleQualities(getCurrentOSGiProject()));
         }
         return projectBundleQualities.get(getCurrentOSGiProject());
     }

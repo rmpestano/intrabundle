@@ -241,6 +241,14 @@ public class OsgiPlugin implements Plugin {
         out.println(provider.getMessage("osgi.metric",metrics.calculateProjectModeQuality().name(), metrics.calculateProjectAbsoluteQuality().name()));
     }
 
+    @Command(value = "projectPoints", help = "returns OSGi project mode and absolute metric score based on each bundle score")
+    public void projecPoints(PipeOut out) {
+        int maxPoints = project.get().getMaxPoints();
+        int projectPoints = metrics.getProjectQualityPonts();
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        out.println(provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
+    }
+
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")
     public void findModulesByQuality(PipeOut out) {
         MetricScore quality = choiceQuality();

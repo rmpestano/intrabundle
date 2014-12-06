@@ -174,15 +174,15 @@ Every created metric in this work can be classified into the following \emph{qua
 
 \subsection{Metrics Created}
 
-The first metric created is \textbf{LoC}, its the simplest one. LoC is based on bundle lines of code meaning that the less lines of code more \emph{cohesion} the bundle has and easier to maintain it should be. To classify LoC metric we use the following rule:\newline
+The first metric created is \textbf{LoC}, its the simplest one. LoC is based on bundle lines of code(excluding comments) meaning that the less lines of code more \emph{cohesion} the bundle has and easier to maintain it should be. This metric is an estimation, there is no exact LoC number because it depends on the context(e.g. complexity). To classify LoC metric we use the following rule:\newline
 
 
 \(\text{LoC}=\begin{cases}
-\text{STATE OF ART}& \text{if LoC <= 500},\\
-\text{VERY GOOD}& \text{if LoC <= 750}, \\
-\text{GOOD}& \text{if LoC <= 1000}, \\
-\text{REGULAR}& \text{if LoC <= 1500}, \\
-\text{ANTI PATTERN}& \text{if LoC > 1500}. \\
+\text{STATE OF ART}& \text{if LoC <= 700},\\
+\text{VERY GOOD}& \text{if LoC <= 1000}, \\
+\text{GOOD}& \text{if LoC <= 1500}, \\
+\text{REGULAR}& \text{if LoC <= 2000}, \\
+\text{ANTI PATTERN}& \text{if LoC > 2000}. \\
 \end{cases} \)\newline  
 
 Second metric is \textbf{Publishes interfaces} meaning that bundles should hide their implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline

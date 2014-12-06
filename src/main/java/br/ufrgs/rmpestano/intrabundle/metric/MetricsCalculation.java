@@ -71,4 +71,5 @@ public interface MetricsCalculation {
 
     int getProjectQualityPonts();
 
+    double getProjectQualityPointsPercentage();
 }

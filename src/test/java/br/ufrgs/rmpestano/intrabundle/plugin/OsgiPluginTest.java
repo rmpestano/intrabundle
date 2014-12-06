@@ -392,4 +392,20 @@ public class OsgiPluginTest extends BaseOSGiTest {
         assertTrue(getOutput().contains(TestUtils.getNewLine()+"module3"));
     }
 
+    @Test
+    public void shouldGetProjectQualityMetric() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        getShell().execute("osgi projectMetric");
+        System.out.println(getOutput().trim().startsWith("Project Frequent metric: VERY_GOOD, Final metric: VERY_GOOD"));
+    }
+
+    @Test
+    public void shouldGetProjectQualityPoints() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        getShell().execute("osgi projectPoints");
+        assertTrue(getOutput().trim().startsWith("13 of 15 - 86.7%"));
+    }
+
 }

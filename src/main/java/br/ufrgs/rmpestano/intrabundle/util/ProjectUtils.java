@@ -325,7 +325,11 @@ public class ProjectUtils implements Serializable {
     public static Long countFileLines(FileResource<?> resource) throws IOException {
         RandomAccessFile file = new RandomAccessFile(new File(resource.getFullyQualifiedName()), "r");
         Long total = new Long(0);
-        while ((file.readLine()) != null) {
+        String line;
+        while ((line = file.readLine()) != null) {
+            if(line.startsWith("/") || line.startsWith("*")){
+                continue;
+            }
             total++;
         }
         file.close();

@@ -7,7 +7,6 @@ import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport;
 import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
-import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
@@ -179,15 +178,16 @@ public class JasperManager implements Serializable {
     }
 
     public void reportFromProject(OSGiProject project, String reportName) {
+        removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         params.put("projectQuality",metrics.calculateProjectModeQuality().name());
         params.put("projectAbsoluteQuality",metrics.calculateProjectAbsoluteQuality().name());
-        int maxPoints = project.getModules().size() * MetricScore.STATE_OF_ART.getValue();
+        int maxPoints = project.getMaxPoints();
         int projectPoints = metrics.getProjectQualityPonts();
-
-        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints));
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         this.reportName(reportName).filename(project.toString() + "_" + reportName).type(type).data(getModulesToReport(project)).params(params).build();
     }
@@ -201,17 +201,31 @@ public class JasperManager implements Serializable {
     }
 
     public void reportFromProject(OSGiProject project, String... reportsName) {
+        removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         params.put("projectQuality",metrics.calculateProjectModeQuality().name());
         params.put("projectAbsoluteQuality",metrics.calculateProjectAbsoluteQuality().name());
-        int maxPoints = project.getModules().size() * MetricScore.STATE_OF_ART.getValue();
+        int maxPoints = project.getMaxPoints();
         int projectPoints = metrics.getProjectQualityPonts();
-        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints));
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        params.put("projectQualityPoints",provider.getMessage("osgi.project-points",projectPoints,maxPoints, percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         for (String s : reportsName) {
             this.reportName(s).filename(project.toString() + "_" + s).type(type).data(getModulesToReport(project)).params(params).build();
+        }
+    }
+
+    private void removeZeroLinesOfCodeModules(OSGiProject projectFound) {
+        if(projectFound != null || projectFound.getModules() != null){
+            Iterator<OSGiModule> i = projectFound.getModules().iterator();
+            while(i.hasNext()){
+                OSGiModule module = i.next();
+                if(!module.hasLinesOfCode()){
+                    i.remove();
+                }
+            }
         }
     }
 }
