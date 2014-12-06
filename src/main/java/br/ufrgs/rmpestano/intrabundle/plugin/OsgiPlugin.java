@@ -8,6 +8,7 @@ import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
 import org.jboss.forge.project.Project;
@@ -19,6 +20,8 @@ import org.jboss.forge.shell.plugins.*;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -249,6 +252,18 @@ public class OsgiPlugin implements Plugin {
         out.println(provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
     }
 
+    @Command(value = "metricQuality", help = "returns the quality of a given metric based on the project modules")
+    public void metricQuality(PipeOut out) {
+        MetricName metric = choiceMetric();
+        MetricPoints metricPoints = metrics.calculateMetricQuality(metric);
+        int maxPoints = metricPoints.getMaxPoints();
+        int obtainedPoints = metricPoints.getBundlePoints();
+        BigDecimal bd = new BigDecimal(obtainedPoints/(double)maxPoints);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        double percentage = bd.doubleValue()*100;
+        out.println(provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+    }
+
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")
     public void findModulesByQuality(PipeOut out) {
         MetricScore quality = choiceQuality();
@@ -318,6 +333,10 @@ public class OsgiPlugin implements Plugin {
     private MetricScore choiceQuality() {
         return prompt.promptChoiceTyped(provider.getMessage("quality.choice"), Arrays.asList(MetricScore.values()));
     }
+    private MetricName choiceMetric() {
+        return prompt.promptChoiceTyped(provider.getMessage("metrics.choice"), Arrays.asList(MetricName.values()));
+    }
+
 
     private boolean allModules(String allWhat) {
         return prompt.promptBoolean(provider.getMessage("module.all", allWhat));

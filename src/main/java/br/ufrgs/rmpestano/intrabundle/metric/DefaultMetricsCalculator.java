@@ -152,6 +152,51 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     }
 
+    public MetricPoints calculateMetricQuality(MetricName metric){
+        List<Metric> metrics = new ArrayList<Metric>();
+        List<OSGiModule> modules = currentOSGiProject.get().getModules();
+            switch (metric){
+                case LOC:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(getLocMetric(osGiModule));
+                    }
+                    break;
+                }
+                case STALE_REFERENCES:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(hasStaleReferencesMetric(osGiModule));
+                    }
+                    break;
+                }
+                case PUBLISHES_INTERFACES:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(getPublishesInterfaceMetric(osGiModule));
+                    }
+                    break;
+                }
+                case USES_FRAMEWORK:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(usesFrameworkToManageServicesMetric(osGiModule));
+                    }
+                    break;
+                }
+                case BUNDLE_DEPENDENCIES:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(getBundleDependencyMetric(osGiModule));
+                    }
+                    break;
+                }
+                case DECLARES_PERMISSION:{
+                    for (OSGiModule osGiModule : modules) {
+                        metrics.add(getDeclaresPermissionMetric(osGiModule));
+                    }
+                    break;
+                }
+            }
+
+        return new MetricPoints(metrics);
+    }
+
     public MetricScore calculateProjectModeQuality() {
         Map<MetricScore, Integer> metricScores = new HashMap<MetricScore, Integer>();//counts metricScore of each bundle where:
         metricScores.put(MetricScore.ANTI_PATTERN, 0);

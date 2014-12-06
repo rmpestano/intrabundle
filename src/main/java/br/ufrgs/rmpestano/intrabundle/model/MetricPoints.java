@@ -11,7 +11,7 @@ import java.util.List;
 public class MetricPoints {
 
     private MetricScore finalScore;
-    private int bundlePoints;
+    private int bundlePoints;  //TODO rename 'Bundle' to 'Quality'
     private int maxPoints;
     private List<Metric> bundleMetrics;
 

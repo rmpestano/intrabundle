@@ -4,6 +4,7 @@ import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
 import java.util.List;
@@ -72,4 +73,6 @@ public interface MetricsCalculation {
     int getProjectQualityPonts();
 
     double getProjectQualityPointsPercentage();
+
+    MetricPoints calculateMetricQuality(MetricName metric);
 }

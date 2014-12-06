@@ -120,4 +120,33 @@ public class MetricsTest extends BaseMetricsTest {
         assertTrue(getOutput().contains("Points obtained: 12 of 25. Final score: REGULAR"));
     }
 
+    @Test
+    public void shouldCalculateMetricsQuality() throws Exception {
+        initializeOSGiMavenProject();
+        resetOutput();
+        queueInputLines("1");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().contains("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+        resetOutput();
+        queueInputLines("2");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+        resetOutput();
+        queueInputLines("3");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().endsWith("Points obtained: 13 of 15 - 86.7%. Final score: VERY_GOOD"));
+        resetOutput();
+        queueInputLines("4");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().endsWith("Points obtained: 9 of 15 - 60%. Final score: GOOD"));
+        resetOutput();
+        queueInputLines("5");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().endsWith("Points obtained: 6 of 15 - 40%. Final score: REGULAR"));
+        resetOutput();
+        queueInputLines("6");
+        getShell().execute("osgi metricQuality");
+        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+    }
+
 }
