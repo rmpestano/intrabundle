@@ -9,19 +9,19 @@ In this section is presented an overview of projects that were analyzed during t
 \caption{OSGi projects analyzed by Intrabundle}
 \label{osgi-analyzed-projects}
 \begin{center}      
-    \begin{tabular}{  p{5cm} | p{5cm} | p{4cm}}
+    \begin{tabular}{  p{4cm} | p{4cm} | p{3cm} | p{3cm}}
     \Xhline{2\arrayrulewidth}
-    Name & Number of bundles & LoC \\  \hline
-    \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436\\ \hline
-    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,16\\ \hline
-    \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144\\ \hline
-    \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940\\ \hline
-    \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743\\ \hline
-    \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492\\ \hline
-    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690\\ \hline
-    \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480\\ \hline 
-    \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494\\ \hline
-    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859\\ \hline
+    Name & N\ts{o} of bundles & LoC & LoC per bundle \\ \hline
+    \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436 & 17,259\\ \hline
+    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,160 & 30,233\\ \hline
+    \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144 & 3,917\\ \hline
+    \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940 & 3,136\\ \hline
+    \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743 & 1,616\\ \hline
+    \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492 & 1,919\\ \hline
+    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690 & 4774\\ \hline
+    \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480 & 927\\ \hline 
+    \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494 & 1,764\\ \hline
+    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859 & 2,162\\ \hline
     Sum & 1051 & 4,962,094 \\
    \Xhline{2\arrayrulewidth}
 
@@ -65,14 +65,14 @@ The first table shows general projects qualities, it is ordered by quality point
     Name & TQP & MQP & Points percent & Quality label \\  \hline
     Pax CDI & 84 & 105 & 80\% & Very Good\\ \hline 
     Openhab & 	666 & 905 & 73.6\% & Good\\ \hline
-    Virgo & 132 & 180 & 73.3\% & Good\\ 
+    Virgo & 132 & 180 & 73.3\% & Good\\ \hline
     Karaf & 211 & 290 & 72.8\% & Good\\ \hline
     OSEE & 596 & 915 & 65.1\% & Good\\ \hline
     Tuscany Sca & 433 & 690 & 62.8\% & Good\\ \hline
     JOnAS & 356 & 585 & 60.9\%  & Good\\ \hline
     Jitsi & 414 & 775 & 53.4\% & Regular\\ \hline
     Dali & 86 & 175 & 49.1\%  & Regular\\ \hline
-    BIRT & 315 & 645 & 48.8\% & Regular\\ \hline
+    BIRT & 315 & 645 & 48.8\% & Regular\\ 
    \Xhline{2\arrayrulewidth}
     \end{tabular}
 \end{table}
@@ -80,7 +80,7 @@ The first table shows general projects qualities, it is ordered by quality point
 
 The winner on general category, considering Intrabundle metrics, is \textbf{Pax CDI} project which obtained 80\% of quality points and received a \emph{Very Good quality label}. Pax CDI is a project from \emph{OPS4J - Open Participation Software for Java} which is a community that is trying to build a new, more open model for Open Source development, where not only the usage is Open and Free, but the Participation is Open as well. 
 
-\subsection{Metric quality comparison}
+\subsection{Metrics qualities comparison}
 
 The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the \emph{total quality points}(TQP) obtained and in parenthesis is the percentage of MQP that this value represents:  
 
@@ -132,8 +132,92 @@ It looks like \emph{publishing only interfaces} for hiding implementation is a w
 
 We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects.
  
+\subsection{Projects qualities by size}
 
-% winner by metrics(who is best on each metric)
-% winner by loc size (small 0 - 100000, 10000 - 500000, 500000+ )
-% winner by organization (apache, eclipse, general)
-% winner by number of bundles(0-100, > 100)
+In the tables below the projects are separated by size as we believe that comparing projects with large code base with minor sized projects is unfair. It is easier to keep good practices in new projects as opposed to bigger projects where teams are usually larger, a person hardly will know every detail, multiple versions are being worked in parallel and so on.  In this section we separate analyzed projects by LoC and number of bundles. Table \ref{projects-quality-bundle} separates projects by bundles where small projects range from 0 to 100 bundles and large projects has more then 100 bundles.
+
+
+\begin{table}[htbp]
+  \small
+  \caption{Projects qualities by number of bundles}
+  \label{projects-quality-bundle}
+  \subfloat[Less then 100 bundles]{%
+    \hspace{.5cm}%
+   \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label & N\ts{o} of Bundles \\  \hline
+    Pax CDI & 84 & 105 & 80\% & Very Good & 21\\ \hline 
+    Virgo & 132 & 180 & 73.3\% & Good & 36\\ \hline 
+    Karaf & 211 & 290 & 72.8\% & Good & 58\\ \hline
+    Dali & 86 & 175 & 49.1\% & Regular & 35\\ 
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+    \hspace{.5cm}%
+  }\hspace{1cm}
+  \subfloat[100 or more bundles]{%
+    \hspace{.5cm}%
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label \\  \hline
+    Openhab &   666 & 905 & 73.6\% & Good & 181\\ \hline
+    OSEE & 596 & 915 & 65.1\% & Good & 183\\ \hline
+    Tuscany Sca & 433 & 690 & 62.8\% & Good & 138 \\ \hline
+    JOnAS & 356 & 585 & 60.9\%  & Good & 117\\ \hline
+    Jitsi & 414 & 775 & 53.4\% & Regular & 155\\ \hline
+    BIRT & 315 & 645 & 48.8\% & Regular & 129\\ 
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+    \hspace{.5cm}%
+  }
+\end{table}
+\FloatBarrier  
+For small projects there is no news, \emph{Pax CDI} still winning. For larger projects \textbf{Openhab} is the new champion with a good quality in large code base. It is also interesting to note that we have three small projects among the five first positions in the quality rank. 
+
+The next table compares projects by LoC dividing them into small, medium and large sized. In this comparison small projects range from 0 to 100,000 lines of code, medium sized range from 100,001 to 500.000 LoC and large projects are the ones with more than half million lines of code:
+
+\begin{table}[htbp]
+  \small
+  \caption{Projects qualities by number of LoC}
+    \label{projects-quality-loc}
+  \subfloat[Up to 100,000 LoC]{%
+    \hspace{.5cm}%
+   \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label & LoC  \\  \hline
+    Pax CDI & 84 & 105 & 80\% & Very Good& 19,480\\ \hline 
+    Virgo & 132 & 180 & 73.3\% & Good & 77,859\\ \hline 
+    Karaf & 211 & 290 & 72.8\% & Good & 93,743\\ 
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+    \hspace{.5cm}%
+  }\hspace{1cm}
+  \subfloat[Between 100,001 and 500,00 LoC]{%
+    \hspace{.5cm}%
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label & LoC  \\  \hline
+    Openhab &   666 & 905 & 73.6\% & Good & 347,492\\ \hline
+    Tuscany Sca & 433 & 690 & 62.8\% & Good & 243,494\\ \hline
+    JOnAS & 356 & 585 & 60.9\%  & Good & 366,940\\ 
+   \Xhline{2\arrayrulewidth}
+   \end{tabular}
+   \hspace{.5cm}%
+   }\hspace{1cm}
+   \subfloat[More then 500,00 LoC]{%
+    \hspace{.5cm}%
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
+    \Xhline{2\arrayrulewidth}
+    Name & TQP & MQP & Points percent & Quality label & LoC \\  \hline
+    OSEE & 596 & 915 & 65.1\% & Good & 873,690\\ \hline
+    Jitsi & 414 & 775 & 53.4\% & Regular & 607,144\\ \hline
+    Dali & 86 & 175 & 49.1\%  & Regular & 1,058,160\\ \hline
+    BIRT & 315 & 645 & 48.8\% & Regular & 2,226,436\\ 
+   \Xhline{2\arrayrulewidth}
+    \end{tabular}
+    \hspace{.5cm}%
+  }
+\end{table}
+\FloatBarrier  
+In small category there is no surprise, \textbf{Pax CDI} is still leading. \textbf{Openhab} is the king of medium projects and \textbf{OSSE} is the winner among the larger group. 
+
+Note that the worse qualities are in larger projects as we expected. The two projects with more the one million LoC have the worst qualities measured by Intrabundle. The opposite is also valid and can be observed in small group table. 
