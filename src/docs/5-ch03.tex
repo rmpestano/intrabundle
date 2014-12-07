@@ -259,6 +259,9 @@ f(q) = \frac{TQP}{MQP};
 
 In terms of percentage of points obtained, more than 90\% of TQP is considered State of Art, between 90\% and 75\% is Very good quality, from 60\% to 75\% is Good, 40\% to 60\% is Regular and less than 40\% of TQP a bundle is considered Anti pattern in terms of software quality. 
 
+For example imagine we have three metrics and a bundle has 5QP(State of art) and 3QP(Good quality label) in the other two metrics> In this case the MQP is 15 (5*3) and TQP is 11(5 + 3 +3). In this example the bundle quality is 11/15(73\%) which maps to \emph{Good} quality label. 
+
+
 \subsubsection{Project Quality}
 \label{sec:project-quality}
 In Intrabundle, the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundles quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
@@ -279,7 +282,7 @@ f(q) = \frac{TQP}{MQP};
  if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
  if \( 0.4 <= f(q) \) then Anti Pattern;\\*
 
-In terms of percentage it's also the same rule used for bundle's quality. 
+In terms of percentage it's also the same rule used for bundle's quality. For example if a project has 3 bundles, one has 5QP(State of art) and other two has 3QP(good) then MQP for this case is 15(5*3) and TQP is 11(5 + 3 +3). In this example project final quality is 11/15(73\%) which maps to \emph{Good} quality label. 
 
 \subsubsection{Project metric quality}
 \label{sec:project-quality-metric}
@@ -301,6 +304,7 @@ f(q) = \frac{TQP}{MQP};
  if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
  if \( 0.4 <= f(q) \) then Anti Pattern;\\*
 
+So for example if a project has 3 bundles, one has 5QP(State of art) in LoC and other two has 3QP(good) then MQP is 15(5*3) and TQP is 11(5 + 3 +3). In this example project final quality on LoC is 11/15(73\%) which maps to \emph{Good} quality label.  
 
 \section{Intrabundle Reports}
 \label{sec:intrabundle-reports}

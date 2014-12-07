@@ -21,8 +21,8 @@ In this section is presented an overview of projects that were analyzed during t
     \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690\\ \hline
     \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480\\ \hline 
     \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494\\ \hline
-    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859\\ 
-
+    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859\\ \hline
+    Sum & 1051 & 4,962,094 \\
    \Xhline{2\arrayrulewidth}
 
     \end{tabular}
@@ -30,7 +30,7 @@ In this section is presented an overview of projects that were analyzed during t
 \end{table}
 \FloatBarrier 
 
-Note that number of bundle in parenthesis is considering bundles with zero lines of code. Also note that lines of code is considering only .java files removing comment lines.
+Note that number of bundle in parenthesis is considering bundles with zero lines of code which, in the extent of this work, are not considered for quality analysis. Also note that lines of code is considering only .java files removing comment lines.
 
 Below is a brief description of each project:
 
@@ -82,19 +82,56 @@ The winner on general category, considering Intrabundle metrics, is \textbf{Pax 
 
 \subsection{Metric quality comparison}
 
-The next category analyzes how good the projects are on each metric. It's important to note that each project maximum quality in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. 
+The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the quality points(QP) obtained and in parenthesis is the percentage of MQP that the value represents:  
 
 \begin{table}[h]
+\tiny
 \caption{Projects quality by metrics}
 \label{projects-metrics-quality}
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
+    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
     \Xhline{2\arrayrulewidth}
-    Name & 1\tablefootnote{LoC metric} & 2\tablefootnote{Publishes interfaces metric} & 3\tablefootnote{Uses framework metric} & 4\tablefootnote{Bundle dependency metric} & 5\tablefootnote{Stale references metric} & 6\tablefootnote{Declares permission metric} \\  \hline
-    BIRT & 45.6\% & 60.9\% & 40\% & 47.6\% & 99.8\% & 40.5\%\\ 
+    Name & MQP & LoC & Publishes interfaces & Uses framework & Bundle dependency & Stale references & Declares permission \\  \hline
+    BIRT & 645 & 294 (45.6\%) & 393 (60.9\%) & 258 (40\%) & 307 (47.6\%) & 644 (99.8\%) & 261 (40.5\%)\\ \hline
+    Dali & 175 & 74 (42.3\%) & 175 (100\%) & 70 (40\%) & 65 (37.1\%). & 174 (99.4\%) & 70 (40\%)\\ \hline
+    Jitsi & 775 & 492 (63.5\%) & 775 (100\%) & 310 (40\%) & 459 (59.2\%) & 473 (61\%) & 310 (40\%)\\ \hline
+    JOnAS & 585 & 358 (61.2\%) & 480 (82.1\%) & 252 (43.1\%) & 481 (82.2\%) & 573 (97.9\%) & 234 (40\%)\\ \hline
+    Karaf & 290 & 212 (73.1\%) & 257 (88.6\%) & 158 (54.5\%) &  290 (100\%) & 278 (95.9\%) & 116 (40\%)\\ \hline
+    Openhab & 905 & 672 (74.3\%)& 791 (87.4\%) & 806 (89.1\%)&  664 (73.4\%) & 901 (99.6\%) & 362 (40\%)\\ \hline
+    OSEE & 915 & 584 63.8\% & 909 (99.3\%) & 573 (62.6\%) & 529 (57.8\%) & 881 (96.3\%) & 366 (40\%)\\ \hline
+    Pax CDI & 105 & 85 (81\%) & 105 (100\%) & 66 (62.9\%) & 103 (98.1\%) & 98 (93.3\%) & 42 (40\%) \\ \hline
+    Tuscany SCA & 690 & 472 (68.4\%) & 684 (99.1\%) & 288 (41.7\%) & 451 (65.4\%) &  682 (98.8\%) & 276 (40\%) \\ \hline
+    Virgo & 180 & 127 (76.1\%) & 180 (100\%) & 78 (43.3\%) & 176 (97.8\%) & 162 (90\%) & 72 (40\%)\\
    \Xhline{2\arrayrulewidth}
     \end{tabular}
 \end{table}
 \FloatBarrier   
+
+Following is the champions on each metric:
+
+
+\begin{itemize}
+\item \emph{LoC}: Pax CDI has Very Good quality label on LoC;
+\item \emph{Publishes interfaces}: Dali, Jitsi, Pax CDI and Virgo are all tied on metric points(100\%) and are labeled \emph{State of Art} on this metric;
+\item \emph{Uses framework}: Openhab is \emph{Very Good} (almost State of art) on this metric;
+\item \emph{Bundle dependency}: Karaf is leading with 100\% and is \emph{State of art} on this metric followed by Pax CDI and Virgo which are also State of art(>=90\%) but not with 100\% of quality points;  
+\item \emph{Stale references}: Birt is leading on this metric, it has only one (probably) stale reference class among its 2 million line of code. Openhab loses by 0.2\% with 2 stale references on its 300 thousands of lines of code.  
+\item \emph{Declares permission}: Birt is the only analyzed project that has a bundle which declares permission;
+\end{itemize}
+
+Some interesting facts can be observed looking at table \ref{projects-metrics-quality}:
+
+\textbf{Birt} was the only project to use OSGi permission mechanism among analyzed projects. In fact with \emph{40.5\%}\footnote{When a bundle does not declares permission it receives 2 metric points(regular label). So if a project has all bundles with regular label it will have 40\% of MQP} means that only one Birt bundle declared permission which was \\\emph{org.eclipse.birt.report.engine.emitter.postscript}.
+
+\textbf{Eclipse Dali} project has the worst \emph{dependency quality} metric which a sign that its bundles are high coupled, as opposed to \textbf{Karaf} which may have low coupled bundles.
+
+Projects that \emph{use a framework} for managing services usually has less stale references because they are not likely to code for publish or consume service as a framework is doing that for them.
+
+\textbf{Jitsi} has more \emph{Stale references} which may affect its \emph{reliability}. Although it has lots of stale references compared to other projects it received a \emph{Good} quality label which means that this metric formula is not well dimensioned and may be revisited in future.    
+
+It looks like \emph{publishing only interfaces} and hiding implementation is a well known and disseminated good practice as we have good punctuation on this metric in most analyzed projects.  
+
+We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects.
+ 
 
 % winner by metrics(who is best on each metric)
 % winner by loc size (small 0 - 100000, 10000 - 500000, 500000+ )
