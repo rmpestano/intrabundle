@@ -62,19 +62,23 @@ PMD\footnote{A very nice tool for static code analysis. It is based on rules tha
 
 \section{Implementation Overview}
 
-Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible for scanning OSGi bundles recursively in file system. Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on metrics produced by OSGiPlugin and BundlePlugin.
+Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible for scanning OSGi bundles recursively in file system. 
 
-Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory containing an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
+
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory that is an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
 
 Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
 
+Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on data contained on OSGiProject and OSGiModule objects. To calculate projects qualities Intrabundle creates the \emph{Metric} and \emph{MetricPoints} objects. MetricPoints has a list of Metrics and the quality is calculated in MetricPoints object based on all metrics it has. The final quality is represented by a Java object called \emph{MetricScore} which holds the \emph{quality label}.     
+
+\newpage
 Figure \ref{intrabundle-arch} illustrates Intrabundle architecture:
 
 \begin{figure}[h]
 \caption{Intrabundle Architecture}
 \label{intrabundle-arch}
 \centering
-\includegraphics[scale=0.8]{intrabundle-arch}
+\includegraphics[scale=0.77]{intrabundle-arch}
 \end{figure}  
 \FloatBarrier
 
@@ -114,7 +118,7 @@ After identifying OSGi bundles and OSGi projects Intrabundle needs to extract us
     \Xhline{2\arrayrulewidth}
     Name & Description\\  \hline
     Loc & Lines of code.\\ \hline
-    Declarative services & Verifies if bundles uses declarative service\footnote{Is a component model that simplifies the creation of components that publish and/or reference OSGi Services.}.\\ \hline
+    Declarative services & Verifies if bundles uses declarative services\footnote{Is a component model that simplifies the creation of components that publish and/or reference OSGi Services.}.\\ \hline
     Ipojo & Verify if bundles uses Ipojo\footnote{Is a service component runtime aiming to simplify OSGi application development} \\ \hline
     Blueprint & Verify if bundles uses Blueprint\footnote{Is a way of instantiating and consuming services provided by others by means of an external XML configuration file} \\ \hline
     Stale References & Looks for possible Stale services references.\\ \hline
@@ -135,7 +139,7 @@ Some observations about collected data. \textbf{Lines of code} are an indicative
 \textbf{Stale Services References}\footnote{Refers to code that may retain OSGi service references even when the providing bundles are gone \citep{Gama 2012}} are detected via approximation, in other words, Intrabundle counts the number of services \emph{gets} and \emph{ungets}\footnote{Operations that consume and release a service reference respectively} for each class a bundle has. If the number of gets and ungets are equal then the class have no stale references, otherwise it is considered as having stale references.
 \textbf{Bundle dependencies} are calculated by looking at OSGi Manifest file in exported and imported packages. If bundle A \emph{imports} package \emph{x.y.z} and bundle B \emph{exports} package \emph{x.y.z} we say that bundle A depends on bundle B. 
 \textbf{Required bundles} just counts the number of required bundles declared in manifest.
-\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only imports interfaces.
+\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only publishes interfaces.
 \textbf{Declares permission} verifies if bundle implements security by contract searching for \emph{permission.perm} file.
 
 Each information retrieved by Intrabundle is usually mapped to a Forge command, see Listing \ref{forge_command_example} which is the command that prints bundle exported packages to the Forge console:
@@ -186,7 +190,7 @@ The first metric created is \textbf{LoC}, its the simplest one. LoC is based on 
 \text{ANTI PATTERN}& \text{if LoC > 2000}. \\
 \end{cases} \)\newline  
 
-Second metric is \textbf{Publishes interfaces} meaning that bundles should hide their implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline
+Second metric is \textbf{Publishes interfaces} meaning that bundles should hide its implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline
 
 \(\text{Publishes interfaces}=\begin{cases}
 \text{STATE OF ART}& \text{if publishes only interfaces},\\
@@ -204,7 +208,7 @@ Next metric is \textbf{Bundle dependencies}, it evaluates the coupling between b
 \text{ANTI PATTERN}& \text{if Bundle dependencies >= 10}. \\
 \end{cases} \)\newline 
 
-Next one is \textbf{Uses framework}, in complex application it is important to usa a framework to manage bundle services. This metrics takes into account 3 well known frameworks by OSGi application: \emph{IPojo}, \emph{Declarative services} and \emph{Blueprint}: \newline
+Next one is \textbf{Uses framework}, in complex application it is important to use a framework to manage bundle services. This metrics takes into account 3 well known frameworks by OSGi applications: \emph{IPojo}, \emph{Declarative services} and \emph{Blueprint}: \newline
 
 \(\text{Uses framework}=\begin{cases}
 \text{STATE OF ART}& \text{if uses framework},\\
@@ -218,7 +222,7 @@ Next metric is \textbf{Stale references}, it focus on a very common problem in O
 
 \(\text{Stale references}=\begin{cases}
 \text{STATE OF ART}& \text{no stale references},\\
-\text{GOOD}& \frac{NS}{NC} < 0.1, \\
+\text{VERY GOOD}& \frac{NS}{NC} < 0.1, \\
 \text{GOOD}& \frac{NS}{NC} < 0.25, \\
 \text{REGULAR}& \frac{NS}{NC} < 0.5, \\
 \text{ANTI PATTERN}& \frac{NS}{NC} >= 0.5. \\
@@ -239,7 +243,7 @@ The last metric created in this work is \textbf{Declares permission}, it is conc
 OSGi \emph{project} quality and \emph{bundle} quality are calculated by Intrabundle using the quality labels. Each quality \emph{label} adds points to bundle and project final quality which is based on percentage of quality points(QP) obtained. \emph{State of art} add \textbf{5QP}, \emph{Very good} \textbf{4QP}, \emph{Good} adds \textbf{3QP}, \emph{Regular} \textbf{2QP} and \emph{Anti pattern} adds \textbf{1QP}
 
 \subsubsection{Bundle Quality}
-Bundle final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP}, the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
+Bundle final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained on each created metric, and \emph{Maximum Quality Points} \textbf{MQP} that is the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of metrics. \newline
 
@@ -259,12 +263,12 @@ f(q) = \frac{TQP}{MQP};
 
 In terms of percentage of points obtained, more than 90\% of TQP is considered State of Art, between 90\% and 75\% is Very good quality, from 60\% to 75\% is Good, 40\% to 60\% is Regular and less than 40\% of TQP a bundle is considered Anti pattern in terms of software quality. 
 
-For example imagine we have three metrics and a bundle has 5QP(State of art) and 3QP(Good quality label) in the other two metrics> In this case the MQP is 15 (5*3) and TQP is 11(5 + 3 +3). In this example the bundle quality is 11/15(73\%) which maps to \emph{Good} quality label. 
+For example imagine we have three metrics and a bundle has 5QP(State of art)in one metric and 3QP(Good quality label) in the other two metrics. In this case the MQP is 15 (5*3) and TQP is 11(5 + 3 +3). In this example the bundle quality is 11/15(73\%) which maps to \emph{Good} quality label. 
 
 
 \subsubsection{Project Quality}
 \label{sec:project-quality}
-In Intrabundle, the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundles quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
+In Intrabundle the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundles quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of bundles in the project. \newline
 
@@ -286,7 +290,7 @@ In terms of percentage it's also the same rule used for bundle's quality. For ex
 
 \subsubsection{Project metric quality}
 \label{sec:project-quality-metric}
-The last way to measure quality using Intrabundle is to analyze the project quality on each metric. The project quality in a metric is the sum of all \emph{bundles qualities} on that metric. The total points a bundle can have in a metric is considering all bundles State of art on that metric. The quality label for a project metric quality is also define as percentage of points obtained from maximum points:
+The last way to measure quality using Intrabundle is to analyze the project quality on each metric. The project quality in a metric is the sum of all \emph{bundles qualities} on that metric. The total points a bundle can have in a metric is considering all bundles State of art on that metric. The quality label for a project metric quality is also defined as percentage of points obtained from maximum points:
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of bundles in the project. \newline
 
@@ -348,7 +352,7 @@ As in general report, in metrics report the first section of the report gives an
 \end{figure}  
 \FloatBarrier
 
-All reports generated by Intrabundle can be found online \cite{intrabundle reports 2014}.
+All reports generated by Intrabundle can be found online \citep{intrabundle reports 2014}.
 
 \section{Intrabundle Quality}
 In this section we will see how Intrabundle's quality is managed and how some concepts of \textit{section \ref{sec:quality}} were applied to the project. As the project is not OSGi based we can't apply Intrabundle's metrics on itself so we used classical approaches to assure the quality of the project.
@@ -366,17 +370,17 @@ Intrabundle internal quality is managed by PMD and JaCoCo. PMD is an static anal
 \end{figure}
 
 \FloatBarrier
-
+\newpage
 \subsection{External quality}
 Intrabunde external quality is assured by automated whitebox tests so we can verify if Intrabundle is working as expected, if it meets its functional requirements.
 
 \subsubsection{Example}
-As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up and running during tests and that is done by Arquillian \citep{dan 2011}, an integration test platform. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
+As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up during tests. That is done by Arquillian \citep{dan 2011}, an integration testing platform. The tests are also executed online on each commit\footnote{A command that pushes software changes to version control} by \href{https://travis-ci.org/rmpestano/intrabundle}{Travisci}\footnote{An online continuous integration server}, a technique called \emph{continuous integration}. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
 
 \begin{figure}[h]
 \caption{Intrabundle integration tests}
 \label{intrabundle-integ-tests}
-\includegraphics[scale=0.6]{intrabundle-external-quality}
+\includegraphics[scale=0.45]{intrabundle-external-quality}
 \centering
 \end{figure}
 

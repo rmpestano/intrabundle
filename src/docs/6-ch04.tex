@@ -1,6 +1,6 @@
 \chapter{Bundle Introspection Results}
 
-Intrabundle was used to introspect and apply its metrics to 10 real OSGi projects, the projects are all open sourced and vary and size, teams and domain. 
+Intrabundle was used to introspect and apply its metrics to 10 real OSGi projects, the projects are all open sourced and vary in size, teams and domain. 
 
 \section{Analyzed Projects}
 In this section is presented an overview of projects that were analyzed during this work. Table \ref{osgi-analyzed-projects} shows projects in terms of \emph{size}:
@@ -30,32 +30,32 @@ In this section is presented an overview of projects that were analyzed during t
 \end{table}
 \FloatBarrier 
 
-Note that number of bundle in parenthesis is considering bundles with zero lines of code which, in the extent of this work, are not considered for quality analysis. Also note that lines of code is considering only .java files removing comment lines.
+Note that number of bundle in parenthesis is considering bundles with zero lines of code which, in the extent of this work, are not considered for quality analysis. Also note that lines of code is considering only .java files excluding comment lines.
 
 Below is a brief description of each project:
 
 \begin{enumerate}
-\item \textbf{BIRT}: is an open source software project that provides the BIRT technology platform to create data visualizations and reports that can be embedded into rich client and web applications, especially those based on Java and Java EE;
+\item \textbf{BIRT}: Is an open source software project that provides the BIRT technology platform to create data visualizations and reports that can be embedded into rich client and web applications, especially those based on Java and Java EE;
 \item \textbf{Dali}: The Dali Java Persistence Tools Project provides extensible frameworks and tools for the definition and editing of Object-Relational (O/R) mappings for Java Persistence API (JPA) entities;
-\item \textbf{Jitsi}: is an audio/video Internet phone and instant messenger written in Java. It supports some of the most popular instant messaging and telephony protocols such as SIP, Jabber/XMPP (and hence Facebook and Google Talk), AIM, ICQ, MSN, Yahoo! Messenger;
-\item \textbf{JOnAS}: is a leading edge open source Java EE 6 Web Profile certified OSGi Enterprise Server;
-\item \textbf{Karaf}: Apache Karaf is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed
-\item \textbf{Openhab}: a open source home automation software for integrating different home automation systems and technologies into one single solution that allows over-arching automation rules and that offers uniform user interfaces;
+\item \textbf{Jitsi}: Is an audio/video Internet phone and instant messenger written in Java. It supports some of the most popular instant messaging and telephony protocols such as SIP, Jabber/XMPP (and hence Facebook and Google Talk), AIM, ICQ, MSN, Yahoo! Messenger;
+\item \textbf{JOnAS}: Is a leading edge open source Java EE 6 Web Profile certified OSGi Enterprise Server;
+\item \textbf{Karaf}: Apache Karaf is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed;
+\item \textbf{Openhab}: An open source home automation software for integrating different home automation systems and technologies into one single solution that allows over-arching automation rules and that offers uniform user interfaces;
 \item \textbf{OSEE}: The Open System Engineering Environment is an integrated, extensible tool environment for large engineering projects. It provides a tightly integrated environment supporting lean principles across a product's full life-cycle in the context of an overall systems engineering approach;
-\item \textbf{Pax CDI}: brings the power of Context and Dependency Injection(CDI) to the OSGi platform; 
+\item \textbf{Pax CDI}: Brings the power of Context and Dependency Injection(CDI) to the OSGi platform; 
 \item \textbf{Tuscany SCA}: is a programming model for abstracting business functions as components and using them as building blocks to assemble business solutions; 
-\item \textbf{Virgo}: is a completely module-based Java application server that is designed to run enterprise Java applications and Spring-powered applications with a high degree of flexibility and reliability; 
+\item \textbf{Virgo}: Is a completely module-based Java application server that is designed to run enterprise Java applications and Spring-powered applications with a high degree of flexibility and reliability; 
 \end{enumerate}
 
 
 \section{Projects Quality Results}
 In this section will be presented the resulting qualities of analyzed projects and some comparisons. First comparison groups all analyzed  projects comparing their \emph{bundle quality} and \emph{metric quality}. Later the projects are separated by groups in terms of size of LoC and number of bundles.
 
-All projects quality reports that provided data for all comparisons are available online, see \cite{intrabundle reports 2014} for detailed information. 
+All projects quality reports that provided data for all comparisons are available online, see \citep{intrabundle reports 2014} for detailed information. 
 
 \subsection{General quality comparison}
 
-The first table shows general projects qualities, it is ordered by quality points percentage. Its important to note that each projects maximum quality points(MQP) is different because it depends on the number of bundles, see \ref{sec:project-quality-} for further information:
+The first table shows general projects qualities, it is ordered by quality points percentage. Its important to note that each projects maximum quality points(MQP) is different because it depends on the number of bundles, see \ref{sec:project-quality} for further information:
 
 \begin{table}[h]
 \caption{Projects general quality}
@@ -82,7 +82,7 @@ The winner on general category, considering Intrabundle metrics, is \textbf{Pax 
 
 \subsection{Metric quality comparison}
 
-The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the \emph{total quality points}(TQP) obtained and in parenthesis is the percentage of MQP that the value represents:  
+The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the \emph{total quality points}(TQP) obtained and in parenthesis is the percentage of MQP that this value represents:  
 
 \begin{table}[h]
 \tiny
@@ -128,7 +128,7 @@ Projects that \emph{use a framework} for managing services usually has less stal
 
 \textbf{Jitsi} has more \emph{Stale references} which may affect its \emph{reliability}. Although it has lots of stale references compared to other projects it received a \emph{Good} quality label which means that this metric formula is not well dimensioned and may be revisited in future.    
 
-It looks like \emph{publishing only interfaces} and hiding implementation is a well known and disseminated good practice as we have good punctuation on this metric in most analyzed projects.  
+It looks like \emph{publishing only interfaces} for hiding implementation is a well known and disseminated good practice as we have good punctuation on this metric in most analyzed projects.  
 
 We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects.
  
