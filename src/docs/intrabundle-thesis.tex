@@ -20,8 +20,8 @@
 \usepackage{graphicx}           % pacote para importar figuras
 \graphicspath{ {images/} }
 \usepackage[pdftex]{thumbpdf} 
-\usepackage[toc,page]{appendix}
 \usepackage[section]{placeins}
+\usepackage[titletoc]{appendix}
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{color}
@@ -84,6 +84,7 @@
 
 
 \newcommand{\ts}{\textsuperscript}
+
 
 %
 % Informações gerais
@@ -300,6 +301,9 @@ Industrial Perspective on Static Analysis. \textbf{Software Engineering Journal}
 \bibitem[KNORR, E., 2014]{Knorr 2014} KNORR, E.
 What microservices architecture really means. \textbf{InfoWorld}, Available at: \url{http://www.infoworld.com/article/2682502/application-development/application-development-what-microservices-architecture-really-means.html}. Accessed in: November 18 2014.
 
+\bibitem [TAVARES et al., 2008]{Tavares 2008} TAVARES, A. L. C.; VALENTE, M. T.
+A Gentle Introduction to OSGi. \textbf{ACM SIGSOFT Software Engineering Notes}, Belo Horizonte, V. 33, no. 5, September 2008. 
+
 \bibitem[KRILL, P., 2012]{Krill 2012} KRILL, P.
 Project Jigsaw delayed until Java 9. \textbf{InfoWorld}, Available at: \url{http://www.infoworld.com/article/2617584/java/project-jigsaw-delayed-until-java-9.html}. Accessed in: November 21 2014.
 
@@ -348,17 +352,6 @@ OSGi Framework Architecture - Three Conceptual Layers. Available at: \url{http:/
 
 \end{thebibliography}
 
-\begin{appendices}
-\chapter{Intrabundle Usage Example}
-
-\section{Setup environment}
-
-- instaling forge;\\*- instaling intrabundle; \\*- starting forge;\\*- download OSGi example project 
-
-\section{Begin Introspection}
-- fire some commands at project and bundle level\\*- OSGi Scan \\*- generate some reports
-
-\end{appendices}
-
+\include{8-appendix}
 
 \end{document}
