@@ -104,7 +104,7 @@
 				<text><![CDATA[Bundle dependency:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="9b2adee2-74e3-450c-8bee-9c657b174893" x="320" y="97" width="451" height="20"/>
+				<reportElement uuid="9b2adee2-74e3-450c-8bee-9c657b174893" x="320" y="97" width="458" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -126,7 +126,7 @@
 				<text><![CDATA[Lines of code:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="2945bd2a-05ed-4876-bd20-e7ae4c2b82c9" x="320" y="125" width="451" height="20"/>
+				<reportElement uuid="2945bd2a-05ed-4876-bd20-e7ae4c2b82c9" x="320" y="125" width="459" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -156,7 +156,7 @@
 				<text><![CDATA[Publishes interfaces:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="5af08548-81c8-4fed-906f-c63c9fb470f8" x="320" y="68" width="451" height="20"/>
+				<reportElement uuid="5af08548-81c8-4fed-906f-c63c9fb470f8" x="320" y="68" width="459" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -171,7 +171,7 @@
 				<text><![CDATA[N° of bundles:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="2c4c5570-f97d-4840-938e-4d23b1eb7366" x="320" y="155" width="453" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="2c4c5570-f97d-4840-938e-4d23b1eb7366" x="320" y="155" width="459" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -186,7 +186,7 @@
 				<text><![CDATA[Uses framework:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="3f34f16c-a778-4f6f-8c50-92aa6b5a43e3" x="320" y="188" width="453" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="3f34f16c-a778-4f6f-8c50-92aa6b5a43e3" x="320" y="188" width="458" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -385,7 +385,7 @@
 				<text><![CDATA[Declares permission:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="01e9bdac-d1f8-462f-bf1d-09bce1a3eaf5" x="319" y="221" width="453" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="01e9bdac-d1f8-462f-bf1d-09bce1a3eaf5" x="319" y="221" width="460" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>

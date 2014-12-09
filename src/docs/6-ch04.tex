@@ -11,18 +11,18 @@ In this section is presented an overview of projects that were analyzed during t
 \begin{center}      
     \begin{tabular}{  p{3cm} | p{3cm} | p{3cm} | p{3cm} | p{3cm}}
     \Xhline{2\arrayrulewidth}
-    Name & N\ts{o} of bundles & LoC & LoC/bundle& Analisys time\tablefootnote{Time to extract data and generate reports in a machine with the following characteristics: OS Ubuntu 12.04, } \\ \hline
-    \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436 & 17,259 & 123\\ \hline
-    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,160 & 30,233 & 1432\\ \hline
-    \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144 & 3,917&1234\\ \hline
-    \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940 & 3,136&243\\ \hline
-    \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743 & 1,616&234\\ \hline
-    \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492 & 1,919&2345\\ \hline
-    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690 & 4774&233455\\ \hline
-    \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480 & 927&223\\ \hline 
-    \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494 & 1,764&342\\ \hline
-    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859 & 2,162&2324\\ \hline
-    Sum & 1051 & 4,962,094 & 4721 & 123 \\
+    Name & N\ts{o} of bundles & LoC & LoC/bundle& Analisys time(sec) \\ \hline
+    \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436 & 17,259 & 73.9\\ \hline
+    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,160 & 30,233 & 56.9\\ \hline
+    \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144 & 3,917& 29.6\\ \hline
+    \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940 & 3,136&27.5\\ \hline
+    \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743 & 1,616&8.6\\ \hline
+    \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492 & 1,919&23.2\\ \hline
+    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690 & 4774&10.3\\ \hline
+    \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480 & 927&2.5\\ \hline 
+    \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494 & 1,764&23.2\\ \hline
+    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859 & 2,162&5.6\\ \hline
+    Sum & 1051 & 4,962,094 & 4721 & 261.3(\textasciitilde{}4min) \\
    \Xhline{2\arrayrulewidth}
 
     \end{tabular}
@@ -31,6 +31,7 @@ In this section is presented an overview of projects that were analyzed during t
 \FloatBarrier 
 
 Note that number of bundle in parenthesis is considering bundles with zero lines of code which, in the extent of this work, are not considered for quality analysis. Also note that lines of code is considering only .java files excluding comment lines.
+Analysis time column is the time in seconds to extract data and generate reports(general and metrics) using Intrabundle osgi-scan 12 command on the root directory of each projects. The environment the reports were generated was: Sony Vaio laptop eg series, Intel(R) Core(TM) i5-2410M CPU @ 2.30GHz, 4GB RAM, OS Ubuntu 12.04, Java version "1.7.0\_67".
 
 Below is a brief description of each project:
 
