@@ -1,7 +1,13 @@
 \chapter{Conclusion}
-This work presented the design and implementation of a tool called Intrabundle which extracts information from OSGi projects to calculate its quality. All basic concepts were presented
+This work presented the design and implementation of a tool called Intrabundle. The tool extracts useful information from OSGi projects to calculate its internal quality based on static code analysis. The focus of the analysis was internal design and architecture of components where OSGi application really differs from classical Java systems. 
+
+All basic concepts were presented and it became clear that new approaches were needed to extract quality from OSGi applications. Metrics were created based on good practice in the context of Java modular applications. A quality calculation system was created to measure projects quality attributes. In the end Real OSGi projects varying from KLOCs to thousands of KLOCs, from application servers to IDEs were analyzed using the metrics proposed.
+
+Intrabundle's quality was also a concern of this work As the tool was not based on OSGi runtime, classical good practices like integration tests and static and dynamic analysis were applied to the tool as well as good programming techniques like immutable objects and dependency injection.      
+The tool proved to be very useful and performed really well, taking just seconds to analyze and generate reports from huge OSGi projects.
+
 
 
 \section{Future Work}
-
+Some metrics were proposed and we think more metrics can be created from the information already been collected. Also more data can be collected and new metrics created to enrich the analysis. We notice during experiments that \emph{Stale reference} metric was not well dimensioned so this and the other metrics should be calibrated based o empirical results.
 

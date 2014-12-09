@@ -169,7 +169,6 @@ public class JasperManager implements Serializable {
             if (is == null) {
                 throw new RuntimeException("File " + path + " not found");
             }
-            params.put("INITIAL_TIME", new Date());
             params.put("SUBREPORT_DIR", "/reports/");
             return JasperFillManager.fillReport(is, params, new JRBeanCollectionDataSource(data));
         } catch (JRException e) {
@@ -180,6 +179,7 @@ public class JasperManager implements Serializable {
     public void reportFromProject(OSGiProject project, String reportName) {
         removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("INITIAL_TIME", new Date());
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         params.put("projectQuality", metrics.calculateProjectModeQuality().name());
@@ -212,6 +212,7 @@ public class JasperManager implements Serializable {
     public void reportFromProject(OSGiProject project, String... reportsName) {
         removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("INITIAL_TIME", new Date());
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
         params.put("projectQuality", metrics.calculateProjectModeQuality().name());
