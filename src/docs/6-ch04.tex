@@ -44,7 +44,7 @@ Below is a brief description of each project:
 \item \textbf{Openhab}: An open source home automation software for integrating different home automation systems and technologies into one single solution that allows over-arching automation rules and that offers uniform user interfaces;
 \item \textbf{OSEE}: The Open System Engineering Environment is an integrated, extensible tool environment for large engineering projects. It provides a tightly integrated environment supporting lean principles across a product's full life-cycle in the context of an overall systems engineering approach;
 \item \textbf{Pax CDI}: Brings the power of Context and Dependency Injection(CDI) to the OSGi platform; 
-\item \textbf{Tuscany SCA}: is a programming model for abstracting business functions as components and using them as building blocks to assemble business solutions; 
+\item \textbf{Tuscany SCA}: Is a programming model for abstracting business functions as components and using them as building blocks to assemble business solutions; 
 \item \textbf{Virgo}: Is a completely module-based Java application server that is designed to run enterprise Java applications and Spring-powered applications with a high degree of flexibility and reliability; 
 \end{enumerate}
 
@@ -54,7 +54,7 @@ In this section will be presented the resulting qualities of analyzed projects a
 
 All projects quality reports that provided data for all comparisons are available online, see \citep{intrabundle reports 2014} for detailed information. 
 
-\subsection{General quality comparison}
+\subsection{General Quality Comparison}
 
 The first table shows general projects qualities, it is ordered by quality points percentage. Its important to note that each projects maximum quality points(MQP) is different because it depends on the number of bundles, see \ref{sec:project-quality} for further information:
 
@@ -81,7 +81,7 @@ The first table shows general projects qualities, it is ordered by quality point
 
 The winner on general category, considering Intrabundle metrics, is \textbf{Pax CDI} project which obtained 80\% of quality points and received a \emph{Very Good quality label}. Pax CDI is a project from \emph{OPS4J - Open Participation Software for Java} which is a community that is trying to build a new, more open model for Open Source development, where not only the usage is Open and Free, but the Participation is Open as well. 
 
-\subsection{Metrics qualities comparison}
+\subsection{Metrics Qualities Comparison}
 
 The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the \emph{total quality points}(TQP) obtained and in parenthesis is the percentage of MQP that this value represents:  
 
@@ -89,19 +89,20 @@ The next category analyzes how good the projects are on each metric. It's import
 \tiny
 \caption{Projects quality by metrics}
 \label{projects-metrics-quality}
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
+    \begin{tabular}{  p{1,5cm} | p{1cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
     \Xhline{2\arrayrulewidth}
     Name & MQP & LoC & Publishes interfaces & Uses framework & Bundle dependency & Stale references & Declares permission \\  \hline
-    BIRT & 645 & 294 (45.6\%) & 393 (60.9\%) & 258 (40\%) & 307 (47.6\%) & 644 (99.8\%) & 261 (40.5\%)\\ \hline
-    Dali & 175 & 74 (42.3\%) & 175 (100\%) & 70 (40\%) & 65 (37.1\%). & 174 (99.4\%) & 70 (40\%)\\ \hline
-    Jitsi & 775 & 492 (63.5\%) & 775 (100\%) & 310 (40\%) & 459 (59.2\%) & 473 (61\%) & 310 (40\%)\\ \hline
-    JOnAS & 585 & 358 (61.2\%) & 480 (82.1\%) & 252 (43.1\%) & 481 (82.2\%) & 573 (97.9\%) & 234 (40\%)\\ \hline
-    Karaf & 290 & 212 (73.1\%) & 257 (88.6\%) & 158 (54.5\%) &  290 (100\%) & 278 (95.9\%) & 116 (40\%)\\ \hline
-    Openhab & 905 & 672 (74.3\%)& 791 (87.4\%) & 806 (89.1\%)&  664 (73.4\%) & 901 (99.6\%) & 362 (40\%)\\ \hline
-    OSEE & 915 & 584 63.8\% & 909 (99.3\%) & 573 (62.6\%) & 529 (57.8\%) & 881 (96.3\%) & 366 (40\%)\\ \hline
-    Pax CDI & 105 & 85 (81\%) & 105 (100\%) & 66 (62.9\%) & 103 (98.1\%) & 98 (93.3\%) & 42 (40\%) \\ \hline
-    Tuscany SCA & 690 & 472 (68.4\%) & 684 (99.1\%) & 288 (41.7\%) & 451 (65.4\%) &  682 (98.8\%) & 276 (40\%) \\ \hline
-    Virgo & 180 & 127 (76.1\%) & 180 (100\%) & 78 (43.3\%) & 176 (97.8\%) & 162 (90\%) & 72 (40\%)\\
+    BIRT & 645 & 294 (45.6\%) regular & 393 (60.9\%) good& 258 (40\%) regular& 307 (47.6\%) regular& 644 (99.8\%) state of art & 261 (40.5\%) regular\\ \hline
+    Dali & 175 & 74 (42.3\%) regular & 175 (100\%) state of art& 70 (40\%) regular & 65 (37.1\%) anti pattern. & 174 (99.4\%) state of art& 70 (40\%) regular\\ \hline
+    Jitsi & 775 & 492 (63.5\%) good & 775 (100\%) state of art& 310 (40\%) regular& 459 (59.2\%) regular& 473 (61\%) good& 310 (40\%) regular\\ \hline
+    JOnAS & 585 & 358 (61.2\%) good & 480 (82.1\%) very good& 252 (43.1\%) regular& 481 (82.2\%) very good& 573 (97.9\%) state of art& 234 (40\%) regular\\ \hline
+    Karaf & 290 & 212 (73.1\%) good & 257 (88.6\%) very good& 158 (54.5\%) regular&  290 (100\%) state of art& 278 (95.9\%) state of art& 116 (40\%) regular\\ \hline
+    Openhab & 905 & 672 (74.3\%) good& 791 (87.4\%) very good& 806 (89.1\%) very good&  664 (73.4\%) good& 901 (99.6\%) state of art& 362 (40\%) regular\\ \hline
+    OSEE & 915 & 584 (63.8\%) good& 909 (99.3\%) state of art& 573 (62.6\%) good& 529 (57.8\%) regular& 881 (96.3\%) state of art& 366 (40\%) regular\\ \hline
+    Pax CDI & 105 & 85 (81\%) very good & 105 (100\%) state of art & 66 (62.9\%) good& 103 (98.1\%) state of art & 98 (93.3\%) state of art& 42 (40\%) regular\\ \hline
+    Tuscany SCA & 690 & 472 (68.4\%) good& 684 (99.1\%) state of art & 288 (41.7\%) regular& 451 (65.4\%) good&  682 (98.8\%) state of art& 276 (40\%) regular\\ \hline
+    Virgo & 180 & 127 (76.1\%) very good& 180 (100\%) state of art & 78 (43.3\%) regular & 176 (97.8\%) state of art& 162 (90\%) state of art & 72 (40\%) regular\\ \hline
+    Average  & & 64.9\% - good & 91.7\% - state of art & 51.7\% - regular  & 71.8\% - good & 93.2\% - state of art & 40.05\% - regular\\
    \Xhline{2\arrayrulewidth}
     \end{tabular}
 \end{table}
@@ -131,9 +132,12 @@ Projects that \emph{use a framework} for managing services usually has less stal
 
 It looks like \emph{publishing only interfaces} for hiding implementation is a well known and disseminated good practice as we have good punctuation on this metric in most analyzed projects.  
 
-We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects.
+We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects. We may infer that most bundles are high cohesive as they receive good quality label on LoC metric.
+
+Bundle coupling seen to be good among analyzed projects as the average quality on bundle dependency was good.
+
  
-\subsection{Projects qualities by size}
+\subsection{Projects Qualities by Size}
 
 In the tables below the projects are separated by size as we believe that comparing projects with large code base with minor sized projects is unfair. It is easier to keep good practices in new projects as opposed to bigger projects where teams are usually larger, a person hardly will know every detail, multiple versions are being worked in parallel and so on.  In this section we separate analyzed projects by LoC and number of bundles. Table \ref{projects-quality-bundle} separates projects by bundles where small projects range from 0 to 100 bundles and large projects has more then 100 bundles.
 
@@ -174,7 +178,7 @@ In the tables below the projects are separated by size as we believe that compar
 \FloatBarrier  
 For small projects there is no news, \emph{Pax CDI} still winning. For larger projects \textbf{Openhab} is the new champion with a good quality in large code base. It is also interesting to note that we have three small projects among the five first positions in the quality rank. 
 
-The next table compares projects by LoC dividing them into small, medium and large sized. In this comparison small projects range from 0 to 100,000 lines of code, medium sized range from 100,001 to 500.000 LoC and large projects are the ones with more than half million lines of code:
+The next table compares projects by LoC dividing them into small, medium and large sized. In this comparison small projects range from 0 to 100,000 lines of code, medium sized range from 100,001 to 500,000 LoC and large projects are the ones with more than half million lines of code:
 
 \begin{table}[htbp]
   \small
@@ -222,3 +226,22 @@ The next table compares projects by LoC dividing them into small, medium and lar
 In small category there is no surprise, \textbf{Pax CDI} is still leading. \textbf{Openhab} is the king of medium projects and \textbf{OSSE} is the winner among the larger group. 
 
 Note that the worse qualities are in larger projects as we expected. The two projects with more the one million LoC have the worst qualities measured by Intrabundle. The opposite is also valid and can be observed in small group table. 
+
+\section{Results}
+In this section we summarize the results obtained by Intrabundle in previous sections. 
+The first thing to note is that Intrabundle could analyze big projects in a small amount of time. It analyzed more than 1000 bundles and almost 5 million lines of code and generated detailed reports in a few minutes.
+
+We noted that smaller projects are easier to keep good practices and that reflected on the resulting qualities where the smaller projects were on the top. We also noted that good quality is possible in bigger projects, as proved by \emph{Openhab}.
+
+Bundle cohesion seem to be good on most analyzed projects as they obtained good quality points on LoC metric.
+
+Publishes Interfaces metric received the higher quality points and proved to be a very disseminated good practice among OSGi projects.
+
+As opposed to Publishing only interfaces, the permission by contract is not being adopted in analyzed projects and received the worst punctuation.
+
+Stale references metric was not well dimensioned as projects received good punctuation(State of art) although Stale references were found on most projects. This metric is close related to memory leaks and system reliability but was too relaxed in comparison to its importance. 
+
+About coupling, the bundle dependency metric showed that in most analyzed projects the bundles are low coupled. Most projects received \emph{Good} quality label on this metric.
+
+Although using a framework for service management is a good practice, it is not so popular in projects we used as example. Maybe this metric need to be revisited because not all bundles publish or consume services.
+

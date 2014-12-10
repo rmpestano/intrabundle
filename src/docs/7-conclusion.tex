@@ -4,10 +4,13 @@ This work presented the design and implementation of a tool called Intrabundle. 
 All basic concepts were presented and it became clear that new approaches were needed to extract quality from OSGi applications. Metrics were created based on good practice in the context of Java modular applications. A quality calculation system was created to measure projects quality attributes. In the end Real OSGi projects varying from KLOCs to thousands of KLOCs, from application servers to IDEs were analyzed using the metrics proposed.
 
 Intrabundle's quality was also a concern of this work so classical good practices like integration tests, static and dynamic analysis were applied to the tool as well as good programming techniques like immutable objects and dependency injection.      
-The tool proved to be very useful and performed really well, taking just seconds to analyze and generate reports from huge OSGi projects. Some tendencies were verified like bigger projects tend to have less quality then smaller ones, as well as some OSGi specific quality aspects could also be observed.
+The tool proved to be very useful and performed really well, taking just seconds to analyze and generate reports from huge OSGi projects. Some tendencies were verified like that is hard to keep good practices on bigger projects, as well as some OSGi specific quality aspects could also be observed. 
 
+We notice during experiments that \emph{Stale reference} and \emph{Uses framework} metrics were not well dimensioned so they should be revisited and calibrated in future.
 
+The objective of this work was met. Basic aspects were studied, designed and implemented. The implementation was discussed and detailed. A fully working tool was created and presented. It provided detailed reports and reliable results that made it possible to make important assumptions about analyzed projects. we think the quality metrics created for OSGi projects were valid and useful to verify good practices in modular applications. 
 
 \section{Future Work}
-Some metrics were proposed and we think more metrics can be created from the information already been collected. Also more data can be collected and new metrics created to enrich the analysis. We notice during experiments that \emph{Stale reference} metric was not well dimensioned so this and the other metrics should be calibrated based o empirical results.
+Some metrics were proposed and we think more metrics can be created from the information already been collected. Also more data can be collected to enrich the analysis. 
+As modularity is gaining focus and becoming popular we feel that the tool can be extended to other modular environments. The only difference may be how modules will be identified on those non OSGi modular applications, like JBoss Forge for example. Most metrics proposed measure attributes that are present in every modular system and so may be also used in this possible new version. 
 

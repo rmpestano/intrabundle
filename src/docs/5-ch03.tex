@@ -159,7 +159,7 @@ Each information retrieved by Intrabundle is usually mapped to a Forge command, 
 \end{lstlisting}
 \FloatBarrier
 
-All the logic is inside \textbf{bundle} variable, which is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. The bundle variable is provided by a Forge locator when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}. 
+All the logic is inside \textbf{bundle} variable of type \emph{OSGiModule}, which is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}. 
 
 \section{Quality Calculation}
 The data collected earlier will be materialized into six metrics that will be used to calculate OSGi projects quality. We saw on section \ref{sec:soft_metrics} that a software metric is a quantitative calculation of a software attribute. This section shows which metrics were created based on extracted information.
@@ -385,3 +385,6 @@ As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can
 \end{figure}
 
 \FloatBarrier
+
+\section{Validation}
+In order to validate our implementation and if proposed metrics make sense we will generate Intrabundle reports on top 10 real OSGi projects. These reports will be analyzed and we will try to infer useful information and tendencies from them. The reports must gather information that make it possible to compare and confront data in the most variable scenarios.
