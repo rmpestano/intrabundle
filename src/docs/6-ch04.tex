@@ -1,247 +1,236 @@
-\chapter{Bundle Introspection Results}
+\chapter{Implementing an OSGi Bundle Introspection Tool}
+This chapter describes how Intrabundle was implemented and architecture overview is presented. Objects and classes that composes it will be detailed. First section gives a general overview of Intrabundle's components, second section explains how OSGi bundles and projects are identified by the tool, next section shows how useful information is being collected and how this information is gathered by reports. Last section gives an overview of how Intrabundle's quality is being maintained.   
 
-Intrabundle was used to introspect and apply its metrics to 10 real OSGi projects, the projects are all open sourced and vary in size, teams and domain. 
+\section{Implementation Overview}
 
-\section{Analyzed Projects}
-In this section is presented an overview of projects that were analyzed during this work. Table \ref{osgi-analyzed-projects} shows projects in terms of \emph{size}:
+Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is OSGiScan a plugin responsible for scanning OSGi bundles recursively in file system. 
+
+
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory that is an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
+
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
+
+Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on data contained on OSGiProject and OSGiModule objects. To calculate projects qualities Intrabundle creates the \emph{Metric} and \emph{MetricPoints} objects. MetricPoints has a list of Metrics and the quality is calculated in MetricPoints object based on all metrics it has. The final quality is represented by a Java object called \emph{MetricScore} which holds the \emph{quality label} presented in \ref{sec:quality label}.     
+
+\newpage
+Figure \ref{intrabundle-arch} illustrates Intrabundle architecture:
+
+\begin{figure}[h]
+\caption{test}
+\label{intrabundle-arch}
+\centering
+\includegraphics[scale=0.77]{intrabundle-arch}
+\end{figure}  
+\FloatBarrier
+
+
+\section{Bundle Identification}
+
+One important task that both \emph{facets} and \emph{locators}, provided by Intrabundle, perform is identifying OSGi bundles and OSGi projects. To do that the tool searches for OSGi meta data in \emph{MANIFEST} file\footnote{The manifest is a special file that can contain information about the files packaged in a JAR file. By tailoring this "meta" information that the manifest contains, you enable the JAR file to serve a variety of purposes.}. So identifying bundles is as simple as locating the Manifest and verifies if it's content has OSGi information. The main problem is that the manifest location can vary depending on the project format. Table \ref{osgi-project-type} lists the types of OSGi projects and the location of Manifest file:     
 
 \begin{table}[h]
-\caption{OSGi projects analyzed by Intrabundle}
-\label{osgi-analyzed-projects}
-\begin{center}      
-    \begin{tabular}{  p{3cm} | p{3cm} | p{3cm} | p{3cm} | p{3cm}}
+\caption{Supported types of OSGi projects}
+\label{osgi-project-type}
+\begin{center}
+    \begin{tabular}{  p{4cm} | p{6cm} }
     \Xhline{2\arrayrulewidth}
-    Name & N\ts{o} of bundles & LoC & LoC/bundle& Analisys time(sec) \\ \hline
-    \href{http://eclipse.org/birt/}{BIRT} & 129 (217) & 2,226,436 & 17,259 & 73.9\\ \hline
-    \href{https://eclipse.org/webtools/dali/}{Dali} & 35 (46) & 1,058,160 & 30,233 & 56.9\\ \hline
-    \href{https://jitsi.org/}{Jitsi} & 155 (158) & 607,144 & 3,917& 29.6\\ \hline
-    \href{http://jonas.ow2.org/xwiki/bin/view/Main/}{JOnAS} & 117 (122) & 366,940 & 3,136&27.5\\ \hline
-    \href{http://karaf.apache.org/}{Karaf} & 58 (60) & 93,743 & 1,616&8.6\\ \hline
-    \href{http://www.openhab.org/}{Openhab} & 181 (184) & 347,492 & 1,919&23.2\\ \hline
-    \href{https://eclipse.org/osee/}{OSEE} & 183 (190) & 873,690 & 4774&10.3\\ \hline
-    \href{http://team.ops4j.org/wiki/display/paxcdi/}{Pax CDI} & 21 (22) & 19,480 & 927&2.5\\ \hline 
-    \href{http://tuscany.apache.org/sca-overview.html}{Tuscany Sca} & 138 (140) & 243,494 & 1,764&23.2\\ \hline
-    \href{http://www.eclipse.org/virgo/}{Virgo} & 36 (49) & 77,859 & 2,162&5.6\\ \hline
-    Sum & 1051 & 4,962,094 & 4721 & 261.3(\textasciitilde{}4min) \\
+    Type & Manifest location \\  \hline
+    Maven projects & /src/main/resource/META-INF.\\ \hline
+    Maven using BND tools & pom.xml\footnote{It's a xml configuration file responsible for project build life cycle and dependencies} with maven-bundle-plugin.\\ \hline
+    Standard Eclipse Java projects & /META-INF\\ \hline
+    Standard BND Tools & bnd.bnd file in any subfolder.\\ \hline
+    Package based bundles(Jitsi project) & each package has a manifest.\\  
    \Xhline{2\arrayrulewidth}
 
     \end{tabular}
 \end{center}
 \end{table}
-\FloatBarrier 
-
-Note that number of bundle in parenthesis is considering bundles with zero lines of code which, in the extent of this work, are not considered for quality analysis. Also note that lines of code is considering only .java files excluding comment lines.
-Analysis time column is the time in seconds to extract data and generate reports(general and metrics) using Intrabundle osgi-scan 12 command on the root directory of each projects. The environment the reports were generated was: Sony Vaio laptop eg series, Intel(R) Core(TM) i5-2410M CPU @ 2.30GHz, 4GB RAM, OS Ubuntu 12.04, Java version "1.7.0\_67".
-
-Below is a brief description of each project:
-
-\begin{enumerate}
-\item \textbf{BIRT}: Is an open source software project that provides the BIRT technology platform to create data visualizations and reports that can be embedded into rich client and web applications, especially those based on Java and Java EE;
-\item \textbf{Dali}: The Dali Java Persistence Tools Project provides extensible frameworks and tools for the definition and editing of Object-Relational (O/R) mappings for Java Persistence API (JPA) entities;
-\item \textbf{Jitsi}: Is an audio/video Internet phone and instant messenger written in Java. It supports some of the most popular instant messaging and telephony protocols such as SIP, Jabber/XMPP (and hence Facebook and Google Talk), AIM, ICQ, MSN, Yahoo! Messenger;
-\item \textbf{JOnAS}: Is a leading edge open source Java EE 6 Web Profile certified OSGi Enterprise Server;
-\item \textbf{Karaf}: Apache Karaf is a small OSGi based runtime which provides a lightweight container onto which various components and applications can be deployed;
-\item \textbf{Openhab}: An open source home automation software for integrating different home automation systems and technologies into one single solution that allows over-arching automation rules and that offers uniform user interfaces;
-\item \textbf{OSEE}: The Open System Engineering Environment is an integrated, extensible tool environment for large engineering projects. It provides a tightly integrated environment supporting lean principles across a product's full life-cycle in the context of an overall systems engineering approach;
-\item \textbf{Pax CDI}: Brings the power of Context and Dependency Injection(CDI) to the OSGi platform; 
-\item \textbf{Tuscany SCA}: Is a programming model for abstracting business functions as components and using them as building blocks to assemble business solutions; 
-\item \textbf{Virgo}: Is a completely module-based Java application server that is designed to run enterprise Java applications and Spring-powered applications with a high degree of flexibility and reliability; 
-\end{enumerate}
+\FloatBarrier
 
 
-\section{Projects Quality Results}
-In this section will be presented the resulting qualities of analyzed projects and some comparisons. First comparison groups all analyzed  projects comparing their \emph{bundle quality} and \emph{metric quality}. Later the projects are separated by groups in terms of size of LoC and number of bundles.
-
-All projects quality reports that provided data for all comparisons are available online, see \citep{intrabundle reports 2014} for detailed information. 
-
-\subsection{General Quality Comparison}
-
-The first table shows general projects qualities, it is ordered by quality points percentage. Its important to note that each projects maximum quality points(MQP) is different because it depends on the number of bundles, see \ref{sec:project-quality} for further information:
-
-\begin{table}[h]
-\caption{Projects general quality}
-\label{projects-general-quality}
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{4cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label \\  \hline
-    Pax CDI & 84 & 105 & 80\% & Very Good\\ \hline 
-    Openhab & 	666 & 905 & 73.6\% & Good\\ \hline
-    Virgo & 132 & 180 & 73.3\% & Good\\ \hline
-    Karaf & 211 & 290 & 72.8\% & Good\\ \hline
-    OSEE & 596 & 915 & 65.1\% & Good\\ \hline
-    Tuscany Sca & 433 & 690 & 62.8\% & Good\\ \hline
-    JOnAS & 356 & 585 & 60.9\%  & Good\\ \hline
-    Jitsi & 414 & 775 & 53.4\% & Regular\\ \hline
-    Dali & 86 & 175 & 49.1\%  & Regular\\ \hline
-    BIRT & 315 & 645 & 48.8\% & Regular\\ 
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-\end{table}
-\FloatBarrier 
-
-The winner on general category, considering Intrabundle metrics, is \textbf{Pax CDI} project which obtained 80\% of quality points and received a \emph{Very Good quality label}. Pax CDI is a project from \emph{OPS4J - Open Participation Software for Java} which is a community that is trying to build a new, more open model for Open Source development, where not only the usage is Open and Free, but the Participation is Open as well. 
-
-\subsection{Metrics Qualities Comparison}
-
-The next category analyzes how good the projects are on each metric. It's important to note that each project \emph{maximum quality points}(MQP) in a metric depends on the number of bundles, see \ref{sec:project-quality-metric} for more details. Value in table \ref{projects-metrics-quality} are the \emph{total quality points}(TQP) obtained and in parenthesis is the percentage of MQP that this value represents:  
-
-\begin{table}[h]
-\tiny
-\caption{Projects quality by metrics}
-\label{projects-metrics-quality}
-    \begin{tabular}{  p{1,5cm} | p{1cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} }
-    \Xhline{2\arrayrulewidth}
-    Name & MQP & LoC & Publishes interfaces & Uses framework & Bundle dependency & Stale references & Declares permission \\  \hline
-    BIRT & 645 & 294 (45.6\%) regular & 393 (60.9\%) good& 258 (40\%) regular& 307 (47.6\%) regular& 644 (99.8\%) state of art & 261 (40.5\%) regular\\ \hline
-    Dali & 175 & 74 (42.3\%) regular & 175 (100\%) state of art& 70 (40\%) regular & 65 (37.1\%) anti pattern. & 174 (99.4\%) state of art& 70 (40\%) regular\\ \hline
-    Jitsi & 775 & 492 (63.5\%) good & 775 (100\%) state of art& 310 (40\%) regular& 459 (59.2\%) regular& 473 (61\%) good& 310 (40\%) regular\\ \hline
-    JOnAS & 585 & 358 (61.2\%) good & 480 (82.1\%) very good& 252 (43.1\%) regular& 481 (82.2\%) very good& 573 (97.9\%) state of art& 234 (40\%) regular\\ \hline
-    Karaf & 290 & 212 (73.1\%) good & 257 (88.6\%) very good& 158 (54.5\%) regular&  290 (100\%) state of art& 278 (95.9\%) state of art& 116 (40\%) regular\\ \hline
-    Openhab & 905 & 672 (74.3\%) good& 791 (87.4\%) very good& 806 (89.1\%) very good&  664 (73.4\%) good& 901 (99.6\%) state of art& 362 (40\%) regular\\ \hline
-    OSEE & 915 & 584 (63.8\%) good& 909 (99.3\%) state of art& 573 (62.6\%) good& 529 (57.8\%) regular& 881 (96.3\%) state of art& 366 (40\%) regular\\ \hline
-    Pax CDI & 105 & 85 (81\%) very good & 105 (100\%) state of art & 66 (62.9\%) good& 103 (98.1\%) state of art & 98 (93.3\%) state of art& 42 (40\%) regular\\ \hline
-    Tuscany SCA & 690 & 472 (68.4\%) good& 684 (99.1\%) state of art & 288 (41.7\%) regular& 451 (65.4\%) good&  682 (98.8\%) state of art& 276 (40\%) regular\\ \hline
-    Virgo & 180 & 127 (76.1\%) very good& 180 (100\%) state of art & 78 (43.3\%) regular & 176 (97.8\%) state of art& 162 (90\%) state of art & 72 (40\%) regular\\ \hline
-    Average  & & 64.9\% - good & 91.7\% - state of art & 51.7\% - regular  & 71.8\% - good & 93.2\% - state of art & 40.05\% - regular\\
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-\end{table}
-\FloatBarrier   
-
-Following is the champions on each metric:
+\section{Retrieving bundle information}
+Section \ref{sec:collecting-data} described which information the tool should extract. Now its presented how that is done.
 
 
-\begin{itemize}
-\item \emph{LoC}: Pax CDI has Very Good quality label on LoC;
-\item \emph{Publishes interfaces}: Dali, Jitsi, Pax CDI and Virgo are all tied on metric points(100\%) and are labeled \emph{State of Art} on this metric;
-\item \emph{Uses framework}: Openhab is \emph{Very Good} (almost State of art) on this metric;
-\item \emph{Bundle dependency}: Karaf is leading with 100\% and is \emph{State of art} on this metric followed by Pax CDI and Virgo which are also State of art(>=90\%) but not with 100\% of quality points;  
-\item \emph{Stale references}: Birt is leading on this metric, it has only one (probably) stale reference class among its 2 million line of code. Openhab loses by 0.2\% with 2 stale references on its 300 thousands of lines of code.  
-\item \emph{Declares permission}: Birt is the only analyzed project that has a bundle which declares permission;
-\end{itemize}
+\textbf{LoC} is a classical software metric that was adapted in this work to OSGi Bundles and its calculation is straight forward. The tool just sum the bundle .java files lines of code. It is important to note that comments are excluded from this calculation. 
+\textbf{IPojo}, \textbf{Blueprint} and \textbf{Declarative Services} are extracted by looking for specific file configurations(xml files) or annotations that each technology uses.
+\textbf{Stale Services References} are detected via approximation, Intrabundle counts the number of services \emph{gets} and \emph{ungets}\footnote{Operations that consume and release a service reference respectively} for each class a bundle has. If the number of gets and ungets are equal then the class have no stale references, otherwise it is considered as having stale references.
+\textbf{Bundle dependencies} are calculated by looking at OSGi Manifest file in exported and imported packages. If bundle A \emph{imports} package \emph{x.y.z} and bundle B \emph{exports} package \emph{x.y.z} we say that bundle A depends on bundle B. 
+\textbf{Required bundles} just counts the number of required bundles declared in manifest.
+\textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only publishes interfaces.
+\textbf{Declares permission} verifies if bundle implements security by contract searching for \emph{permission.perm} file inide OSGI-INF bundle directory.
 
-Some interesting facts can be observed looking at table \ref{projects-metrics-quality}:
-
-\textbf{Birt} was the only project to use OSGi permission mechanism among analyzed projects. In fact with \emph{40.5\%}\footnote{When a bundle does not declares permission it receives 2 metric points(regular label). So if a project has all bundles with regular label it will have 40\% of MQP} means that only one Birt bundle declared permission which was \\\emph{org.eclipse.birt.report.engine.emitter.postscript}.
-
-\textbf{Eclipse Dali} project has the worst \emph{dependency quality} metric which a sign that its bundles are high coupled, as opposed to \textbf{Karaf} which may have low coupled bundles.
-
-Projects that \emph{use a framework} for managing services usually has less stale references because they are not likely to code for publish or consume service as a framework is doing that for them.
-
-\textbf{Jitsi} has more \emph{Stale references} which may affect its \emph{reliability}. Although it has lots of stale references compared to other projects it received a \emph{Good} quality label which means that this metric formula is not well dimensioned and may be revisited in future.    
-
-It looks like \emph{publishing only interfaces} for hiding implementation is a well known and disseminated good practice as we have good punctuation on this metric in most analyzed projects.  
-
-We have evidences that \textbf{Pax CDI} has the more cohesive bundles as they have less lines of code then bundles of other projects. We may infer that most bundles are high cohesive as they receive good quality label on LoC metric.
-
-Bundle coupling seen to be good among analyzed projects as the average quality on bundle dependency was good.
-
- 
-\subsection{Projects Qualities by Size}
-
-In the tables below the projects are separated by size as we believe that comparing projects with large code base with minor sized projects is unfair. It is easier to keep good practices in new projects as opposed to bigger projects where teams are usually larger, a person hardly will know every detail, multiple versions are being worked in parallel and so on.  In this section we separate analyzed projects by LoC and number of bundles. Table \ref{projects-quality-bundle} separates projects by bundles where small projects range from 0 to 100 bundles and large projects has more then 100 bundles.
+Each information retrieved by Intrabundle is usually mapped to a Forge command, see Listing \ref{forge_command_example} which is the command that prints bundle exported packages, an information used to calculate bundle dependency and publish interfaces metric, to the Forge console:
+\pagebreak
 
 
-\begin{table}[htbp]
-  \small
-  \caption{Projects qualities by number of bundles}
-  \label{projects-quality-bundle}
-  \subfloat[Less then 100 bundles]{%
-    \hspace{.5cm}%
-   \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label & N\ts{o} of Bundles \\  \hline
-    Pax CDI & 84 & 105 & 80\% & Very Good & 21\\ \hline 
-    Virgo & 132 & 180 & 73.3\% & Good & 36\\ \hline 
-    Karaf & 211 & 290 & 72.8\% & Good & 58\\ \hline
-    Dali & 86 & 175 & 49.1\% & Regular & 35\\ 
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-    \hspace{.5cm}%
-  }\hspace{1cm}
-  \subfloat[100 or more bundles]{%
-    \hspace{.5cm}%
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label \\  \hline
-    Openhab &   666 & 905 & 73.6\% & Good & 181\\ \hline
-    OSEE & 596 & 915 & 65.1\% & Good & 183\\ \hline
-    Tuscany Sca & 433 & 690 & 62.8\% & Good & 138 \\ \hline
-    JOnAS & 356 & 585 & 60.9\%  & Good & 117\\ \hline
-    Jitsi & 414 & 775 & 53.4\% & Regular & 155\\ \hline
-    BIRT & 315 & 645 & 48.8\% & Regular & 129\\ 
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-    \hspace{.5cm}%
-  }
-\end{table}
-\FloatBarrier  
-For small projects there is no news, \emph{Pax CDI} still winning. For larger projects \textbf{Openhab} is the new champion with a good quality in large code base. It is also interesting to note that we have three small projects among the five first positions in the quality rank. 
+\begin{lstlisting}[language=java,label=forge_command_example,caption=Exported packages command]
+ @Command(value = "exportedPackages",help = "list bundle exportedpackages")
+ public void exportedPackages(PipeOut out){
+      if(bundle.getExportedPackages().isEmpty()){
+            out.println(messageProvider.getMessage("module.noExportedPackages"));
+        }
+      else{
+          for (String s : bundle.getExportedPackages()) {
+               out.println(s);
+           }
+       }
+    }
+\end{lstlisting}
+\FloatBarrier
 
-The next table compares projects by LoC dividing them into small, medium and large sized. In this comparison small projects range from 0 to 100,000 lines of code, medium sized range from 100,001 to 500,000 LoC and large projects are the ones with more than half million lines of code:
+All the logic is inside \textbf{bundle} variable which is of type \emph{OSGiModule}\footnote{The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}.}, that is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. All information described in table \ref{extracted-data}, except bundle dependency, is calculated inside OSGiModule object. Bundle dependency is Calculated by OSGiProject because it has all modules and can calculate its dependencies. Above is OSGiModule Java interface describing all operations it provides:\newpage
 
-\begin{table}[htbp]
-  \small
-  \caption{Projects qualities by number of LoC}
-    \label{projects-quality-loc}
-  \subfloat[Up to 100,000 LoC]{%
-    \hspace{.5cm}%
-   \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label & LoC  \\  \hline
-    Pax CDI & 84 & 105 & 80\% & Very Good& 19,480\\ \hline 
-    Virgo & 132 & 180 & 73.3\% & Good & 77,859\\ \hline 
-    Karaf & 211 & 290 & 72.8\% & Good & 93,743\\ 
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-    \hspace{.5cm}%
-  }\hspace{1cm}
-  \subfloat[Between 100,001 and 500,00 LoC]{%
-    \hspace{.5cm}%
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label & LoC  \\  \hline
-    Openhab &   666 & 905 & 73.6\% & Good & 347,492\\ \hline
-    Tuscany Sca & 433 & 690 & 62.8\% & Good & 243,494\\ \hline
-    JOnAS & 356 & 585 & 60.9\%  & Good & 366,940\\ 
-   \Xhline{2\arrayrulewidth}
-   \end{tabular}
-   \hspace{.5cm}%
-   }\hspace{1cm}
-   \subfloat[More then 500,00 LoC]{%
-    \hspace{.5cm}%
-    \begin{tabular}{  p{3cm} | p{2cm} | p{2cm} | p{3cm} | p{2cm} | p{3cm}}
-    \Xhline{2\arrayrulewidth}
-    Name & TQP & MQP & Points percent & Quality label & LoC \\  \hline
-    OSEE & 596 & 915 & 65.1\% & Good & 873,690\\ \hline
-    Jitsi & 414 & 775 & 53.4\% & Regular & 607,144\\ \hline
-    Dali & 86 & 175 & 49.1\%  & Regular & 1,058,160\\ \hline
-    BIRT & 315 & 645 & 48.8\% & Regular & 2,226,436\\ 
-   \Xhline{2\arrayrulewidth}
-    \end{tabular}
-    \hspace{.5cm}%
-  }
-\end{table}
-\FloatBarrier  
-In small category there is no surprise, \textbf{Pax CDI} is still leading. \textbf{Openhab} is the king of medium projects and \textbf{OSSE} is the winner among the larger group. 
+\begin{lstlisting}[language=java,label=Intrabundle OSGiModule,caption=Intrabundle OSGiModule interface]
+public interface OSGiModule extends Serializable, Comparable<OSGiModule>{
 
-Note that the worse qualities are in larger projects as we expected. The two projects with more the one million LoC have the worst qualities measured by Intrabundle. The opposite is also valid and can be observed in small group table. 
+    /**
+     *
+     * @return total .java files(under src or src/main/java) lines of code
+     */
+    Long getLinesOfCode();
 
-\section{Results}
-In this section we summarize the results obtained by Intrabundle in previous sections. 
-The first thing to note is that Intrabundle could analyze big projects in a small amount of time. It analyzed more than 1000 bundles and almost 5 million lines of code and generated detailed reports in a few minutes.
 
-We noted that smaller projects are easier to keep good practices and that reflected on the resulting qualities where the smaller projects were on the top. We also noted that good quality is possible in bigger projects, as proved by \emph{Openhab}.
+    /**
+     * @return <code>true</code> if bundle uses declarative services specification
+     * <code>false</code> if it doesnt
+     */
+    Boolean getUsesDeclarativeServices();
 
-Bundle cohesion seem to be good on most analyzed projects as they obtained good quality points on LoC metric.
+    /**
+     * @return <code>true</code> if bundle uses Blueprint specification
+     * <code>false</code> if it doesnt
+     */
+    Boolean getUsesBlueprint();
 
-Publishes Interfaces metric received the higher quality points and proved to be a very disseminated good practice among OSGi projects.
+    /**
+     *
+     * @return object representing bundle MANIFEST.MF  or .bnd or pom.xml with maven-bundle-plugin
+     */
+    ManifestMetadata getManifestMetadata();
 
-As opposed to Publishing only interfaces, the permission by contract is not being adopted in analyzed projects and received the worst punctuation.
+    /**
+     *
+     * @return bundle activator java file
+     */
+    FileResource<?> getActivator();
 
-Stale references metric was not well dimensioned as projects received good punctuation(State of art) although Stale references were found on most projects. This metric is close related to memory leaks and system reliability but was too relaxed in comparison to its importance. 
+    /**
+     *
+     * @return bundle imported packages
+     */
+    List<String> getImportedPackages();
 
-About coupling, the bundle dependency metric showed that in most analyzed projects the bundles are low coupled. Most projects received \emph{Good} quality label on this metric.
+    /**
+     *
+     * @return bundle exported packages
+     */
+    List<String> getExportedPackages();
 
-Although using a framework for service management is a good practice, it is not so popular in projects we used as example. Maybe this metric need to be revisited because not all bundles publish or consume services.
+    /**
+     *
+     * @return bundle required bundles
+     */
+    List<String> getRequiredBundles();
 
+    /**
+     * @return <code>true</code> if bundle exported packages contains only interfaces
+     * <code>false</code> if it has one or more classes
+     */
+    Boolean getPublishesInterfaces();
+
+    /**
+     *
+     * @return <code>true</code> if bundle declares permissions
+     * <code>false</code> otherwise
+     */
+    Boolean getDeclaresPermissions();
+
+    /**
+     *
+     * @return .java files possibly containing OSGi service stale references
+     */
+    List<Resource<?>> getStaleReferences();
+}
+\end{lstlisting}
+\FloatBarrier
+
+
+\section{Intrabundle Reports}
+\label{sec:intrabundle-reports}
+The tool generates two reports based on information it collects from bundles so the it can be analyzed carefully in one place. The reports can be generated in various formats (txt, pdf, html, csv and excel). Figure \ref{intrabundle-report1} shows an example report:  
+
+\begin{figure}[h]
+\caption{Intrabundle general report}
+\label{intrabundle-report1}
+\centering
+\includegraphics[scale=0.5]{intrabundle-report}
+\end{figure}  
+\FloatBarrier
+
+The first section of the report gives an overall idea of the project, second part lists information of each bundles, see Figure \ref{intrabundle-report2} 
+
+\begin{figure}[h]
+\caption{Intrabundle general report - detailed section }
+\label{intrabundle-report2}
+\centering
+\includegraphics[scale=0.5]{intrabundle-report2}
+\end{figure}  
+\FloatBarrier
+
+Another report Intrabundle generates is a metric report that details the punctuation of each metric, see Figure \ref{intrabundle-metrics-report}:  
+
+\begin{figure}[h]
+\caption{Intrabundle metrics report}
+\label{intrabundle-metrics-report}
+\centering
+\includegraphics[scale=0.5]{intrabundle-metrics-report}
+\end{figure}  
+\FloatBarrier
+
+As in general report, in metrics report the first section of the report gives an overall idea of the project, second part lists information of each bundles, see Figure \ref{intrabundle-metrics-report2} 
+
+\begin{figure}[h]
+\caption{Intrabundle metrics report - detailed section}
+\label{intrabundle-metrics-report2}
+\centering
+\includegraphics[scale=0.5]{intrabundle-metrics-report2}
+\end{figure}  
+\FloatBarrier
+
+All reports generated by Intrabundle can be found online \citep{intrabundle reports 2014}.
+
+\section{Intrabundle Quality}
+In this section we will see how Intrabundle's quality is managed and how some concepts of \textit{section \ref{sec:quality}} were applied to the project. As the project is not OSGi based we can't apply Intrabundle's metrics on itself so we used classical approaches to assure the quality of the project.
+
+\subsection{Internal quality}
+Intrabundle internal quality is managed by PMD and JaCoCo. PMD is an static analysis tool and JaCoCo a dynamic analysis one. Both were presented in section \ref{ch2:qatools} with the objective to guarantee non functional requirements.
+
+\subsubsection{Example}
+ PMD was already illustrated at Chapter 2 as an example of static analysis tool. JaCoCo is used to calculate code coverage to track files and methods that automated tests are covering. Figure \ref{intrabundle-code-cover} shows JaCoCo code coverage report for Intrabundle:
+
+\begin{figure}[h]
+\caption{Intrabundle code coverage}
+\label{intrabundle-code-cover}
+\includegraphics[scale=0.5]{intrabundle-code-coverage}
+\end{figure}
+
+\FloatBarrier
+\newpage
+\subsection{External quality}
+Intrabunde external quality is assured by automated whitebox tests so we can verify if Intrabundle is working as expected, if it meets its functional requirements.
+
+\subsubsection{Example}
+As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up during tests. That is done by Arquillian \citep{dan 2011}, an integration testing platform. The tests are also executed online on each commit\footnote{A command that pushes software changes to version control} by \href{https://travis-ci.org/rmpestano/intrabundle}{Travisci}\footnote{An online continuous integration server}, a technique called \emph{continuous integration}. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
+
+\begin{figure}[h]
+\caption{Intrabundle integration tests}
+\label{intrabundle-integ-tests}
+\includegraphics[scale=0.45]{intrabundle-external-quality}
+\centering
+\end{figure}
+
+\FloatBarrier
+
+\section{Validation}
+In order to validate our implementation and if proposed metrics make sense we will generate Intrabundle reports on top 10 real OSGi projects. These reports will be analyzed and we will try to infer useful information and tendencies from them. The reports must gather information that make it possible to compare and confront data in the most variable scenarios.
