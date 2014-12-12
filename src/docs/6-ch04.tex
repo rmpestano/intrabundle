@@ -6,9 +6,9 @@ This chapter describes how Intrabundle was implemented and architecture overview
 Intrabundle is composed by 3 Forge plugins, see section \ref{sec:forge:plugin} for details about Forge plugins. The first is \emph{BundlePlugin} which extracts OSGi bundle information, second is \emph{OSGiPlugin} that has a vision of all bundles composed by the project. Third is \emph{OSGiScan} a plugin responsible for scanning OSGi bundles recursively in file system. 
 
 
-Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory that is an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active. 
+Intrabundle also provides 2 facets, see section \ref{sec:forge:facet} for details about Forge facets. \emph{BundleFacet} and \emph{OSGiFacet}, both restricts commands provided by BundlePlugin and OSGiPlugin in the context of OSGi bundle and project respectively. BundleFacet is active when user enter on a directory that is an OSGiBundle and OSGiFacet is active when user enters on a directory that contains at least one OSGiBundle. When BundleFacet is active then OSGiFacet is disabled meaning that only BundlePlugin commands will be active.
 
-Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.          
+Another important component in Intrabundle architecture is the Project Locator, see section \ref{sec:forge:locator} for details about Forge locators. Intrabundle provides 2 locators. The first is \emph{BundleProjectLocator} that creates a Forge project object named \emph{OSGiModule} representing and gathering data related to OSGi bundle. BundleLocator is activated when user is at an OSGi bundle directory. The second is \emph{OSGiProjectLocator} which creates a Forge project object named \emph{OSGiProject} representing an OSGi project which is a collection of bundles. OSGiProject locator is activated when user is in a directory that has at least one child directory that is an OSGiBundle.         
 
 Another component in the architecture is \emph{MetricsCalculator} that calculates bundle and OSGi project quality based on data contained on OSGiProject and OSGiModule objects. To calculate projects qualities Intrabundle creates the \emph{Metric} and \emph{MetricPoints} objects. MetricPoints has a list of Metrics and the quality is calculated in MetricPoints object based on all metrics it has. The final quality is represented by a Java object called \emph{MetricScore} which holds the \emph{quality label} presented in \ref{sec:quality label}.     
 Figure \ref{intrabundle-arch} gives an overview of Intrabundle architecture:
@@ -79,81 +79,8 @@ Each information retrieved by Intrabundle is usually mapped to a Forge command, 
 \end{lstlisting}
 \FloatBarrier
 
-All the logic is inside \textbf{bundle} variable which is of type \emph{OSGiModule}\footnote{The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}.}, that is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. All information described in table \ref{extracted-data}, except bundle dependency, is calculated inside OSGiModule object. Bundle dependency is Calculated by OSGiProject because it has all modules and can calculate its dependencies. Above is OSGiModule Java interface describing all operations it provides:\newpage
+All the logic is inside \textbf{bundle} variable which is of type \emph{OSGiModule}\footnote{The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}.}, that is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. All information described in table \ref{extracted-data}, except bundle dependency, is calculated inside OSGiModule object. Bundle dependency is Calculated by OSGiProject because it has all modules and can calculate its dependencies. OSGiModule, OSGiProject and MetricCalculation Java interface are presented in appendix B.
 
-\begin{lstlisting}[language=java,label=Intrabundle OSGiModule,caption=Intrabundle OSGiModule interface]
-public interface OSGiModule extends Serializable, Comparable<OSGiModule>{
-
-    /**
-     *
-     * @return total .java files(under src or src/main/java) lines of code
-     */
-    Long getLinesOfCode();
-
-
-    /**
-     * @return <code>true</code> if bundle uses declarative services specification
-     * <code>false</code> if it doesnt
-     */
-    Boolean getUsesDeclarativeServices();
-
-    /**
-     * @return <code>true</code> if bundle uses Blueprint specification
-     * <code>false</code> if it doesnt
-     */
-    Boolean getUsesBlueprint();
-
-    /**
-     *
-     * @return object representing bundle MANIFEST.MF  or .bnd or pom.xml with maven-bundle-plugin
-     */
-    ManifestMetadata getManifestMetadata();
-
-    /**
-     *
-     * @return bundle activator java file
-     */
-    FileResource<?> getActivator();
-
-    /**
-     *
-     * @return bundle imported packages
-     */
-    List<String> getImportedPackages();
-
-    /**
-     *
-     * @return bundle exported packages
-     */
-    List<String> getExportedPackages();
-
-    /**
-     *
-     * @return bundle required bundles
-     */
-    List<String> getRequiredBundles();
-
-    /**
-     * @return <code>true</code> if bundle exported packages contains only interfaces
-     * <code>false</code> if it has one or more classes
-     */
-    Boolean getPublishesInterfaces();
-
-    /**
-     *
-     * @return <code>true</code> if bundle declares permissions
-     * <code>false</code> otherwise
-     */
-    Boolean getDeclaresPermissions();
-
-    /**
-     *
-     * @return .java files possibly containing OSGi service stale references
-     */
-    List<Resource<?>> getStaleReferences();
-}
-\end{lstlisting}
-\FloatBarrier
 
 
 \section{Intrabundle Reports}
