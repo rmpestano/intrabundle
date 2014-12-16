@@ -36,7 +36,7 @@ Intrabundle implements its \emph{facets} and \emph{locators} to identify OSGi bu
     \Xhline{2\arrayrulewidth}
     Type & Manifest location \\  \hline
     Maven projects & /src/main/resource/META-INF.\\ \hline
-    Maven using BND tools & pom.xml\footnote{It's a xml configuration file responsible for project build life cycle and dependencies} with maven-bundle-plugin.\\ \hline
+    Maven using BND tools & pom.xml\footnote{It's a xml configuration file responsible for project build life cycle and dependencies.} with maven-bundle-plugin.\\ \hline
     Standard Eclipse Java projects & /META-INF\\ \hline
     Standard BND Tools & bnd.bnd file in any subfolder.\\ \hline
     Package based bundles & each package has a manifest.\\  
@@ -54,7 +54,7 @@ Section \ref{sec:collecting-data} described which information the tool extracts.
 
 \textbf{LoC} is a classical software metric that was adapted in this work to OSGi Bundles and its calculation is straight forward. The tool just sum the bundle .java files lines of code. It is important to note that comments are excluded from this calculation. 
 \textbf{IPojo}, \textbf{Blueprint} and \textbf{Declarative Services} are extracted by looking for specific file configurations(xml files) or annotations that each technology uses.
-\textbf{Stale Services references} are detected via approximation, Intrabundle counts the number of services \emph{gets} and \emph{ungets}\footnote{Operations that consume and release a service reference respectively} for each class a bundle has. If the number of gets and ungets are equal then the class have no stale references, otherwise it is considered as having stale references.
+\textbf{Stale Services references} are detected via approximation, Intrabundle counts the number of services \emph{gets} and \emph{ungets}\footnote{Operations that consume and release a service reference respectively.} for each class a bundle has. If the number of gets and ungets are equal then the class have no stale references, otherwise it is considered as having stale references.
 \textbf{Bundle dependencies} are calculated by looking at OSGi Manifest file in exported and imported packages. If bundle A \emph{imports} package \emph{x.y.z} and bundle B \emph{exports} package \emph{x.y.z} we say that bundle A depends on bundle B. 
 \textbf{Required bundles} just counts the number of required bundles declared in manifest.
 \textbf{Publishes interfaces} looks at bundle exported packages, if all exported packages contains only interfaces we say that bundle only publishes interfaces.
@@ -79,13 +79,13 @@ Each information retrieved by Intrabundle is usually mapped to a Forge command, 
 \end{lstlisting}
 \FloatBarrier
 
-All the logic is inside \textbf{bundle} variable which is of type \emph{OSGiModule}\footnote{The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}.}, that is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}}, in method \emph{getExportedPackages}. All information described in table \ref{extracted-data}, except bundle dependency, is calculated inside OSGiModule object. Bundle dependency is Calculated by OSGiProject because it has all modules and can calculate its dependencies. OSGiModule, OSGiProject and MetricCalculation Java interface are presented in appendix B.
+All the logic is inside \textbf{bundle} variable which is of type \emph{OSGiModule}\footnote{The bundle variable is created by Bundle Locator, a Forge locator, when user navigates to a directory which is an OSGi bundle, as explained in section \ref{sec:forge:locator}.}, that is an immutable object\footnote{Is an object whose state cannot be modified after it is created. A good practice and core principle in domain driven design \citep{Evans 2003}.}, in method \emph{getExportedPackages}. All information described in table \ref{extracted-data}, except bundle dependency, is calculated inside OSGiModule object. Bundle dependency is Calculated by OSGiProject because it has all modules and can calculate its dependencies. OSGiModule, OSGiProject and MetricCalculation Java interface are presented in appendix B.
 
 
 
 \section{Intrabundle Reports}
 \label{sec:intrabundle-reports}
-The tool generates two reports based on information it collects from bundles so the it can be analyzed carefully in one place. The reports can be generated in various formats (txt, pdf, html, csv and excel). Figure \ref{intrabundle-report1} shows an example report:  
+The tool generates two reports based on information it collects from bundles so it can be analyzed carefully in one place. The reports can be generated in various formats (txt, pdf, html, csv and excel). Figure \ref{intrabundle-report1} shows an example report:  
 
 \begin{figure}[h]
 \caption{Intrabundle general report}
@@ -143,12 +143,21 @@ Intrabundle internal quality is managed by PMD and JaCoCo. PMD is an static anal
 \end{figure}
 
 \FloatBarrier
+
+We have also used InFusion (described in Figure \ref{quality tools}) to calculate Intrabundle internal quality:
+
+\begin{figure}[h]
+\caption{Intrabundle internal quality}
+\includegraphics[scale=0.55]{intrabundle_quality}
+\end{figure}
+
+
 \newpage
 \subsection{External quality}
 Intrabunde external quality is assured by automated whitebox tests so we can verify if Intrabundle is working as expected, if it meets its functional requirements.
 
 \subsubsection{Example}
-As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up during tests. That is done by Arquillian \citep{dan 2011}, an integration testing platform. The tests are also executed online on each commit\footnote{A command that pushes software changes to version control} by \href{https://travis-ci.org/rmpestano/intrabundle}{Travisci}\footnote{An online continuous integration server}, a technique called \emph{continuous integration}. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
+As of November 2014 Intrabundle performs 65 \textbf{integration tests} which can be defined as automated tests aimed to detect any inconsistencies between the software units that are integrated together. In this kind of automated tests the system must be running and in case of Intrabundle we also need the Forge runtime up during tests. That is done by Arquillian \citep{dan 2011}, an integration testing platform. The tests are also executed online on each commit\footnote{A command that pushes software changes to version control.} by \href{https://travis-ci.org/rmpestano/intrabundle}{Travisci}\footnote{An online continuous integration server.}, a technique called \emph{continuous integration}. Figure \ref{intrabundle-integ-tests} shows the result of integration tests execution:
 
 \begin{figure}[h]
 \caption{Intrabundle integration tests}

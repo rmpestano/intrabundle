@@ -12,7 +12,7 @@ It was clear in previous chapters that modular and non modular applications have
 To analyze and extract data from large code bases of OSGi projects, which can vary from KLOCs to thousands of KLOCs, there was the need of a lightweight approach. Some \emph{functional requirements} were:
 
 \begin{itemize}
-\item Analyze different formats of OSGi projects like Maven\footnote{\href{http://maven.apache.org/index.html}{Maven} is a build tool for Java}, Eclipse projects and BND \footnote{\href{http://bndtools.org/}{BND} is a tool to easy OSGi projects development and bundle management and configuration}; 
+\item Analyze different formats of OSGi projects like Maven\footnote{\href{http://maven.apache.org/index.html}{Maven} is a build tool for Java.}, Eclipse projects and BND \footnote{\href{http://bndtools.org/}{BND} is a tool to easy OSGi projects development and bundle management and configuration.}; 
 \item It should be able to dive deep into projects source code like counting methods calls, differentiate classes and interfaces and so on;  
 \item Get general informations like project version, revision or latest commit in source repository;
 \item Should be easy to analyze lots of projects through its interface;
@@ -22,7 +22,7 @@ To analyze and extract data from large code bases of OSGi projects, which can va
 and the following \emph{non functional requirements}:
 
 \begin{itemize}
-\item Only open sourced projects\footnote{Projects that have its source code made available with a license in which the copyright holder provides the rights to study, change and distribute the software to anyone and for any purpose} because we focus on internal quality where the code is important;
+\item Only open sourced projects\footnote{Projects that have its source code made available with a license in which the copyright holder provides the rights to study, change and distribute the software to anyone and for any purpose.} because we focus on internal quality where the code is important;
 \item The tool should be lightweight to analyze real, complex and huge OSGi projects;
 \item Find and Introspect manifest files where valuable OSGi information rely; 
 \item Should be testable;
@@ -35,8 +35,8 @@ and the following \emph{non functional requirements}:
 The following tools were evaluated to implement the tool:
 
 \begin{enumerate}
-\item Build a standalone Java client application using javaFX\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications};
-\item Create an Eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE};
+\item Build a standalone Java client application using javaFX\footnote{\href{http://docs.oracle.com/javase/8/javase-clienttechnologies.htm}{JavaFX} is a set of graphics and media packages that enables developers to design, create, test, debug, and deploy rich client applications.};
+\item Create an Eclipse plugin\footnote{\href{https://wiki.eclipse.org/FAQ_What_is_a_plug-in\%3F}{Eclipse plug-ins} are software components with the objective to extend Eclipse IDE.};
 \item Create a  Maven plugin\footnote{Maven is a build tool that consists of a core engine which provides basic project-processing capabilities and build-process management, and a host of \emph{plugins} which are used to execute the actual build tasks.};
 \item Build the tool on top of JBoss Forge;
 \item Build a Java project on top of OSGi platform; 
@@ -49,7 +49,7 @@ The chosen among the above options was JBoss Forge, due to the following facts:
 \item Works inside and outside eclipse;
 \item Works regardless of build tool;
 \item As a command line tool its very lightweight and can analyze multiple OSGi projects at the same time;
-\item The programing model is based on top of the so called CDI\footnote{Context and Dependency Injection for the Java platform. CDI is a dependency injection framework where instead of dependencies construct themselves they are injected by some external means, in case CDI} so managing Objects lifecycle and events is handled by CDI automatically;
+\item The programing model is based on top of the so called CDI\footnote{Context and Dependency Injection for the Java platform. CDI is a dependency injection framework where instead of dependencies construct themselves they are injected by some external means, in case CDI.} so managing Objects lifecycle and events is handled by CDI automatically;
 \item Forge has a very well established and documented file system manipulation API based on java.io;
 \item Forge is very flexible so generating quality reports is a matter of using a report framework inside it;  
 \item Is modular, each plugin has its own classpath;
@@ -64,7 +64,7 @@ Maven plugins are limited to maven projects.
 
 Although an OSGi based tool would be benefited by modularity and service oriented architecture it would have the same limitations of a standalone JavaFX application and also the author's experience with OSGi projects is not as advanced as in Forge environment. 
 
-PMD\footnote{A very nice tool for static code analysis. It is based on rules that can be created via xml or xpath expression. When a rule is violated it can output warns or errors to the console} has a very limited API so it could be hard to generate reports or analyze multiple projects using it. 
+PMD\footnote{A very nice tool for static code analysis. It is based on rules that can be created via xml or xpath expression. When a rule is violated it can output warns or errors to the console.} has a very limited API so it could be hard to generate reports or analyze multiple projects using it. 
 
 \section{Identifying OSGi Projects and Bundles}
 To collect data and calculate quality of project we first need to identify those projects. In the case of OSGi projects the tool must be capable of find OSGi \emph{projects} and its \emph{bundles}, the module itself. In the extent of this work, \textbf{OSGi projects} are collections of OSGi bundles in the same directory but its also important to say that OSGi bundles can be installed from anywhere from the file system or network.
@@ -72,11 +72,11 @@ To collect data and calculate quality of project we first need to identify those
 There are many formats of OSGi projects and each one may require a different algorithm to be identified. In this work we will be concerned with the following types of OSGi projects: 
 
 \begin{itemize}
-\item Standard Maven projects\footnote{Each project is a bundle and its meta data is in maven resources folder};
-\item Maven projects using BND tools\footnote{Each project is a bundle and bundle meta data is in pom.xml configuration file};  
-\item Standard BND Tools project\footnote{Each project is a bundle and meta data is in bnd file};
-\item Standard Eclipse Java projects\footnote{Each project is a bundle and its meta data is in META-INF folder};
-\item Package based bundles\footnote{In this kind of OSGi projects each package is a bundle and meta data is in the same package}.
+\item Standard Maven projects\footnote{Each project is a bundle and its meta data is in maven resources folder.};
+\item Maven projects using BND tools\footnote{Each project is a bundle and bundle meta data is in pom.xml configuration file.};  
+\item Standard BND Tools project\footnote{Each project is a bundle and meta data is in bnd file.};
+\item Standard Eclipse Java projects\footnote{Each project is a bundle and its meta data is in META-INF folder.};
+\item Package based bundles\footnote{In this kind of OSGi projects each package is a bundle and meta data is in the same package.}.
 \end{itemize}
 
 \section{Collecting Bundle Information}
@@ -92,8 +92,8 @@ After identifying OSGi bundles and OSGi projects Intrabundle needs to extract us
     Name & Description\\  \hline
     Loc & Lines of code.\\ \hline
     Declarative services & Verifies if bundles uses declarative services\footnote{Is a component model that simplifies the creation of components that publish and/or reference OSGi Services.}.\\ \hline
-    Ipojo & Verify if bundles uses Ipojo\footnote{Is a service component runtime aiming to simplify OSGi application development} \\ \hline
-    Blueprint & Verify if bundles uses Blueprint\footnote{Is a way of instantiating and consuming services provided by others by means of an external XML configuration file} \\ \hline
+    Ipojo & Verify if bundles uses Ipojo\footnote{Is a service component runtime aiming to simplify OSGi application development.} \\ \hline
+    Blueprint & Verify if bundles uses Blueprint\footnote{Is a way of instantiating and consuming services provided by others by means of an external XML configuration file.} \\ \hline
     Stale References & Looks for possible Stale services references.\\ \hline
     Publishes Interface & Verifies if bundle exposes only its interfaces(API).\\ \hline
     Declares permission & Verifies if bundle declares permission.\\ \hline
@@ -111,8 +111,8 @@ Here is the justification of each attribute:
 \begin{itemize}
 \item \textbf{LoC} is being extracted because it is an indicative of high or low cohesion, if the component has too much lines of code its an evidence that it is probably doing more work then it should. 
 \item \textbf{IPojo}, \textbf{Blueprint} and \textbf{Declarative Services} are recommended for managing OSGi services because they hide the "dirty work" of publishing and consuming services which sometimes may lead to incorrect behavior. 
-\item \textbf{Stale Services References} refers to code that may retain OSGi service references from being collected by Java garbage collection\footnote{Is the process of looking at memory, identifying which objects are in use and which are not, and deleting the unused objects} even when the providing bundles are gone \citep{Gama 2012}. 
-\item \textbf{Bundle dependencies} and \textbf{Required bundles} are closed related to coupling\footnote{which is a measure of how closely connected two software components are} between bundles. The less bundles a bundle depends the better it will be to maintain it as changes to other components will not affect it. 
+\item \textbf{Stale Services References} refers to code that may retain OSGi service references from being collected by Java garbage collection\footnote{Is the process of looking at memory, identifying which objects are in use and which are not, and deleting the unused objects.} even when the providing bundles are gone \citep{Gama 2012}. 
+\item \textbf{Bundle dependencies} and \textbf{Required bundles} are closed related to coupling\footnote{Which is a measure of how closely connected two software components are.} between bundles. The less bundles a bundle depends the better it will be to maintain it as changes to other components will not affect it. 
 \item \textbf{Publishes Interface} verifies if a bundle is exposing only its API and hide the implementation details from consumers. It is a good practice having functionalities that are independent of their respective implementations, this allows definitions and implementations to vary without compromising each other. 
 \item \textbf{Declares permission} is a security software attribute in OSGi projects and may restrict access to bundles. 
 \item Number of classes, interfaces and abstract classes are being collected to support the calculation of other attributes. 
@@ -127,7 +127,7 @@ The data collected earlier will be materialized into six metrics that will be us
 Every created metric in this work can be classified into the following \emph{quality labels}:
 
 \begin{enumerate}
-\item \textbf{STATE OF ART}: Metric fully satisfies good practices;
+\item \textbf{STATE OF THE ART}: Metric fully satisfies good practices;
 \item \textbf{VERY GOOD}: Satisfies most recommendations;
 \item \textbf{GOOD}: Satisfies recommendations;
 \item \textbf{REGULAR}: Satisfies some recommendations;
@@ -135,13 +135,14 @@ Every created metric in this work can be classified into the following \emph{qua
 \end{enumerate}
 
 
-\subsection{Metrics Created}
+\subsection{Metrics Defined}
+The first two metrics defined were adapted from classical software metrics. Loc and bundle dependencies are intended to represent cohesion and coupling respectively. The next metric is \emph{Uses framework}, it was proposed by the authors as we think it is good practice to use a framework to handle OSGi service registration and retrieval. Next one is \emph{declares permission} which was the chosen attribute representing security software characteristic. Next metric defined is Stale references and was chosen to represent software reliability as it may lead to memory leaks. Stale references is being measured as the authors think it is important to have bundle without Stale references. Publishes interfaces metric is being measured as a good practice taken from \citep{Knoernschild 2012}. Below we define each metric and its formula:  
 
-The first metric created is \textbf{LoC}, its the simplest one. LoC is based on bundle lines of code(excluding comments) meaning that the less lines of code more \emph{cohesion} the bundle has and easier to maintain it should be. This metric is an estimation, there is no exact LoC number because it depends on the context\footnote{If your algorithm is trying solve a very complex problem then it probably will have lots of lines of code and not necessarily have a low cohesion}. To classify LoC metric we use the following rule:\newline
+The first metric defined is \textbf{LoC}, its the simplest one. LoC is based on bundle lines of code(excluding comments) meaning that the less lines of code more \emph{cohesion} the bundle has and easier to maintain it should be. This metric is an estimation, there is no exact LoC number because it depends on the context\footnote{If your algorithm is trying solve a very complex problem then it probably will have lots of lines of code and not necessarily have a low cohesion.}. To classify LoC metric we use the following rule:\newline
 
 
 \(\text{LoC}=\begin{cases}
-\text{STATE OF ART}& \text{if LoC <= 700},\\
+\text{STATE OF THE ART}& \text{if LoC <= 700},\\
 \text{VERY GOOD}& \text{if LoC <= 1000}, \\
 \text{GOOD}& \text{if LoC <= 1500}, \\
 \text{REGULAR}& \text{if LoC <= 2000}, \\
@@ -151,7 +152,7 @@ The first metric created is \textbf{LoC}, its the simplest one. LoC is based on 
 Second metric is \textbf{Publishes interfaces} meaning that bundles should hide its implementation and expose only it's API. It is a good practice expose only the API and hide the implementation details from consumers. This is considered an \emph{Usability pattern} \citep{Knoernschild 2012}. Here is how this metric is calculated:\newline
 
 \(\text{Publishes interfaces}=\begin{cases}
-\text{STATE OF ART}& \text{if publishes only interfaces},\\
+\text{STATE OF THE ART}& \text{if publishes only interfaces},\\
 \text{REGULAR}& \text{if not publishes only interfaces}, \\
 \end{cases} \)  \newline
 
@@ -159,7 +160,7 @@ Next metric is \textbf{Bundle dependencies}, it evaluates the coupling between b
 
 
 \(\text{Bundle dependencies}=\begin{cases}
-\text{STATE OF ART}& \text{if Bundle dependencies = 0},\\
+\text{STATE OF THE ART}& \text{if Bundle dependencies = 0},\\
 \text{VERY GOOD}& \text{if Bundle dependencies <= 3}, \\
 \text{GOOD}& \text{if Bundle dependencies <= 5}, \\
 \text{REGULAR}& \text{if Bundle dependencies <= 9}, \\
@@ -169,7 +170,7 @@ Next metric is \textbf{Bundle dependencies}, it evaluates the coupling between b
 Next one is \textbf{Uses framework}, in complex application it is important to use a framework to manage bundle services. This metrics takes into account 3 well known frameworks by OSGi applications: \emph{IPojo}, \emph{Declarative services} and \emph{Blueprint}: \newline
 
 \(\text{Uses framework}=\begin{cases}
-\text{STATE OF ART}& \text{if uses framework},\\
+\text{STATE OF THE ART}& \text{if uses framework},\\
 \text{REGULAR}& \text{if not using framework}, \\
 \end{cases} \)  \newline
 
@@ -179,29 +180,29 @@ Next metric is \textbf{Stale references}, it focus on a very common problem in O
 \(NS = \sum_{i=1}^{n} \) where \textbf{n} = number of stale references found. \newline
 
 \(\text{Stale references}=\begin{cases}
-\text{STATE OF ART}& \text{no stale references},\\
+\text{STATE OF THE ART}& \text{no stale references},\\
 \text{VERY GOOD}& \frac{NS}{NC} < 0.1, \\
 \text{GOOD}& \frac{NS}{NC} < 0.25, \\
 \text{REGULAR}& \frac{NS}{NC} < 0.5, \\
 \text{ANTI PATTERN}& \frac{NS}{NC} >= 0.5. \\
 \end{cases} \)\newline     
 
-In other words if no stale references are found then this metric receives a \emph{state of art} quality label, if less then 10\% of bundle classes have stale references (number of get and unget doesn't match) then it receives \emph{very good} quality label, if > 10\% and < 25\% then it is \emph{good}, if the number of stale references is between 25\% and 50\% its is \emph{regular} but if it has 50\% or more classes with stale references then its considered an \emph{anti pattern}. 
+In other words if no stale references are found then this metric receives a \emph{state of the art} quality label, if less then 10\% of bundle classes have stale references (number of get and unget doesn't match) then it receives \emph{very good} quality label, if > 10\% and < 25\% then it is \emph{good}, if the number of stale references is between 25\% and 50\% its is \emph{regular} but if it has 50\% or more classes with stale references then its considered an \emph{anti pattern}. 
 
-The last metric created in this work is \textbf{Declares permission}, it is concerned with security. In this metric Intrabundle searches for permissions.perm file in the bundle, if it finds then the metric is considered state of art: \newline
+The last metric created in this work is \textbf{Declares permission}, it is concerned with security. In this metric Intrabundle searches for permissions.perm file in the bundle, if it finds then the metric is considered state of the art: \newline
 
 
 \(\text{Declares permission}=\begin{cases}
-\text{STATE OF ART}& \text{if declares permission},\\
+\text{STATE OF THE ART}& \text{if declares permission},\\
 \text{REGULAR}& \text{if does not declares permission}, \\
 \end{cases} \)  \newline
 
 \subsection{Quality Formula}
 
-OSGi \emph{project} quality and \emph{bundle} quality are calculated by Intrabundle using the quality labels. Each quality \emph{label} adds points to bundle and project final quality which is based on percentage of quality points(QP) obtained. \emph{State of art} adds \textbf{5QP}, \emph{Very good} \textbf{4QP}, \emph{Good} \textbf{3QP}, \emph{Regular} \textbf{2QP} and \emph{Anti pattern} \textbf{1QP}. 
+OSGi \emph{project} quality and \emph{bundle} quality are calculated by Intrabundle using the quality labels. Each quality \emph{label} adds points to bundle and project final quality which is based on percentage of quality points(QP) obtained. \emph{State of the art} adds \textbf{5QP}, \emph{Very good} \textbf{4QP}, \emph{Good} \textbf{3QP}, \emph{Regular} \textbf{2QP} and \emph{Anti pattern} \textbf{1QP}. 
 
 \subsection{Bundle Quality}
-Bundle final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained in all created metric, and \emph{Maximum Quality Points} \textbf{MQP} that is the maximum points a bundle can have. MQP is equal to all metrics classified as State of art. Here is the formula:\newline    
+Bundle final quality is calculated as a function of \emph{Total Quality Points} \textbf{TQP}, which is the total points obtained in all created metric, and \emph{Maximum Quality Points} \textbf{MQP} that is the maximum points a bundle can have. MQP is equal to all metrics classified as State of the art. Here is the formula:\newline    
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of metrics. \newline
 
@@ -221,12 +222,12 @@ f(q) = \frac{TQP}{MQP};
 
 In terms of percentage of points obtained, more than 90\% of TQP is considered State of Art, between 90\% and 75\% is Very good quality, from 60\% to 75\% is Good, 40\% to 60\% is Regular and less than 40\% of TQP a bundle is considered Anti pattern in terms of software quality. 
 
-For example imagine we have three metrics and a bundle has 5QP(State of art)in one metric and 3QP(Good quality label) in the other two metrics. In this case the MQP is 15 (5*3) and TQP is 11 (5 + 3 + 3). In this example the bundle quality is 11/15 (73\%) which maps to \emph{Good} quality label. 
+For example imagine we have three metrics and a bundle has 5QP(State of the art)in one metric and 3QP(Good quality label) in the other two metrics. In this case the MQP is 15 (5*3) and TQP is 11 (5 + 3 + 3). In this example the bundle quality is 11/15 (73\%) which maps to \emph{Good} quality label. 
 
 
 \subsection{Project Quality}
 \label{sec:project-quality}
-In Intrabundle the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundle's quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
+In Intrabundle the quality of an OSGi project uses the same formula of bundle quality. The only difference is in MQP and TQP which in this case are based on bundle's quality instead of metrics. In project quality the maximum point is calculated considering all bundle's quality as State of the art, so for example if we have 3 bundles the MQP will be 15. TQP is just the sum of all bundles quality, here is the formula Intrabundle uses for \emph{project quality}:
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of bundles in the project. \newline
 
@@ -244,11 +245,11 @@ f(q) = \frac{TQP}{MQP};
  if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
  if \( 0.4 <= f(q) \) then Anti Pattern;\\*
 
-In terms of percentage it's also the same rule used for bundle's quality. For example if a project has 3 bundles, one has 5QP (State of art) and other two has 3QP (good) then MQP for this case is 15 (5*3) and TQP is 11 (5 + 3 + 3). In this example project final quality is 11/15 (73\%) which maps to \emph{Good} quality label. 
+In terms of percentage it's also the same rule used for bundle's quality. For example if a project has 3 bundles, one has 5QP (State of the art) and other two has 3QP (good) then MQP for this case is 15 (5*3) and TQP is 11 (5 + 3 + 3). In this example project final quality is 11/15 (73\%) which maps to \emph{Good} quality label. 
 
 \subsection{Project metric quality}
 \label{sec:project-quality-metric}
-The last way to measure quality using Intrabundle is to analyze the project quality on each metric. The project quality in a metric is the sum of all \emph{bundles qualities} on that metric. The total points a bundle can have in a metric is considering all bundles State of art on that metric. The quality label for a project metric quality is also defined as percentage of points obtained from maximum points:
+The last way to measure quality using Intrabundle is to analyze the project quality on each metric. The project quality in a metric is the sum of all \emph{bundles qualities} on that metric. The total points a bundle can have in a metric is considering all bundles State of the art on that metric. The quality label for a project metric quality is also defined as percentage of points obtained from maximum points:
 
 \(MQP = \sum_{i=1}^{n} 5 \) where \textbf{n} = number of bundles in the project. \newline
 
@@ -266,5 +267,5 @@ f(q) = \frac{TQP}{MQP};
  if \( 0.6 <= f(q) > 0.4 \) Regular; \\*
  if \( 0.4 <= f(q) \) then Anti Pattern;\\*
 
-So for example if a project has 3 bundles, one has 5QP (State of art) in LoC and other two has 3QP (good) then MQP is 15 (5 * 3) and TQP is 11 (5 + 3 + 3). In this example project final quality on LoC is 11/15 (73\%) which maps to \emph{Good} quality label.  
+So for example if a project has 3 bundles, one has 5QP (State of the art) in LoC and other two has 3QP (good) then MQP is 15 (5 * 3) and TQP is 11 (5 + 3 + 3). In this example project final quality on LoC is 11/15 (73\%) which maps to \emph{Good} quality label.  
 

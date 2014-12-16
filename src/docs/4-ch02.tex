@@ -2,12 +2,12 @@
 This chapter presents an overview of the concepts and technologies that were studied and used on the development of this work. 
 In section \textit{2.1 - Software Quality}, will be presented general aspects of software quality such as \textit{quality measurement},  \textit{software metrics}, \textit{program analysis} and some tools that are used in this area.  
 
-Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications. Finally section \ref{sec:forge} will introduce JBoss Forge, a Java framework used as runtime\footnote{Is software designed to support the execution of computer programs written in some computer language} for Intrabundle\footnote{A Java based project that will be presented later on this work}.   
+Section \textit{2.2 - Java and OSGi} will introduce OSGi a framework for build service oriented Java modular applications. Finally section \ref{sec:forge} will introduce JBoss Forge, a Java framework used as runtime\footnote{Is software designed to support the execution of computer programs written in some computer language.} for Intrabundle\footnote{A Java based project that will be presented later on this work.}.   
 
 
 \section{Software Quality}
 \label{sec:quality}
-There has been many definitions of software quality \citep[p. 23]{Kan 2002} and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively}. 
+There has been many definitions of software quality \citep[p. 23]{Kan 2002} and there is even an ISO norm for it, the ISO/IEC 25010 \citep{iso 2011}. All this definitions agree that the main motivation to perform continuous software quality management is to avoid \textbf{software failures} and increase \textbf{maintainability} in the sense that the more quality a program has the easier will be to maintain, the less bugs or abnormal behavior it will have and the more it will conform with its functional and non functional requirements\footnote{Functional and non functional requirements can be simply defined as \textit{what} the software does and \textit{how} the software will do respectively.}. 
 
 Software quality can be divided in two groups, the \textbf{external} and \textbf{internal} quality. 
 
@@ -54,17 +54,17 @@ period of time. & Bundle startup time, also bundle dependency can decrease perfo
 
 \subsection{Software Metrics}
 \label{sec:soft_metrics}
-A software metric is the measurement of a software attribute which in turn is a quantitative calculation of a characteristic. Software metrics can be classified into three categories: product metrics\footnote{Product metrics describe the characteristics of the product such as size, complexity, design features, performance}, process metrics\footnote{Process metrics can be used to improve software development and maintenance.Examples include the effectiveness of defect removal during development and response time of bug fixing}, and project metrics\footnote{Project metrics describe the project characteristics and execution. Examples include the number of
-software developers, cost, schedule, and productivity}. Software quality metrics are a subset of software metrics that focus on the quality aspects of the product, process, and project \citep{Kan 2002}.
+A software metric is the measurement of a software attribute which in turn is a quantitative calculation of a characteristic. Software metrics can be classified into three categories: product metrics\footnote{Product metrics describe the characteristics of the product such as size, complexity, design features, performance.}, process metrics\footnote{Process metrics can be used to improve software development and maintenance.Examples include the effectiveness of defect removal during development and response time of bug fixing.}, and project metrics\footnote{Project metrics describe the project characteristics and execution. Examples include the number of
+software developers, cost, schedule, and productivity.}. Software quality metrics are a subset of software metrics that focus on the quality aspects of the product, process, and project \citep{Kan 2002}.
 
 
 \subsubsection{Good Software Metrics}
 Good metrics may have the following aspects:
 
 \begin{itemize}
-  \item \emph{Linear}: metric values should follow an intuitive way to compare its values like for example higher values should correspond to better quality whereas lower values to worse quality and vice versa. 
-  \item \emph{Independent}: two metric values should not interfere on each other.
-  \item \emph{Repeatable}: this is a very important aspect in continuous quality management where software is changing all the time and we want to measure quality on every change.
+  \item \emph{Linear}: metric values should follow an intuitive way to compare its values like for example higher values should correspond to better quality whereas lower values to worse quality and vice versa; 
+  \item \emph{Independent}: two metric values should not interfere on each other;
+  \item \emph{Repeatable}: this is a very important aspect in continuous quality management where software is changing all the time and we want to measure quality on every change;
   \item \emph{Accurate}: the metric should be meaningful and should help answer how good a software attribute is, for example using latency\footnote{The delay incurred in communicating a message, the time the message spends “on the wire”} to calculate response time\footnote{The total time it takes from when a user makes a request until they receive a response} in a web application isn't accurate.       
 \end{itemize}
 
@@ -102,7 +102,7 @@ Program analysis is the process of automatically analyzing the behavior of compu
  Is the analysis of computer software that is performed without actually executing programs \citep{Wichmann 1995}. In this kind of analysis source code is inspected and valuable information is collected based on its internal structure and components. 
 
 \subsubsection{Dynamic Program Analysis}
-Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks}\footnote{Resources that are hold on system's memory and aren't released}, identify arithmetic errors and extract code coverage and measure performance. 
+Is a technique that analyze the system's behavior on the fly, while it is executing. The main objectives of this kind of analyze is to catch \textit{memory leaks}\footnote{Resources that are hold on system's memory and aren't released.}, identify arithmetic errors and extract code coverage and measure performance. 
 
 
 \subsection{Quality Analysis Tools}
@@ -160,33 +160,34 @@ The rules are totally customizable via xml configuration, Intrabundle PMD rules 
 
 \section{Java and OSGi}
 
-In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications\footnote{A software design technique that emphasizes separating the functionality of a program into independent, interchangeable modules which represent a separation of concerns and improves maintainability} this section will introduce the Java language and OSGi framework.
+In the context of Java™ programming language \citep{Arnold 2005}, which accordingly to IEEE spectrum of this year is the most popular programming language \citep{ieee spectrum 2014}, and modular applications\footnote{A software design technique that emphasizes separating the functionality of a program into independent, interchangeable modules which represent a separation of concerns and improves maintainability.} this section will introduce the Java language and OSGi framework.
 
 \subsection{The Java language}
-Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is an abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM}. The JVM converts java byte code into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure \ref{jvm} illustrates how JVM works:
+Java is a general purpose object oriented\footnote{Object-oriented programming(OOP) integrates code and data using the concept of an "object" which is a piece of software that holds state and behavior.} programming language created by Sun Microsystems in 1995 which aims on simplicity, readability and universality. Java runs on top of the so called JVM, the acronym for Java Virtual Machine, which is an abstract computing machine\footnote{Also known as \textit{Virtual Machine} which is an emulation of a particular computer system.} and platform-independent execution environment that execute Java byte code\footnote{The intermediate output of the compilation of a program written in Java that can be read by the JVM.}. The JVM converts java byte code into host machine language(e.g. linux, windows etc...) allowing Java programs to "run everywhere" independently of operating system or platform. JVM implementations are different for each platform but the generated bytecode is the same, Figure \ref{jvm} illustrates how JVM works:
 
 \begin{figure}[h]
 \caption{JVM architecture}
 \label{jvm}
 \centering
 \includegraphics[scale=0.5]{jvm}
+\\*Source: Adapted from \cite{app servers 2012}
 \end{figure}  
 \FloatBarrier
 
 Other aspects of Java are listed below:   
 
 \begin{itemize}
-\item Type safe\footnote{Type safety is the extent to which a programming language discourages or prevents type errors} 
-\item Dynamic: during the execution of a program, Java can dynamically load classes 
-\item Strong memory management(no explicit pointer)
-\item Automatic garbage collection to release unused objects from memory
-\item Robust: extensive compile-time checking so bugs can be found early
-\item Multithreaded\footnote{Multithreading is a program’s capability to perform several tasks simultaneously}
-\item Distributed: networking capability is inherently integrated into Java
+\item Type safe\footnote{Type safety is the extent to which a programming language discourages or prevents type errors.};
+\item Dynamic: during the execution of a program, Java can dynamically load classes; 
+\item Strong memory management(no explicit pointer);
+\item Automatic garbage collection to release unused objects from memory;
+\item Robust: extensive compile-time checking so bugs can be found early;
+\item Multithreaded\footnote{Multithreading is a program’s capability to perform several tasks simultaneously.};
+\item Distributed: networking capability is inherently integrated into Java.
 \end{itemize}
 
 \subsection{The OSGi service platform}
-OSGi is a component based service oriented platform specification maintained by \emph{OSGi Alliance}\footnote{A non profit worldwide consortium of technology innovators} that runs on top of Java. As of November 2014 the specification is at version 6 and currently has four implementations\footnote{\href{http://felix.apache.org}{Apache Felix}, \href{http://eclipse.org/equinox/}{Eclipse Equinox}, \href{http://www.knopflerfish.org}{Knopflerfish} and \href{http://www.prosyst.com}{ProSyst}}. It is composed by \emph{OSGi framework} and \emph{OSGi standard services}. The framework is the runtime that provides the basis of all OSGi module system functionalities like modules management for example. Standard services define some reusable apis and extension points to easy development of OSGi based applications. Figure \ref{osgi architecture} illustrates OSGi platform architecture:
+OSGi is a component based service oriented platform specification maintained by \emph{OSGi Alliance}\footnote{A non profit worldwide consortium of technology innovators.} that runs on top of Java. As of November 2014 the specification is at version 6 and currently has four implementations\footnote{\href{http://felix.apache.org}{Apache Felix}, \href{http://eclipse.org/equinox/}{Eclipse Equinox}, \href{http://www.knopflerfish.org}{Knopflerfish} and \href{http://www.prosyst.com}{ProSyst}.}. It is composed by \emph{OSGi framework} and \emph{OSGi standard services}. The framework is the runtime that provides the basis of all OSGi module system functionalities like modules management for example. Standard services define some reusable apis and extension points to easy development of OSGi based applications. Figure \ref{osgi architecture} illustrates OSGi platform architecture:
 
 \begin{figure}[h]
 \caption{OSGi architecture}
@@ -199,7 +200,7 @@ OSGi is a component based service oriented platform specification maintained by 
 
 
 \subsubsection{Bundles}
-Bundles are the building blocks of OSGi applications. A bundle\footnote{Also known as module} is a group of Java classes and resources packed as .jar extension with additional metadata in manifest MANIFEST.MF file describing its module boundaries like for example the packages it imports and exports. Below is an OSGi manifest file example:
+Bundles are the building blocks of OSGi applications. A bundle\footnote{Also known as module.} is a group of Java classes and resources packed as .jar extension with additional metadata in manifest MANIFEST.MF file describing its module boundaries like for example the packages it imports and exports. Below is an OSGi manifest file example:
 
 \begin{lstlisting}
 Bundle-Name: Hello World
@@ -215,7 +216,7 @@ Import-Package: org.acme.api;version="1.1.0"
 
 Looking at manifest OSGi can ensure its most important aspect, \emph{modularity}, so for example our \textbf{Hello World} bundle will only be started(later we will explore bundle lifecycle) if and only if there is a bundle (in resolved or installed state) that exports \emph{org.acme.api} package, this is called \textbf{explicit boundaries}.
 
-With OSGi, you modularize applications into bundles. Each bundle is a tightly coupled, dynamically loadable collection of classes packed in JARs\footnote{acronym for Java Archive, a file that used to aggregate many Java class files and associated metadata and resources (text, images, etc.) into one file to distribute}, and configuration files that explicitly declare any external dependencies. All these characteristics are provided in OSGi by three conceptual layers that will be briefly presented here, \emph{Module}, \emph{Lifecycle} and \emph{Service}.
+With OSGi, you modularize applications into bundles. Each bundle is a tightly coupled, dynamically loadable collection of classes packed in JARs\footnote{acronym for Java Archive, a file that used to aggregate many Java class files and associated metadata and resources (text, images, etc.) into one file to distribute.}, and configuration files that explicitly declare any external dependencies. All these characteristics are provided in OSGi by three conceptual layers that will be briefly presented here, \emph{Module}, \emph{Lifecycle} and \emph{Service}.
 
 \subsubsection{Module layer}
 This layer is the basis for others as modularization is the key concept of OSGi. The module layer defines OSGi module concept - bundle, which is a JAR file with extra metadata. It also handles the packaging and sharing of Java packages between bundles and the hiding of packages from other bundles. The OSGi framework dynamically resolves dependencies among bundles and performs bundle resolution to match imported and exported packages. This layer ensures that class loading happens in a consistent and predictable way.
@@ -252,7 +253,7 @@ If OSGi were a car, module layer would provide modules such as tire, seat, etc, 
 \FloatBarrier
 
 \subsubsection{Service layer}
-This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state \citep{Evans 2003}} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
+This layer provides communication among modules and their contained components. Service providers publish services\footnote{A Service is an operation offered as an interface that stands alone in the model, without encapsulating state \citep{Evans 2003}.} to \emph{service registry}, while service clients search the registry to find available services to use. The registry is accessible to all bundles so they can \emph{publish} its services as well \emph{consume} services from other bundles.  
 
 This is like a service-oriented architecture (SOA) which has been largely used in web services. Here OSGi services are local to a single VM, so it is sometimes called SOA in a VM.
 
@@ -266,7 +267,7 @@ This is like a service-oriented architecture (SOA) which has been largely used i
 
 
 \subsection{Vanilla Java vs OSGi}
-The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
+The main motivation behind OSGi and advantage over standard Java application, as illustrated before, is the modularity. The main issue with Java default runtime is the way Java classes are loaded, it is the root cause that inhibits modularity in classical Java applications. In standard Java, user classes\footnote{Classes that are defined by developers and third parties and that do not take advantage of the extension mechanism.} are loaded by a classloader\footnote{A class loader is an object that is responsible for loading classes.} from the same classpath\footnote{classpath tells Java virtual machine where to look in the filesystem for files defining these classes} which is commonly referred as a \emph{flat classpath}. A flat classpath is the main cause of a well known problem in Java applications, the \emph{Jar Hell}\footnote{A term used to describe all the various ways in which the classloading process can end up not working.}. Figure \ref{jar hell} is an example of Jar hell where multiple JARs containing overlapping classes(consider each shape as being a Java class) and/or packages are merged based on their order of appearance in the class path.
 
 
 \begin{figure}[h]
@@ -296,7 +297,7 @@ In OSGi runtime we can say we have a graph of classpaths that allows powerful ve
 \section{JBoss Forge}
 \label{sec:forge}
 \subsection{Introduction}
-\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications} plugin based general purpose command line tool(CLI). Forge can be started through command line or be integrated in an IDE. Figure \ref{forge-cli} shows Forge initial screen:
+\href{http://forge.jboss.org/1.x/}{JBoss Forge} is a modular\footnote{Forge runtime is based on \href{https://docs.jboss.org/author/display/MODULES/Introduction}{JBoss modules} which is a technology, like OSGi but not so popular, for building modular applications.} plugin based general purpose command line tool(CLI). Forge can be started through command line or be integrated in an IDE. Figure \ref{forge-cli} shows Forge initial screen:
 
 \begin{figure}[h]
 \caption{Forge initial screen}
@@ -306,11 +307,11 @@ In OSGi runtime we can say we have a graph of classpaths that allows powerful ve
 \end{figure}  
 \FloatBarrier
 
-Forge runs on any operating system that can run Java and have built in startup scripts\footnote{Executable files that initiate a process or system} for Windows, Linux and MacOS.
+Forge runs on any operating system that can run Java and have built in startup scripts\footnote{Executable files that initiate a process or system.} for Windows, Linux and MacOS.
 
 \subsection{Forge Plugin}
 \label{sec:forge:plugin}
-A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting the status of your latest source-code commit, or even sending commands to a home-automation system. The sky is the limit!. 
+A Forge plugin can be as simple as a tool to print files to the console, or as complex as deploying an application to a server, tweeting the status of your latest source-code commit, or even sending commands to a home-automation system. 
 
 Every plugin offers a set o commands that may be restricted by a facet.
 
@@ -333,7 +334,7 @@ Plugin is just a marker interface so Forge can identify plugins. To fire the say
 
 \subsection{Facets}
 \label{sec:forge:facet}
-A Facet in the Forge environment is responsible for restricting the usage of a plugin. It is in fact an interface\footnote{In object oriented programming is a contract that defines which methods the implementors of the interface must provide} with a method with return type boolean that must decide if the facet is installed.
+A Facet in the Forge environment is responsible for restricting the usage of a plugin. It is in fact an interface\footnote{In object oriented programming is a contract that defines which methods the implementors of the interface must provide.} with a method with return type boolean that must decide if the facet is installed.
 
 \subsubsection{Example}
 Below is an example of facet that restricts the usage of hello-world plugin, in the example the command should be only available when user is in a directory named \emph{hello} otherwise Forge will claim that the command does not exist in current context.
@@ -374,7 +375,7 @@ public class HelloWorldPlugin implements Plugin {
  A project locator is a component responsible for creating Java objects that represent useful information in the forge runtime, they are called \emph{project} in forge. Forge calls all locators available when user change directory in command line and the first locator that is matched will create a Java object representing the current Project. Its the same idea of facets but instead of restricting plugin commands it creates object and made them available for Forge runtime. That was how we could inject current user project in HelloFacet before.
 
 \subsection{Applications}
-Forge can be used as a command line tool or integrated in main IDEs like Eclipse, Netbeans or IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}}.    
+Forge can be used as a command line tool or integrated in main IDEs like Eclipse, Netbeans or IntelliJ. To be used as command line tool one must download a zip distribution containing a forge executable that runs on main operating systems\footnote{As forge runs on top of Java, Forge inherits its \emph{universality}.}.    
 
 Forge has an important role on this work as it was the ground for creating Intrabundle, a tool based on forge runtime that will be introduced later.
 
