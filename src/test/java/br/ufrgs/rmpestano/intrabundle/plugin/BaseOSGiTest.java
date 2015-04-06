@@ -44,6 +44,34 @@ public abstract class BaseOSGiTest extends SingletonAbstractShellTest {
     }
 
     /**
+     * creates an eclipse based OSGi project with a main folder
+     * and 2 sub folders (module 1 and module2)inside which are OSGi bundles
+     * module1 has direct cyclic deps with module2
+     */
+    public Project initializeOSGiProjectWithDirectCycle() throws Exception {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        TestUtils.addBundleWithDirectCycle(main);
+        TestUtils.addHelloManager((DirectoryResource) main.getChild("module1"));
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
+    /**
+     * creates an eclipse based OSGi project with a main folder
+     * and 3 sub folders inside which are OSGi bundles
+     * module1 has indirect cyclic deps with module3 (through 2)
+     */
+    public Project initializeOSGiProjectWithIndirectCycle() throws Exception {
+        DirectoryResource root = createTempFolder();
+        DirectoryResource main = root.getOrCreateChildDirectory("main");
+        TestUtils.addBundleWithIndirectCycle(main);
+        TestUtils.addHelloManager((DirectoryResource) main.getChild("module1"));
+        getShell().setCurrentResource(main);
+        return getProject();
+    }
+
+    /**
      * creates an OSGi maven based project where we have a master module
      * that aggregates sub modules(also maven projects) that are OSGi bundles
      */

@@ -93,7 +93,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi listBundles");
-        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine()+ "module3"));
+        Assert.assertTrue(getOutput().startsWith("module1" + TestUtils.getNewLine() + "module2" + TestUtils.getNewLine() + "module3"));
     }
 
     @Test
@@ -292,7 +292,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi declaresPermissions");
-        assertTrue(getOutput().startsWith("Listing modules that declares permissions:" + TestUtils.getNewLine()+"module1"));
+        assertTrue(getOutput().startsWith("Listing modules that declares permissions:" + TestUtils.getNewLine() + "module1"));
     }
 
     /**
@@ -327,7 +327,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi countBundles");
         Assert.assertTrue(getOutput().startsWith("Total number of bundles:3"));
-        assertEquals(currentOsgiProject.get().getModules().size(),3);
+        assertEquals(currentOsgiProject.get().getModules().size(), 3);
     }
 
 
@@ -380,11 +380,11 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("3");
         getShell().execute("osgi findBundlesByQuality");
-        assertTrue(getOutput().trim().endsWith(provider.getMessage("osgi.scan.noBundlesFound")));
+        assertTrue(getOutput().trim().endsWith("module1"));
         resetOutput();
         queueInputLines("4");
         getShell().execute("osgi findBundlesByQuality");
-        assertTrue(getOutput().trim().endsWith(TestUtils.getNewLine()+"module1"+TestUtils.getNewLine()+"module2"));
+        assertTrue(getOutput().trim().endsWith(TestUtils.getNewLine()+"module2"));
         assertFalse(getOutput().contains(provider.getMessage("osgi.scan.noBundlesFound")));
         resetOutput();
         queueInputLines("5");
@@ -406,6 +406,47 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         getShell().execute("osgi projectPoints");
         assertTrue(getOutput().trim().startsWith("13 of 15 - 86.7%"));
+    }
+
+    @Test
+    public void shouldListModulesWithDirectCycles() throws Exception {
+        initializeOSGiProjectWithDirectCycle();
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi cycles");
+        Assert.assertTrue(getOutput().contains("module1 =====" + TestUtils.getNewLine() +
+                "module1,module2,module1"));
+
+        Assert.assertTrue(getOutput().contains("module2 =====" + TestUtils.getNewLine() +
+                "module2,module1,module2"));
+
+    }
+
+    /*
+    cycles:
+     1 -> 2 -> 1
+     1 -> 2 -> 3 -> 1
+     3 -> 1 -> 2 -> 3
+     2 -> 3 -> 1 -> 2
+     2 -> 1 -> 2
+     */
+    @Test
+    public void shouldListModulesInDirectCycles() throws Exception {
+        initializeOSGiProjectWithIndirectCycle();
+        resetOutput();
+        queueInputLines("y");
+        getShell().execute("osgi cycles");
+        Assert.assertTrue(getOutput().contains("module1 =====" + TestUtils.getNewLine() +
+                "module1,module2,module1" + TestUtils.getNewLine() +
+                "module1,module2,module3,module1"));
+
+        Assert.assertTrue(getOutput().contains("module2 =====" + TestUtils.getNewLine() +
+                "module2,module1,module2" + TestUtils.getNewLine() +
+                "module2,module3,module1,module2"));
+
+        Assert.assertTrue(getOutput().contains("module3 =====" + TestUtils.getNewLine() +
+                "module3,module1,module2,module3"));
+
     }
 
 }

@@ -4,13 +4,11 @@ import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
-import br.ufrgs.rmpestano.intrabundle.model.Metric;
-import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
+import br.ufrgs.rmpestano.intrabundle.util.MetricUtils;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.Shell;
@@ -51,6 +49,9 @@ public class OsgiPlugin implements Plugin {
 
     @Inject
     MetricsCalculation metrics;
+
+    @Inject
+    MetricUtils metricUtils;
 
 
     private boolean sorted;
@@ -163,6 +164,19 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command("cycles")
+    public void moduleCycles(@PipeIn String in, PipeOut out) {
+        if (!this.allModules(provider.getMessage("cycles"))) {
+            OSGiModule choice = choiceModule();
+            this.listModuleCycles(choice, out);
+        }//execute command for all modules
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleCycles(osGiModule, out);
+            }
+        }
+    }
+
 
     @Command("staleReferences")
     public void moduleStaleReferences(@PipeIn String in, PipeOut out) {
@@ -219,7 +233,7 @@ public class OsgiPlugin implements Plugin {
         if (!this.allModules(provider.getMessage("metrics"))) {
             OSGiModule bundle = choiceModule();
             MetricPoints metricPoints = metrics.calculateBundleQuality(bundle);
-            out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
+            out.println(metricUtils.metricQuality(metricPoints));
             out.println(provider.getMessage("bundle.listing-metrics"));
             for (Metric metric : metricPoints.getBundleMetrics()) {
                  out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
@@ -231,7 +245,7 @@ public class OsgiPlugin implements Plugin {
             for (OSGiModule module: getModules()) {
                 out.println(ShellColor.YELLOW,provider.getMessage("module.metrics",module.getName()));
                 MetricPoints metricPoints = metrics.calculateBundleQuality(module);
-                out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
+                out.println(metricUtils.metricQuality(metricPoints));
                 for (Metric metric : metricPoints.getBundleMetrics()) {
                     out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
                 }
@@ -256,12 +270,7 @@ public class OsgiPlugin implements Plugin {
     public void metricQuality(PipeOut out) {
         MetricName metric = choiceMetric();
         MetricPoints metricPoints = metrics.calculateMetricQuality(metric);
-        int maxPoints = metricPoints.getMaxPoints();
-        int obtainedPoints = metricPoints.getBundlePoints();
-        BigDecimal bd = new BigDecimal(obtainedPoints/(double)maxPoints);
-        bd = bd.setScale(3, RoundingMode.HALF_UP);
-        double percentage = bd.doubleValue()*100;
-        out.println(provider.getMessage("metrics.quality",obtainedPoints,maxPoints,percentage,metricPoints.getFinalScore().name()));
+        out.println(metricUtils.metricQuality(metricPoints));
     }
 
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")
@@ -325,6 +334,16 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    private void listModuleCycles(OSGiModule choice, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.cycles", choice) + " =====");
+        if (project.get().getModuleCyclicDependenciesMap().get(choice).isEmpty()) {
+            out.println(provider.getMessage("module.noDependency"));
+        } else {
+            for (ModuleCycle m : project.get().getModuleCyclicDependenciesMap().get(choice)) {
+                out.println(m.toString());
+            }
+        }
+    }
 
     private OSGiModule choiceModule() {
         return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());

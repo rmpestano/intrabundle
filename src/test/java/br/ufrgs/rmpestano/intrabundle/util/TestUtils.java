@@ -149,6 +149,50 @@ public class TestUtils {
         return bundle;
     }
 
+    public static DirectoryResource addBundleWithDirectCycle(DirectoryResource dir) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory("module1");
+        DirectoryResource bundle2 = dir.getOrCreateChildDirectory("module2");
+
+        String manifest12 = "/MANIFEST-module1-module2.MF";
+        String manifest21 = "/MANIFEST-module2-module1.MF";
+        FileResource<?> fileResource = (FileResource<?>) bundle.getChild(manifest12);
+        if (!fileResource.exists()) {
+            fileResource.setContents(TestUtils.class.getResourceAsStream(manifest12));
+        }
+        FileResource<?> fileResource2 = (FileResource<?>) bundle2.getChild(manifest21);
+        if (!fileResource2.exists()) {
+            fileResource2.setContents(TestUtils.class.getResourceAsStream(manifest21));
+        }
+
+        addActivator(bundle);
+        addActivator(bundle2);
+        return bundle;
+    }
+
+    public static DirectoryResource addBundleWithIndirectCycle(DirectoryResource dir) {
+        DirectoryResource bundle = dir.getOrCreateChildDirectory("module1");
+        DirectoryResource bundle2 = dir.getOrCreateChildDirectory("module2");
+        DirectoryResource bundle3 = dir.getOrCreateChildDirectory("module3");
+
+        String manifest1 = "/MANIFEST-module1-module2.MF";
+        String manifest2 = "/MANIFEST-module2-module1.MF";
+        String manifest3 = "/MANIFEST-module3-module1.MF";
+        FileResource<?> fileResource = (FileResource<?>) bundle.getChild(manifest1);
+        if (!fileResource.exists()) {
+            fileResource.setContents(TestUtils.class.getResourceAsStream(manifest1));
+        }
+        FileResource<?> fileResource2 = (FileResource<?>) bundle2.getChild(manifest2);
+        if (!fileResource2.exists()) {
+            fileResource2.setContents(TestUtils.class.getResourceAsStream(manifest2));
+        }
+
+        FileResource<?> fileResource3 = (FileResource<?>) bundle3.getChild(manifest3);
+        if (!fileResource3.exists()) {
+            fileResource3.setContents(TestUtils.class.getResourceAsStream(manifest3));
+        }
+        return bundle;
+    }
+
 
     public static void addBnd(DirectoryResource root) {
         FileResource<?> bnd = (FileResource<?>) root.getChild("bnd.bnd");

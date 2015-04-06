@@ -36,8 +36,8 @@ public class MetricsTest extends BaseMetricsTest {
         queueInputLines("1");
         getShell().execute("osgi bundleMetrics");
 
-        assertTrue(getOutput().contains("Points obtained: 23 of 30. Final score: VERY_GOOD"));
-        assertTrue(getOutput().contains("Lines of code:STATE_OF_ART"));
+        assertTrue(getOutput().contains("Points obtained: 23 of 30 - 76.7% of compliance"));
+        assertTrue(getOutput().contains("Cyclic dependencies:STATE_OF_ART"));
         assertTrue(getOutput().contains("Bundle dependencies:VERY_GOOD"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
         assertTrue(getOutput().contains("Uses framework to manage services:REGULAR"));
@@ -73,24 +73,24 @@ public class MetricsTest extends BaseMetricsTest {
 
 
         getOutput().contains("Metrics of module1:" + TestUtils.getNewLine() +
-                "Points obtained: 23 of 30. Final score: VERY_GOOD" + TestUtils.getNewLine() +
-                "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30 - 76.7% of compliance" + TestUtils.getNewLine() +
+                "Cyclic dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
                 "Uses framework to manage services:REGULAR" + TestUtils.getNewLine() +
                 "Publishes interfaces:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Stale references:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Metrics of module2:" + TestUtils.getNewLine() +
-                "Points obtained: 23 of 30. Final score: VERY_GOOD" + TestUtils.getNewLine() +
-                "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30 - 76.7% of compliance" + TestUtils.getNewLine() +
+                "Cyclic dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
                 "Uses framework to manage services:REGULAR" + TestUtils.getNewLine() +
                 "Publishes interfaces:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Stale references:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Metrics of module3:" + TestUtils.getNewLine() +
-                "Points obtained: 27 of 30. Final score: STATE_OF_ART"+ TestUtils.getNewLine() +
-                "Lines of code:STATE_OF_ART" + TestUtils.getNewLine() +
+                "Points obtained: 27 of 30 - 90% of compliance"+ TestUtils.getNewLine() +
+                "Cyclic dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
                 "Uses framework to manage services:STATE_OF_ART" + TestUtils.getNewLine() +
@@ -103,21 +103,21 @@ public class MetricsTest extends BaseMetricsTest {
         initializeMavenBundle();
         resetOutput();
         getShell().execute("bundle metrics");
-        assertTrue(getOutput().contains("Lines of code:STATE_OF_ART"));
         assertTrue(getOutput().contains("Publishes interfaces:STATE_OF_ART"));
         assertTrue(getOutput().contains("Stale references:STATE_OF_ART"));
         assertTrue(getOutput().contains("Uses framework to manage services:REGULAR"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
-        assertTrue(getOutput().contains("Points obtained: 19 of 25. Final score: VERY_GOOD"));
+        assertTrue(getOutput().contains("Points obtained: 14 of 20 - 70% of compliance"));
     }
 
     @Test
-    public void shouldInvokeBundleMetricCommandOnBundleWithManyLoc() throws Exception {
-        initializeOSGiBundleWithModuleWithManyLoc();
+    public void shouldInvokeBundleMetricCommandOnBundleWithStaleReferences() throws Exception {
+        initializeOSGiBundleWithStaleReferences();
         resetOutput();
         getShell().execute("bundle metrics");
-        assertTrue(getOutput().trim().contains("Lines of code:ANTI_PATTERN"));
-        assertTrue(getOutput().contains("Points obtained: 12 of 25. Final score: REGULAR"));
+        assertTrue(getOutput().trim().contains("Stale references:ANTI_PATTERN"));
+        assertTrue(getOutput().trim().contains("Publishes interfaces:STATE_OF_ART"));
+        assertTrue(getOutput().contains("Points obtained: 10 of 20 - 50% of compliance"));
     }
 
     @Test
@@ -126,27 +126,27 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         queueInputLines("1");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().contains("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+        assertTrue(getOutput().trim().contains("Points obtained: 15 of 15 - 100% of compliance."));
         resetOutput();
         queueInputLines("2");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100% of compliance."));
         resetOutput();
         queueInputLines("3");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("Points obtained: 13 of 15 - 86.7%. Final score: VERY_GOOD"));
+        assertTrue(getOutput().trim().endsWith("13 of 15 - 86.7% of compliance."));
         resetOutput();
         queueInputLines("4");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("Points obtained: 9 of 15 - 60%. Final score: GOOD"));
+        assertTrue(getOutput().trim().endsWith("Points obtained: 9 of 15 - 60% of compliance."));
         resetOutput();
         queueInputLines("5");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("Points obtained: 6 of 15 - 40%. Final score: REGULAR"));
+        assertTrue(getOutput().trim().endsWith("Points obtained: 6 of 15 - 40% of compliance."));
         resetOutput();
         queueInputLines("6");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100%. Final score: STATE_OF_ART"));
+        assertTrue(getOutput().trim().endsWith("Points obtained: 15 of 15 - 100% of compliance."));
     }
 
 }

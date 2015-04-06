@@ -1,10 +1,7 @@
 package br.ufrgs.rmpestano.intrabundle.metric;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
-import br.ufrgs.rmpestano.intrabundle.model.Metric;
-import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import org.jboss.solder.logging.Logger;
@@ -32,22 +29,33 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
     @Inject
     MessageProvider provider;
 
-    Map<OSGiProject, List<MetricScore>> projectBundleQualities = new HashMap<OSGiProject,List<MetricScore>>();//stores each project bundle quality
+    Map<OSGiProject, List<MetricPoints>> projectBundleQualities = new HashMap<OSGiProject,List<MetricPoints>>();//stores each project bundle quality
 
-    public Metric getLocMetric(OSGiModule bundle) {
-        MetricName name = MetricName.LOC;
-        long linesOfCode = bundle.getLinesOfCode();
+    /**
+     * zero cycles = STATE_OF_THE_ART
+     * zero > bundles with cycle <= 10% = VERY_GOOD
+     * 10% > bundles with cycle <= 20% = GOOD
+     * 20% > bundles with cycle <= 30% = REGULAR
+     * > 30% bundles with cycle = ANTI_PATERN
+     * @param bundle
+     * @return
+     */
+    public Metric getCycleMetric(OSGiModule bundle) {
+        MetricName name = MetricName.CYCLE;
+        List<ModuleCycle> moduleCycles = currentOSGiProject.get().getModuleCyclicDependenciesMap().get(bundle);
+        int numberOfCycles =  moduleCycles.size();
+        int numberOfModules = currentOSGiProject.get().getModules().size();
 
-        if (linesOfCode <= 700) {
+        if (numberOfCycles == 0) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (linesOfCode <= 1000) {
+        } else if (numberOfCycles <= (numberOfModules * 0.10)) {
             return new Metric(name, MetricScore.VERY_GOOD);
-        } else if (linesOfCode <= 1500) {
+        } else if (numberOfCycles <= (numberOfModules * 0.20)) {
             return new Metric(name, MetricScore.GOOD);
-        } else if (linesOfCode <= 2000) {
+        } else if (numberOfCycles <= (numberOfModules * 0.30)) {
             return new Metric(name, MetricScore.REGULAR);
         }
-        // lines of code greater than 2000
+        // more then 30% of bundles has cycles
         return new Metric(name, MetricScore.ANTI_PATTERN);
     }
 
@@ -105,15 +113,15 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.10)) {
             // 10% of classes has stale references
             return new Metric(name, MetricScore.VERY_GOOD);
-        }  else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.25)) {
-            // 25% of classes has stale references
+        }  else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.20)) {
+            // 20% of classes has stale references
             return new Metric(name, MetricScore.GOOD);
-        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.50)) {
-            // 25% of classes has stale references
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.30)) {
+            // 30% of classes has stale references
             return new Metric(name, MetricScore.REGULAR);
         }
 
-        // more than 25% of classes contains staleReferences
+        // more than 30% of classes contains staleReferences
         return new Metric(name, MetricScore.ANTI_PATTERN);
     }
 
@@ -138,9 +146,9 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     public MetricPoints calculateBundleQuality(OSGiModule bundle) {
         List<Metric> bundleMetrics = new ArrayList<Metric>();
-        bundleMetrics.add(getLocMetric(bundle));
         if (getCurrentOSGiProject() != null) {
             bundleMetrics.add(getBundleDependencyMetric(bundle));
+            bundleMetrics.add(getCycleMetric(bundle));
         }
         bundleMetrics.add(getDeclaresPermissionMetric(bundle));
         bundleMetrics.add(usesFrameworkToManageServicesMetric(bundle));
@@ -156,9 +164,9 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         List<Metric> metrics = new ArrayList<Metric>();
         List<OSGiModule> modules = currentOSGiProject.get().getModules();
             switch (metric){
-                case LOC:{
+                case CYCLE:{
                     for (OSGiModule osGiModule : modules) {
-                        metrics.add(getLocMetric(osGiModule));
+                        metrics.add(getCycleMetric(osGiModule));
                     }
                     break;
                 }
@@ -204,9 +212,9 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         metricScores.put(MetricScore.GOOD, 0);
         metricScores.put(MetricScore.VERY_GOOD, 0);
         metricScores.put(MetricScore.STATE_OF_ART, 0);
-        for (MetricScore bundleScore : getBundleQualityList()) {
+        for (MetricPoints points : getBundleQualityList()) {
 
-            switch (bundleScore) {
+            switch (points.getFinalScore()) {
                 case ANTI_PATTERN: {
                     Integer count = metricScores.get(MetricScore.ANTI_PATTERN);
                     metricScores.put(MetricScore.ANTI_PATTERN, ++count);
@@ -261,8 +269,8 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     public int getProjectQualityPonts() {
         int total = 0;
-        for (MetricScore metricScore : getBundleQualityList()) {
-            total += metricScore.getValue();
+        for (MetricPoints points : getBundleQualityList()) {
+            total += points.getFinalScore().getValue();
         }
         return total;
     }
@@ -297,20 +305,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
     }
 
 
-    private List<MetricScore> calculateBundleQualities(OSGiProject osGiProject){
-        List<MetricScore> bundleQualities = new ArrayList<MetricScore>();
+    private List<MetricPoints> calculateBundlePoints(OSGiProject osGiProject){
+        List<MetricPoints> bundleQualities = new ArrayList<MetricPoints>();
         for (OSGiModule osGiModule : osGiProject.getModules()) {
-            bundleQualities.add(calculateBundleQuality(osGiModule).getFinalScore());
+            bundleQualities.add(calculateBundleQuality(osGiModule));
         }
         return bundleQualities;
     }
 
-    public List<MetricScore> getBundleQualityList() {
+    public List<MetricPoints> getBundleQualityList() {
         if(projectBundleQualities.size() == 5){//only cache 10 projects bundles qualities
             projectBundleQualities.clear();
         }
         if(!projectBundleQualities.containsKey(getCurrentOSGiProject())) {
-            projectBundleQualities.put(getCurrentOSGiProject(),calculateBundleQualities(getCurrentOSGiProject()));
+            projectBundleQualities.put(getCurrentOSGiProject(),calculateBundlePoints(getCurrentOSGiProject()));
         }
         return projectBundleQualities.get(getCurrentOSGiProject());
     }

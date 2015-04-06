@@ -22,7 +22,7 @@ public interface MetricsCalculation {
      * @param bundle
      * @return
      */
-    Metric getLocMetric(OSGiModule bundle);
+    Metric getCycleMetric(OSGiModule bundle);
 
 
     /**
