@@ -5,8 +5,6 @@ import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * Created by pestano on 05/04/15.
