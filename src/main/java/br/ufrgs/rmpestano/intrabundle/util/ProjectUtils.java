@@ -1,9 +1,12 @@
 package br.ufrgs.rmpestano.intrabundle.util;
 
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.parser.xml.Node;
@@ -12,13 +15,7 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.jboss.solder.logging.Logger;
 
 /**
  * Created by rmpestano on 2/3/14.
@@ -309,16 +306,45 @@ public class ProjectUtils implements Serializable {
     public static String getProjectGitHeadRevision(Project project) {
         assert (project != null);
         DirectoryResource root = project.getProjectRoot();
-        RevCommit commit = null;
+        String lastCommit = null;
+        RandomAccessFile file = null;
+        String headPath = null;
+        boolean revisionFound = false;
         try {
-            FileRepositoryBuilder repoBuilder = new FileRepositoryBuilder();
-            Repository repository = repoBuilder.setGitDir(new File(root.getChildDirectory(".git").getFullyQualifiedName())).readEnvironment().build();
-            RevWalk walk = new RevWalk(repository);
-            commit = walk.parseCommit(repository.resolve(org.eclipse.jgit.lib.Constants.HEAD));
+            FileResource<?> headConfig = (FileResource<?>) root.getChildDirectory(".git").getChild("HEAD");
+            if(headConfig.exists()) {
+                file = new RandomAccessFile(headConfig.getFullyQualifiedName(), "r");
+                String line;
+                while ((line = file.readLine()) != null) {
+                    if (line.contains("ref:")) {
+                        headPath = line.substring(line.indexOf("ref:") + 1).trim();
+                        break;
+                    }
+                }
+                if (headPath != null) {
+                    file = new RandomAccessFile(root.getFullyQualifiedName()+"/.git/"+headPath, "r");
+                    lastCommit = "";
+                    while ((line = file.readLine()) != null) {
+                        lastCommit = lastCommit + line;
+                    }
+                }
+            }
+
         } catch (Exception e) {
-            throw new RuntimeException("Problem getting git head revision from project:" + project, e);
+            revisionFound = false;
+        } finally {
+            if(file != null){
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return commit.getId().toString();
+        if(!revisionFound){
+            Logger.getLogger(ProjectUtils.class.getSimpleName()).warn("could not read git revision for project " + project);
+        }
+        return lastCommit;
     }
 
 

@@ -378,18 +378,19 @@ public class ManifestMetadata implements Serializable {
             if (!activatorPath.startsWith("/")) {
                 activatorPath = "/" + activatorPath;
             }
+            try {
             activator = ProjectUtils.getProjectSourcePath(projectRoot) != null ? (FileResource<?>) ProjectUtils.getProjectSourcePath(projectRoot).getChild(activatorPath.concat(".java")) : null;
             if (activator == null || !activator.exists()) {
                 //try to infer activator path from projectRoot path
                 if (activatorPath.contains(projectRoot.getName())) {
                     String[] activatoPathTokens = activatorPath.split("/");
-                    try {
+
                         String projectRootPath = projectRoot.getFullyQualifiedName().substring(0, projectRoot.getFullyQualifiedName().indexOf(activatoPathTokens[1]));
                         activator = (FileResource<?>) resourceFactory.getResourceFrom(new File((projectRootPath + activatorPath).replaceAll("//", "/").trim().concat(".java")));
-                    } catch (Exception e) {
-                        System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
-                    }
                 }
+            }
+            } catch (Exception e) {
+                System.out.println("could not find activator for project:" + projectRoot.getFullyQualifiedName());
             }
         }
         if (activator != null && !activator.exists()) {

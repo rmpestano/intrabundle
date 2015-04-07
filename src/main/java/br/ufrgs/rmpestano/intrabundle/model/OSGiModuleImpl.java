@@ -1,10 +1,16 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
-import br.ufrgs.rmpestano.intrabundle.jdt.ASTVisitors;
-import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
-import br.ufrgs.rmpestano.intrabundle.util.Constants;
-import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.inject.Typed;
+
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
 import org.jboss.forge.parser.JavaParser;
 import org.jboss.forge.parser.ParserException;
 import org.jboss.forge.parser.java.JavaSource;
@@ -16,11 +22,9 @@ import org.jboss.forge.project.services.ResourceFactory;
 import org.jboss.forge.resources.*;
 import org.jboss.solder.logging.Logger;
 
-import javax.enterprise.inject.Typed;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import br.ufrgs.rmpestano.intrabundle.jdt.StaleReferencesVisitor;
+import br.ufrgs.rmpestano.intrabundle.util.Constants;
+import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 
 /**
  * Created by rmpestano on 1/22/14.
@@ -43,16 +47,19 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     private ManifestMetadata manifestMetadata;
     private boolean classesVisited;
     private boolean hasLinesOfCode;
+    private  StaleReferencesVisitor astVisitor;
 
     public OSGiModuleImpl() {
         factory = null;
         resourceFactory = null;
+        astVisitor = new StaleReferencesVisitor();
     }
 
     public OSGiModuleImpl(final ProjectFactory factory, final ResourceFactory resourceFactory, final DirectoryResource dir) {
         this.factory = factory;
         this.projectRoot = dir;
         this.resourceFactory = resourceFactory;
+        astVisitor = new StaleReferencesVisitor();
     }
 
 
@@ -217,7 +224,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
                     continue;
                 }
                 if (source.hasImport("org.osgi.framework.ServiceReference") || source.hasImport("org.osgi.framework")) {
-                    if (verifyStaleReference(source)) {
+                    if (verifyStaleReference(child.getResourceInputStream())) {
                         staleReferences.add(child);
                     }
                 }
@@ -225,12 +232,30 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
         }
     }
 
-    private boolean verifyStaleReference(JavaSource source) {
-        CompilationUnit comp = (CompilationUnit) source.getInternal();
-        StaleReferencesVisitor staleReferencesVisitor = ASTVisitors.getStaleReferencesVisitor();
-        comp.accept(staleReferencesVisitor);
-        staleReferencesVisitor.visit(comp);
-        return staleReferencesVisitor.getNumGetServices() != staleReferencesVisitor.getNumUngetServices();
+    private boolean verifyStaleReference(InputStream source) {
+        CompilationUnit cu = null;
+        astVisitor.init();
+        try {
+            // parse the file
+            try {
+                cu = com.github.javaparser.JavaParser.parse(source);
+                astVisitor.visit(cu, null);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        catch (Exception e){
+            Logger.getLogger(OSGiModuleImpl.class.getSimpleName()).warn("problem visiting source:" + cu != null ? cu.getClass().getName() : "");
+        }
+        } finally {
+            if(source != null){
+                try {
+                    source.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return astVisitor.hasStaleReferences();
     }
 
 

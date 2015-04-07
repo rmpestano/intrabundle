@@ -196,13 +196,12 @@ public class OsgiPlugin implements Plugin {
         }//execute command for all modules
         else {
             out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.staleReferences") + " =====");
-            int staleReferencesModules = 0;
             for (OSGiModule module: getModules()) {
                if(!module.getStaleReferences().isEmpty()){
-                   out.println(++staleReferencesModules+" - "+module);
+                   out.println(module.getName() + ":"+module.getStaleReferences().size() + " "+ provider.getMessage("metrics.staleReferences").toLowerCase());
                }
                else{
-                   out.println(provider.getMessage("bundle.noStaleReferences"));
+                   out.println(module.getName() + ":"+provider.getMessage("bundle.noStaleReferences"));
                }
             }
         }

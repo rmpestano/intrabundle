@@ -259,8 +259,9 @@ public class OsgiPluginTest extends BaseOSGiTest {
         resetOutput();
         queueInputLines("y");
         getShell().execute("osgi staleReferences");
-        assertTrue(getOutput().contains("module1"));
-        assertTrue(getOutput().contains("module2"));
+        assertTrue(getOutput().contains("module1:1 stale references" + TestUtils.getNewLine() +
+            "module2:Bundles doesn't have service stale references" + TestUtils.getNewLine() +
+            "module3:Bundles doesn't have service stale references"));
     }
 
     @Test

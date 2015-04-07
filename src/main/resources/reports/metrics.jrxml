@@ -486,7 +486,7 @@
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("metrics.points", ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getBundlePoints(), ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints(),((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getFinalScore().name())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("metrics.quality", ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getBundlePoints(), ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints(),((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getCompliance())]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="be70fc83-b475-4c0f-b2c1-5f83741054d8" x="8" y="15" width="211" height="20"/>

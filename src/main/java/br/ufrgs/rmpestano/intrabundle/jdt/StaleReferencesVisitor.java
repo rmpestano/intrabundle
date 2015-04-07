@@ -1,13 +1,15 @@
 package br.ufrgs.rmpestano.intrabundle.jdt;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.SimpleName;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
  * Created by rmpestano on 2/10/14.
  */
-public class StaleReferencesVisitor extends ASTVisitor {
+public class StaleReferencesVisitor extends VoidVisitorAdapter {
 
     private int numGetServices;
     private int numUngetServices;
@@ -20,26 +22,66 @@ public class StaleReferencesVisitor extends ASTVisitor {
 
 
     @Override
-    public boolean visit(MethodInvocation node) {
-        SimpleName name = node.getName();
+    public void visit(MethodCallExpr node, Object arg) {
+        String name = node.getName();
         if(name != null){
-            if (name.toString().equals("getService")) {
+            if (name.equals("getService")) {
                 numGetServices++;
             } else if (name.toString().equals("ungetService")) {
                 numUngetServices++;
             }
         }
-        return super.visit(node);
+
+        if(node.getChildrenNodes() != null){
+            for (Node child :node.getChildrenNodes() ) {
+                this.visit(child);
+            }
+        }
+
     }
 
-    public int getNumGetServices() {
-        return numGetServices;
+    private void visit(Node node1) {
+        if(node1 instanceof EnclosedExpr){
+            visit((EnclosedExpr)node1,null);
+        } else if(node1 instanceof CastExpr){
+            visit((CastExpr)node1,null);
+        } else if(node1 instanceof MethodCallExpr){
+             visit((MethodCallExpr)node1,null);
+        }
     }
 
-    public int getNumUngetServices() {
-        return numUngetServices;
+    @Override
+    public void visit(EnclosedExpr node, Object arg) {
+        if(node.getInner() != null){
+            this.visit(node.getInner());
+        }
+
+
     }
 
+    @Override
+    public void visit(CastExpr node, Object arg) {
+            String name = node.getExpr().toString();
+            if(name != null){
+                if (name.equals("getService")) {
+                    numGetServices++;
+                } else if (name.toString().equals("ungetService")) {
+                    numUngetServices++;
+                }
+            }
+
+        if(node.getChildrenNodes() != null){
+            for (Node child :node.getChildrenNodes() ) {
+                this.visit(child);
+            }
+        }
+
+
+    }
+
+    public boolean hasStaleReferences() {
+        return numGetServices != numUngetServices;
+    }
 }
 
 
