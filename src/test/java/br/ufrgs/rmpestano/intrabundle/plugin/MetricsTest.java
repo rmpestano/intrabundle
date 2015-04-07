@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 
+import java.text.NumberFormat;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +38,8 @@ public class MetricsTest extends BaseMetricsTest {
         queueInputLines("1");
         getShell().execute("osgi bundleMetrics");
 
-        assertTrue(getOutput().contains("Points obtained: 23 of 30 - 76.7% of compliance"));
+        assertTrue(getOutput().contains("Points obtained: 23 of 30 - " +NumberFormat.getInstance().format(76.7) +
+            "% of compliance"));
         assertTrue(getOutput().contains("Cyclic dependencies:STATE_OF_ART"));
         assertTrue(getOutput().contains("Bundle dependencies:VERY_GOOD"));
         assertTrue(getOutput().contains("Declares Permission:REGULAR"));
@@ -73,7 +76,8 @@ public class MetricsTest extends BaseMetricsTest {
 
 
         getOutput().contains("Metrics of module1:" + TestUtils.getNewLine() +
-                "Points obtained: 23 of 30 - 76.7% of compliance" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30 - " + NumberFormat.getInstance().format(76.7) +
+                "% of compliance" + TestUtils.getNewLine() +
                 "Cyclic dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
@@ -81,7 +85,9 @@ public class MetricsTest extends BaseMetricsTest {
                 "Publishes interfaces:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Stale references:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Metrics of module2:" + TestUtils.getNewLine() +
-                "Points obtained: 23 of 30 - 76.7% of compliance" + TestUtils.getNewLine() +
+                "Points obtained: 23 of 30 - " +
+                NumberFormat.getInstance().format(76.7) +
+                "% of compliance" + TestUtils.getNewLine() +
                 "Cyclic dependencies:STATE_OF_ART" + TestUtils.getNewLine() +
                 "Bundle dependencies:VERY_GOOD" + TestUtils.getNewLine() +
                 "Declares Permission:REGULAR" + TestUtils.getNewLine() +
@@ -134,7 +140,8 @@ public class MetricsTest extends BaseMetricsTest {
         resetOutput();
         queueInputLines("3");
         getShell().execute("osgi metricQuality");
-        assertTrue(getOutput().trim().endsWith("13 of 15 - 86.7% of compliance."));
+        assertTrue(getOutput().trim().endsWith("13 of 15 - " +
+        NumberFormat.getInstance().format(86.7) +  "% of compliance."));
         resetOutput();
         queueInputLines("4");
         getShell().execute("osgi metricQuality");
