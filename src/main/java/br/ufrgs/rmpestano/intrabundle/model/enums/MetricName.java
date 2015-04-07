@@ -7,7 +7,7 @@ import java.util.List;
  * Created by rmpestano on 1/26/14.
  */
 public enum MetricName {
-  LOC("metrics.loc"),
+  CYCLE("metrics.cycle"),
   PUBLISHES_INTERFACES("metrics.interfaces"),
   BUNDLE_DEPENDENCIES("metrics.bundleDependencies"),
   USES_FRAMEWORK("metrics.usesFramework"),

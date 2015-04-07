@@ -42,6 +42,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     private Integer numberOfInterfaces;
     private ManifestMetadata manifestMetadata;
     private boolean classesVisited;
+    private boolean hasLinesOfCode;
 
     public OSGiModuleImpl() {
         factory = null;
@@ -235,10 +236,9 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
 
     /**
      * calculates number of packages,interfaces, classes by visiting all classes
-     *
      */
     private void visitAllClasses() {
-        if(!classesVisited){
+        if (!classesVisited) {
             numberOfAbstractClasses = new Integer(0);
             numberOfClasses = new Integer(0);
             numberOfInterfaces = new Integer(0);
@@ -281,7 +281,6 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     }
 
 
-
     //getters
 
     public Boolean getUsesDeclarativeServices() {
@@ -293,7 +292,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     }
 
     public ManifestMetadata getManifestMetadata() {
-        if(manifestMetadata == null){
+        if (manifestMetadata == null) {
             manifestMetadata = createManifestMetada();
         }
         return manifestMetadata;
@@ -360,7 +359,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
 
     @Override
     public Set<String> getPackages() {
-        if(packages == null){
+        if (packages == null) {
             visitAllClasses();
         }
         return packages;
@@ -376,21 +375,21 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     }
 
     public Integer getNumberOfClasses() {
-        if(numberOfClasses == null){
+        if (numberOfClasses == null) {
             visitAllClasses();
         }
         return numberOfClasses;
     }
 
     public Integer getNumberOfAbstractClasses() {
-        if(numberOfAbstractClasses == null){
+        if (numberOfAbstractClasses == null) {
             visitAllClasses();
         }
         return numberOfAbstractClasses;
     }
 
     public Integer getNumberOfInterfaces() {
-        if(numberOfInterfaces == null){
+        if (numberOfInterfaces == null) {
             visitAllClasses();
         }
         return numberOfInterfaces;
@@ -401,7 +400,7 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     }
 
     public Integer getNumberOfIpojoComponents() {
-        if(numberOfIpojoComponents == null){
+        if (numberOfIpojoComponents == null) {
             visitAllClasses();
         }
         return numberOfIpojoComponents;
@@ -420,5 +419,24 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
     @Override
     public int compareTo(OSGiModule o) {
         return this.toString().compareTo(o.toString());
+    }
+
+    /**
+     * @return true if there is at least one java file, false otherwise
+     */
+    public boolean hasLinesOfCode() {
+        hasLinesOfCode = false;
+        verifyLinesOfCode(projectRoot);
+        return hasLinesOfCode;
+    }
+
+    public void verifyLinesOfCode(Resource<?> root){
+        for (Resource<?> resource : root.listResources()) {
+            if (resource instanceof FileResource<?> && resource.getName().endsWith(".java")) {
+                hasLinesOfCode = true;
+            } else if (resource instanceof DirectoryResource) {
+                verifyLinesOfCode(resource);
+            }
+        }
     }
 }

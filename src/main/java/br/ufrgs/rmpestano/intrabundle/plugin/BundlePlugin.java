@@ -5,6 +5,7 @@ import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
+import br.ufrgs.rmpestano.intrabundle.util.MetricUtils;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.plugins.*;
 
@@ -26,6 +27,9 @@ public class BundlePlugin implements Plugin {
 
     @Inject
     MetricsCalculation metrics;
+
+    @Inject
+    MetricUtils metricUtils;
 
     @DefaultCommand
     public void defaultCommand(@PipeIn String in, PipeOut out) {
@@ -156,7 +160,6 @@ public class BundlePlugin implements Plugin {
     @Command(value = "metrics", help = "calculate bundle metric points")
     public void metrics(PipeOut out){
         out.println(messageProvider.getMessage("metrics.result"));
-        out.println(messageProvider.getMessage("metrics.loc")+":"+metrics.getLocMetric(bundle).getScore());
         out.println(messageProvider.getMessage("metrics.interfaces")+":"+metrics.getPublishesInterfaceMetric(bundle).getScore());
         out.println(messageProvider.getMessage("metrics.staleReferences")+":"+metrics.hasStaleReferencesMetric(bundle).getScore());
         out.println(messageProvider.getMessage("metrics.usesFramework")+":"+metrics.usesFrameworkToManageServicesMetric(bundle).getScore());
@@ -166,7 +169,7 @@ public class BundlePlugin implements Plugin {
         }
         out.println("=========================");
         MetricPoints points = metrics.calculateBundleQuality(bundle);
-        out.println(messageProvider.getMessage("metrics.points",points.getBundlePoints(),points.getMaxPoints(),points.getFinalScore().name()));
+        out.println(metricUtils.metricQuality(points));
     }
 
 }

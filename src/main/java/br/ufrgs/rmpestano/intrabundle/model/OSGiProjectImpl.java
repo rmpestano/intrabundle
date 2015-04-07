@@ -1,5 +1,6 @@
 package br.ufrgs.rmpestano.intrabundle.model;
 
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.ProjectUtils;
 import org.jboss.forge.maven.MavenCoreFacet;
 import org.jboss.forge.parser.JavaParser;
@@ -28,6 +29,7 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
     private final ResourceFactory resourceFactory;
     private List<OSGiModule> modules;
     private Map<OSGiModule, List<OSGiModule>> moduleDependenciesMap;
+    private Map<OSGiModule, List<ModuleCycle>> moduleCyclicDependenciesMap;
     private Long linesOfCode;
     private Long linesOfTestCode;
     protected String version;
@@ -71,10 +73,21 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
         this.modules = modules;
     }
 
+    public Map<OSGiModule, List<ModuleCycle>> getModuleCyclicDependenciesMap() {
+        if(moduleCyclicDependenciesMap == null){
+            this.moduleCyclicDependenciesMap = initalizeCyclicDependencies();
+        }
+        return moduleCyclicDependenciesMap;
+    }
+
+    public void setModuleCyclicDependenciesMap(Map<OSGiModule, List<ModuleCycle>> moduleCyclicDependenciesMap) {
+        this.moduleCyclicDependenciesMap = moduleCyclicDependenciesMap;
+    }
+
     private Map<OSGiModule,List<OSGiModule>> initalizeModulesDependencies() {
         Map<OSGiModule,List<OSGiModule>> dependencies = new HashMap<OSGiModule, List<OSGiModule>>();
         for (OSGiModule m1 : getModules()) {
-            dependencies.put(m1,new ArrayList<OSGiModule>());
+            dependencies.put(m1, new ArrayList<OSGiModule>());
             if(m1.getImportedPackages().isEmpty()){
                 //has no module dependencies, go to next module
                 continue;
@@ -96,6 +109,45 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
             }
         }
         return dependencies;
+    }
+
+    /**
+     * cycles are in the format of moduleName ->
+     * @return
+     */
+    private Map<OSGiModule,List<ModuleCycle>> initalizeCyclicDependencies() {
+
+        Map<OSGiModule,List<OSGiModule>> dependenciesMap = getModulesDependencies();
+        Map<OSGiModule,List<ModuleCycle>> dependenciesCycleMap = new HashMap<OSGiModule, List<ModuleCycle>>();
+
+        //for each module calculates is cyclic dependencies
+        for (OSGiModule targetModule : dependenciesMap.keySet()) {
+            List<ModuleCycle> targetCycles = new ArrayList<ModuleCycle>();
+            List<OSGiModule> vistedModules = new ArrayList<OSGiModule>();
+            vistedModules.add(targetModule);//target depes are visited in the first call (bellow)
+            calculateModuleCycles(targetModule, targetCycles, dependenciesMap.get(targetModule), vistedModules, new ModuleCycle(targetModule));
+            dependenciesCycleMap.put(targetModule,targetCycles);
+        }
+
+
+        return dependenciesCycleMap;
+    }
+
+    private void calculateModuleCycles(OSGiModule targetModule, List<ModuleCycle> targetCycles, List<OSGiModule> depsToSearch, List<OSGiModule> modulesVisited, ModuleCycle currentCycle) {
+        for (OSGiModule moduleDep : depsToSearch) {
+            currentCycle.addModule(moduleDep);
+           if(moduleDependenciesMap.get(moduleDep).contains(targetModule) && !targetCycles.contains(currentCycle)){
+               targetCycles.add(currentCycle);
+               currentCycle = new ModuleCycle(targetModule);
+               calculateModuleCycles(targetModule, targetCycles, moduleDependenciesMap.get(targetModule), modulesVisited,currentCycle);
+           }
+           if(!modulesVisited.contains(moduleDep)){
+               modulesVisited.add(moduleDep);
+               calculateModuleCycles(targetModule, targetCycles, moduleDependenciesMap.get(moduleDep), modulesVisited, currentCycle);
+               currentCycle = new ModuleCycle(targetModule);
+           }
+        }
+
     }
 
     /**
@@ -217,6 +269,11 @@ public class OSGiProjectImpl extends BaseProject implements OSGiProject {
             version = mavenCoreFacet.getMavenProject().getVersion();
         }
         return version;
+    }
+
+    @Override
+    public int getMaxPoints() {
+        return getModules().size() * MetricScore.STATE_OF_ART.getValue();
     }
 
 

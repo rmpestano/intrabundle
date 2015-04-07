@@ -1,0 +1,21 @@
+\chapter{Conclusion}
+This work presented the design and implementation of a tool called Intrabundle. The tool extracts useful information from OSGi projects to calculate its internal quality based on static code analysis. The focus of the analysis was internal design and architecture of components where OSGi application really differs from classical Java systems. 
+
+All basic concepts were presented and it became clear that new approaches were needed to extract quality from OSGi applications. Metrics were created based on good practice in the context of Java modular applications. A quality calculation system was created to measure projects quality attributes. In the end real OSGi projects varying from KLOCs to thousands of KLOCs, from application servers to IDEs were analyzed using the metrics proposed.
+
+Intrabundle's quality was also a concern of this work so classical good practices like integration tests, static and dynamic analysis were applied to the tool as well as good programming techniques like immutable objects and dependency injection.      
+The tool proved to be very useful and performed really well, taking just seconds to analyze and generate reports from huge OSGi projects. Some tendencies were verified like that is hard to keep good practices on bigger projects, as well as some OSGi specific quality aspects could also be observed. 
+
+We notice during experiments that \emph{Stale reference} and \emph{Uses framework} metrics were not well dimensioned so they should be revisited and calibrated. We also notice that calculating number of line is a too subjective metric as it may depend on the context of the problem or the technology.
+
+The objective of this work was met. Basic aspects were studied, designed and implemented. The implementation was discussed and detailed. A fully working tool was created and presented. It provided detailed reports and reliable results that made it possible to make important assumptions about analyzed projects. We think the quality metrics created for OSGi projects were valid and useful. The tool could verify if projects were applying good or bad practices in the context of modular applications. 
+
+\section{Future Work}
+Some metrics were proposed and we think more metrics can be created from the information already been collected. More data can be collected to enrich the analysis. Also providing an interpretation and troubleshooting of the results is an interesting functionality to add in Intrabundle. Providing a SPI\footnote{Is an API intended to be implemented or extended by a third party} to easy the creation and the addition of new metrics in the tool is also a goal for future.
+
+
+Migrating to Forge 2 is a goal as it has better integration with IDEs as Forge 1, version used in this work. 
+Some metrics may have more importance for some projects then others. Making metrics more dynamic providing a way to give weight to them is also a future goal.
+
+As modularity is gaining focus and becoming popular we feel that the tool can be extended to other modular environments. The only difference may be how modules will be identified on those non OSGi modular applications, like JBoss Forge for example. Most metrics proposed measure attributes that are present in every modular system and so may be also used in this possible new version. 
+

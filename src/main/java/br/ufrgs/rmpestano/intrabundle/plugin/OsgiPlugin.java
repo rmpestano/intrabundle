@@ -4,12 +4,11 @@ import br.ufrgs.rmpestano.intrabundle.facet.OSGiFacet;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.jasper.JasperManager;
 import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
-import br.ufrgs.rmpestano.intrabundle.model.Metric;
-import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.*;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.Constants;
+import br.ufrgs.rmpestano.intrabundle.util.MetricUtils;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.Shell;
@@ -19,6 +18,8 @@ import org.jboss.forge.shell.plugins.*;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +49,9 @@ public class OsgiPlugin implements Plugin {
 
     @Inject
     MetricsCalculation metrics;
+
+    @Inject
+    MetricUtils metricUtils;
 
 
     private boolean sorted;
@@ -160,6 +164,19 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    @Command("cycles")
+    public void moduleCycles(@PipeIn String in, PipeOut out) {
+        if (!this.allModules(provider.getMessage("cycles"))) {
+            OSGiModule choice = choiceModule();
+            this.listModuleCycles(choice, out);
+        }//execute command for all modules
+        else {
+            for (OSGiModule osGiModule : getModules()) {
+                listModuleCycles(osGiModule, out);
+            }
+        }
+    }
+
 
     @Command("staleReferences")
     public void moduleStaleReferences(@PipeIn String in, PipeOut out) {
@@ -216,7 +233,7 @@ public class OsgiPlugin implements Plugin {
         if (!this.allModules(provider.getMessage("metrics"))) {
             OSGiModule bundle = choiceModule();
             MetricPoints metricPoints = metrics.calculateBundleQuality(bundle);
-            out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
+            out.println(metricUtils.metricQuality(metricPoints));
             out.println(provider.getMessage("bundle.listing-metrics"));
             for (Metric metric : metricPoints.getBundleMetrics()) {
                  out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
@@ -228,7 +245,7 @@ public class OsgiPlugin implements Plugin {
             for (OSGiModule module: getModules()) {
                 out.println(ShellColor.YELLOW,provider.getMessage("module.metrics",module.getName()));
                 MetricPoints metricPoints = metrics.calculateBundleQuality(module);
-                out.println(provider.getMessage("metrics.points", metricPoints.getBundlePoints(), metricPoints.getMaxPoints(),metricPoints.getFinalScore().name()));
+                out.println(metricUtils.metricQuality(metricPoints));
                 for (Metric metric : metricPoints.getBundleMetrics()) {
                     out.println(provider.getMessage(metric.getName().getValue())+":"+metric.getScore().name());
                 }
@@ -236,9 +253,24 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
-    @Command(value = "projectMetric", help = "returns OSGi project average metric score based on each bundle score")
+    @Command(value = "projectMetric", help = "returns OSGi project mode and absolute metric score based on each bundle score")
     public void projectMetric(PipeOut out) {
-        out.println(provider.getMessage("osgi.metric") + metrics.calculateProjectQuality(project.get()).name());
+        out.println(provider.getMessage("osgi.metric",metrics.calculateProjectModeQuality().name(), metrics.calculateProjectAbsoluteQuality().name()));
+    }
+
+    @Command(value = "projectPoints", help = "returns OSGi project mode and absolute metric score based on each bundle score")
+    public void projecPoints(PipeOut out) {
+        int maxPoints = project.get().getMaxPoints();
+        int projectPoints = metrics.getProjectQualityPonts();
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        out.println(provider.getMessage("osgi.project-points",projectPoints,maxPoints,percentage));
+    }
+
+    @Command(value = "metricQuality", help = "returns the quality of a given metric based on the project modules")
+    public void metricQuality(PipeOut out) {
+        MetricName metric = choiceMetric();
+        MetricPoints metricPoints = metrics.calculateMetricQuality(metric);
+        out.println(metricUtils.metricQuality(metricPoints));
     }
 
     @Command(help = "list bundles with the given quality", value = "findBundlesByQuality")
@@ -302,6 +334,16 @@ public class OsgiPlugin implements Plugin {
         }
     }
 
+    private void listModuleCycles(OSGiModule choice, PipeOut out) {
+        out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.cycles", choice) + " =====");
+        if (project.get().getModuleCyclicDependenciesMap().get(choice).isEmpty()) {
+            out.println(provider.getMessage("module.noDependency"));
+        } else {
+            for (ModuleCycle m : project.get().getModuleCyclicDependenciesMap().get(choice)) {
+                out.println(m.toString());
+            }
+        }
+    }
 
     private OSGiModule choiceModule() {
         return prompt.promptChoiceTyped(provider.getMessage("module.choice"), getModules());
@@ -310,6 +352,10 @@ public class OsgiPlugin implements Plugin {
     private MetricScore choiceQuality() {
         return prompt.promptChoiceTyped(provider.getMessage("quality.choice"), Arrays.asList(MetricScore.values()));
     }
+    private MetricName choiceMetric() {
+        return prompt.promptChoiceTyped(provider.getMessage("metrics.choice"), Arrays.asList(MetricName.values()));
+    }
+
 
     private boolean allModules(String allWhat) {
         return prompt.promptBoolean(provider.getMessage("module.all", allWhat));

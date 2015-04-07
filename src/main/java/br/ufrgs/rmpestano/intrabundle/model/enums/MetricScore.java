@@ -4,7 +4,7 @@ package br.ufrgs.rmpestano.intrabundle.model.enums;
  * Created by rmpestano on 8/17/14.
  */
 public enum MetricScore {
-    ANTI_PATTERN(0), REGULAR(5), GOOD(10), VERY_GOOD(15), STATE_OF_ART(20);
+    ANTI_PATTERN(1), REGULAR(2), GOOD(3), VERY_GOOD(4), STATE_OF_ART(5);
 
     private int value;
 

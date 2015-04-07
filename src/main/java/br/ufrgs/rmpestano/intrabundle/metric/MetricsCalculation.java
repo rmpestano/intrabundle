@@ -4,6 +4,7 @@ import br.ufrgs.rmpestano.intrabundle.model.Metric;
 import br.ufrgs.rmpestano.intrabundle.model.MetricPoints;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
 import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface MetricsCalculation {
      * @param bundle
      * @return
      */
-    Metric getLocMetric(OSGiModule bundle);
+    Metric getCycleMetric(OSGiModule bundle);
 
 
     /**
@@ -54,19 +55,24 @@ public interface MetricsCalculation {
 
     MetricPoints calculateBundleQuality(OSGiModule bundle);
 
-    /**
-     * get average project metric score
-     * @param osGiProject
-     * @return
-     */
-    MetricScore calculateProjectQuality(OSGiProject osGiProject);
 
     /**
-     * get average project metric score on current OSGiProject
+     * get most frequent project metric score on current OSGiProject
      * @return
      */
-    MetricScore calculateProjectQuality();
+    MetricScore calculateProjectModeQuality();
+
+    /**
+     * get absolute project metric score on current OSGiProject
+     * @return
+     */
+    MetricScore calculateProjectAbsoluteQuality();
 
     List<OSGiModule> getModulesByQuality(MetricScore quality);
 
+    int getProjectQualityPonts();
+
+    double getProjectQualityPointsPercentage();
+
+    MetricPoints calculateMetricQuality(MetricName metric);
 }

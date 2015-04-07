@@ -2,11 +2,10 @@ package br.ufrgs.rmpestano.intrabundle.jasper;
 
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
-import br.ufrgs.rmpestano.intrabundle.model.ModuleDTO;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiModule;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProject;
-import br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport;
+import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
+import br.ufrgs.rmpestano.intrabundle.util.MetricUtils;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.*;
@@ -17,6 +16,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Singleton
@@ -42,6 +43,9 @@ public class JasperManager implements Serializable {
 
     @Inject
     MetricsCalculation metrics;
+
+    @Inject
+    MetricUtils metricUtils;
 
 
     /**
@@ -169,7 +173,6 @@ public class JasperManager implements Serializable {
             if (is == null) {
                 throw new RuntimeException("File " + path + " not found");
             }
-            params.put("INITIAL_TIME", new Date());
             params.put("SUBREPORT_DIR", "/reports/");
             return JasperFillManager.fillReport(is, params, new JRBeanCollectionDataSource(data));
         } catch (JRException e) {
@@ -178,13 +181,24 @@ public class JasperManager implements Serializable {
     }
 
     public void reportFromProject(OSGiProject project, String reportName) {
+        removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("INITIAL_TIME", new Date());
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
-        params.put("projectQuality",metrics.calculateProjectQuality(project).name());
+        params.put("projectQuality", metrics.calculateProjectModeQuality().name());
+        params.put("projectAbsoluteQuality", metrics.calculateProjectAbsoluteQuality().name());
+
+        addMetricsQuality(params);
+
+        int maxPoints = project.getMaxPoints();
+        int projectPoints = metrics.getProjectQualityPonts();
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        params.put("projectQualityPoints", provider.getMessage("osgi.project-points", projectPoints, maxPoints, percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         this.reportName(reportName).filename(project.toString() + "_" + reportName).type(type).data(getModulesToReport(project)).params(params).build();
     }
+
 
     public List<ModuleDTO> getModulesToReport(OSGiProject project) {
         List<ModuleDTO> modulesDTO = new ArrayList<ModuleDTO>();
@@ -195,13 +209,57 @@ public class JasperManager implements Serializable {
     }
 
     public void reportFromProject(OSGiProject project, String... reportsName) {
+        removeZeroLinesOfCodeModules(project);
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("INITIAL_TIME", new Date());
         params.put("project", new OSGiProjectReport(project));
         params.put("provider", provider);
-        params.put("projectQuality",metrics.calculateProjectQuality(project).name());
+        params.put("projectQuality", metrics.calculateProjectModeQuality().name());
+        params.put("projectAbsoluteQuality", metrics.calculateProjectAbsoluteQuality().name());
+
+        addMetricsQuality(params);
+
+        int maxPoints = project.getMaxPoints();
+        int projectPoints = metrics.getProjectQualityPonts();
+        double percentage = metrics.getProjectQualityPointsPercentage();
+        params.put("projectQualityPoints", provider.getMessage("osgi.project-points", projectPoints, maxPoints, percentage));
         FileType type = prompt.promptChoiceTyped(provider.getMessage("report.type"), FileType.getAll(), FileType.HTML);
         for (String s : reportsName) {
             this.reportName(s).filename(project.toString() + "_" + s).type(type).data(getModulesToReport(project)).params(params).build();
         }
+    }
+
+    private void removeZeroLinesOfCodeModules(OSGiProject projectFound) {
+        if (projectFound != null || projectFound.getModules() != null) {
+            Iterator<OSGiModule> i = projectFound.getModules().iterator();
+            while (i.hasNext()) {
+                OSGiModule module = i.next();
+                if (!module.hasLinesOfCode()) {
+                    i.remove();
+                }
+            }
+        }
+    }
+
+    private void addMetricsQuality(Map<String, Object> params) {
+        MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.CYCLE);
+
+        params.put("cycle", metricUtils.metricQuality(metricPoints));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
+        params.put("staleReferences", metricUtils.metricQuality(metricPoints));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.USES_FRAMEWORK);
+        params.put("usesFramework", metricUtils.metricQuality(metricPoints));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.BUNDLE_DEPENDENCIES);
+        params.put("bundleDependency", metricUtils.metricQuality(metricPoints));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.DECLARES_PERMISSION);
+        params.put("declaresPermission", metricUtils.metricQuality(metricPoints));
+
+        metricPoints = metrics.calculateMetricQuality(MetricName.PUBLISHES_INTERFACES);
+        params.put("publishesInterfaces", metricUtils.metricQuality(metricPoints));
+
     }
 }

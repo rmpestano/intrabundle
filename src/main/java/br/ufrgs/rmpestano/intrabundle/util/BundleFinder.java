@@ -57,7 +57,10 @@ public class BundleFinder implements Serializable {
             for (Resource<?> child : children) {
                 DirectoryResource directoryResource = child.reify(DirectoryResource.class);
                 if (directoryResource != null && ProjectUtils.isOsgiBundle(directoryResource)) {
-                    modules.add(new OSGiModuleImpl(null, resourceFactory, directoryResource));
+                    OSGiModuleImpl module = new OSGiModuleImpl(null, resourceFactory, directoryResource);
+                    if(module.hasLinesOfCode()){
+                        modules.add(module);
+                    }
                 } else {
                     findModulesRecursively(child, modules, level);
                 }

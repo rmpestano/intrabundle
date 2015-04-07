@@ -3,6 +3,8 @@ package br.ufrgs.rmpestano.intrabundle.model;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -11,9 +13,10 @@ import java.util.List;
 public class MetricPoints {
 
     private MetricScore finalScore;
-    private int bundlePoints;
+    private int bundlePoints;  //TODO rename 'Bundle' to 'Quality'
     private int maxPoints;
     private List<Metric> bundleMetrics;
+    private Double compliance;
 
     public MetricPoints(List<Metric> bundleMetrics) {
         this.bundleMetrics = bundleMetrics;
@@ -80,5 +83,18 @@ public class MetricPoints {
             }
         }
         return null;
+    }
+
+    public Double getCompliance() {
+        if(compliance == null){
+            compliance = calculateCompliance();
+        }
+        return compliance;
+    }
+
+    private double calculateCompliance() {
+        BigDecimal bd = new BigDecimal(bundlePoints / (double) maxPoints);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        return bd.doubleValue() * 100;
     }
 }

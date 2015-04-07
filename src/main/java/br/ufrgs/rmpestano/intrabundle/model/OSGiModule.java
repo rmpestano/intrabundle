@@ -106,4 +106,6 @@ public interface OSGiModule extends Serializable, Comparable<OSGiModule>{
     String getName();
 
     boolean usesFramework();
+
+    boolean hasLinesOfCode();
 }

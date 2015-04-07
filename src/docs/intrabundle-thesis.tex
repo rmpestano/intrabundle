@@ -20,12 +20,14 @@
 \usepackage{graphicx}           % pacote para importar figuras
 \graphicspath{ {images/} }
 \usepackage[pdftex]{thumbpdf} 
-\usepackage[toc,page]{appendix}
 \usepackage[section]{placeins}
+\usepackage[titletoc]{appendix}
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{tablefootnote}
 \usepackage{hyperref}
+\usepackage{subfig}
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{makecell}
@@ -82,6 +84,7 @@
 
 
 \newcommand{\ts}{\textsuperscript}
+
 
 %
 % Informações gerais
@@ -211,15 +214,20 @@ it is because I stood on the shoulders of giants.''\\}
 % lista de abreviaturas e siglas
 % o parametro deve ser a abreviatura mais longa
 \begin{listofabbrv}{ISO}
-        \item[CISQ] Consortium for IT Software Quality 
-        \item[JVM] Java Virtual Machine
-        \item[IEC] International Electrotechnical Commission
-        \item[ISO] International Organization for Standardization
         \item[API] Application Programming Interface 
-        \item[IDE] Integrated Development Environment 
+        \item[CISQ] Consortium for IT Software Quality 
         \item[GUI] Graphic User Interface
+        \item[ISO] International Organization for Standardization
+        \item[IEC] International Electrotechnical Commission
+        \item[IDE] Integrated Development Environment 
+        \item[JDK] Java Development Kit
+        \item[JVM] Java Virtual Machine
         \item[LOC] Lines of Code
         \item[KLOC] Kilo Lines of Code
+        \item[MQP] Maximum Quality Points 
+        \item[QP] Quality Points
+        \item[SPI] Service Provider Interface
+        \item[TQP] Total Quality Points
 
 \end{listofabbrv}
 
@@ -240,10 +248,11 @@ it is because I stood on the shoulders of giants.''\\}
 \include{4-ch02}
 % \chapter{A minha contribuição}
 \include{5-ch03}
-% \chapter{Prova de que a minha contribuição é válida}
 \include{6-ch04}
+% \chapter{Prova de que a minha contribuição é válida}
+\include{7-ch05}
 % \chapter{Conclusão}
-\include{7-conclusion}
+\include{8-conclusion}
 
 
 
@@ -295,10 +304,13 @@ A Comparative Study of White Box, Black Box and Grey Box Testing Techniques. \te
 Wichmann, B. A.; Canning, A. A.; Clutterbuck, D. L.; Winsbarrow, L. A.; Ward, N. J.; Marsh, D. W. R.
 Industrial Perspective on Static Analysis. \textbf{Software Engineering Journal}, [S.l], v. 10, pp 69–75, Mar 1995.
 
-\bibitem[KNORR, E., 2014]{Knorr 2014} KNORR, E.
+\bibitem[KNORR, 2014]{Knorr 2014} KNORR, E.
 What microservices architecture really means. \textbf{InfoWorld}, Available at: \url{http://www.infoworld.com/article/2682502/application-development/application-development-what-microservices-architecture-really-means.html}. Accessed in: November 18 2014.
 
-\bibitem[KRILL, P., 2012]{Krill 2012} KRILL, P.
+\bibitem [TAVARES et al., 2008]{Tavares 2008} TAVARES, A. L. C.; VALENTE, M. T.
+A Gentle Introduction to OSGi. \textbf{ACM SIGSOFT Software Engineering Notes}, Belo Horizonte, V. 33, no. 5, September 2008. 
+
+\bibitem[KRILL, 2012]{Krill 2012} KRILL, P.
 Project Jigsaw delayed until Java 9. \textbf{InfoWorld}, Available at: \url{http://www.infoworld.com/article/2617584/java/project-jigsaw-delayed-until-java-9.html}. Accessed in: November 21 2014.
 
 \bibitem[Gama and Donsez, 2012]{Gama 2012} GAMA, K.; DONSEZ, D.
@@ -325,6 +337,9 @@ Specification for Automated Quality Characteristic Measures. \textbf{CISQ qualit
 \bibitem [SQA, 2012]{sqa 2012} SQA.
 Software Quality Metrics. [S.l.:s.n]. Available at: \url{http://www.sqa.net/softwarequalitymetrics.html}. Accessed in: November 14 2014
 
+\bibitem [AppServers, 2012]{app servers 2012} Application Servers Info.
+JVM Introduction. [S.l.:s.n]. Available at: \url{http://www.applicationserverinfo.com/jvm-intro.html}. Accessed in: December 15 2014
+
 \bibitem[ISO25010, 2011]{iso 2011} ISO25010:2011
 System and software quality models. \textbf{Systems and software Quality Requirements and Evaluation (SQuaRE)}. Available at: \url{http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=35733}. Accessed in: November 16 2014.
 
@@ -333,6 +348,9 @@ Intrabundle PMD ruleset. Available at: \url{https://github.com/rmpestano/intrabu
 
 \bibitem [intrabundle github, 2014]{intrabundle github 2014}
 Intrabundle github repository. Available at: \url{https://github.com/rmpestano/intrabundle}. Accessed in: November 19 2014.
+
+\bibitem [intrabundle reports, 2014]{intrabundle reports 2014}
+Intrabundle quality reports. Available at: \url{http://rmpestano.github.io/intrabundle/#reports}. Accessed in: December 01 2014.
 
 \bibitem [semantic versioning, 2010]{semantic versioning 2010}
 Semantic Versioning. Available at: \url{http://www.osgi.org/wiki/uploads/Links/SemanticVersioning.pdf}. Accessed in: November 20 2014.
@@ -343,17 +361,6 @@ OSGi Framework Architecture - Three Conceptual Layers. Available at: \url{http:/
 
 \end{thebibliography}
 
-\begin{appendices}
-\chapter{Intrabundle Usage Example}
-
-\section{Setup environment}
-
-- instaling forge;\\*- instaling intrabundle; \\*- starting forge;\\*- download OSGi example project 
-
-\section{Begin Introspection}
-- fire some commands at project and bundle level\\*- OSGi Scan \\*- generate some reports
-
-\end{appendices}
-
+\include{9-appendix}
 
 \end{document}

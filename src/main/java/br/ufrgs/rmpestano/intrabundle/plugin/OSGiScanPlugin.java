@@ -60,4 +60,5 @@ public class OSGiScanPlugin implements Plugin {
 
     }
 
+
 }

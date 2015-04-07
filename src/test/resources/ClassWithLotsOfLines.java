@@ -23,9 +23,6 @@ public class HelloStaleManager extends Thread implements Serializable{
         this.context = context;
     }
 
-    /**
-     * manager will run in a separated thread waiting for user input
-     */
     @Override
     public void run() {
         scanner = new Scanner(System.in);
@@ -1001,5 +998,1003 @@ public class HelloStaleManager extends Thread implements Serializable{
         active = false;
         scanner.close();
     }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
 
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+
+    @SuppressWarnings("unchecked")
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void stopThread(){
+        active = false;
+        scanner.close();
+    }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+
+    @SuppressWarnings("unchecked")
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void stopThread(){
+        active = false;
+        scanner.close();
+    }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+
+    @SuppressWarnings("unchecked")
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void stopThread(){
+        active = false;
+        scanner.close();
+    }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+
+    @SuppressWarnings("unchecked")
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void stopThread(){
+        active = false;
+        scanner.close();
+    }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+
+    @SuppressWarnings("unchecked")
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void stopThread(){
+        active = false;
+        scanner.close();
+    }
+    public void listAvailableLanguages(){
+        ServiceReference<HelloService>[] serviceReferences;
+        try {
+            System.out.println("Listing Available languages:\n");
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null){
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0;i<serviceReferences.length;i++) {
+                    sb.append(i+1).append(" - ").append(((HelloService)context.getService(serviceReferences[i])).getLanguage()).append("\n");
+                }
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println("No languages found.");
+            }
+        } catch (InvalidSyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
+
+    public void help(){
+        System.out.println("Hello Manager started, type 'l' to list available languages.\n Type 'h' for help. \nType the number of the language to say hello.\n");
+    }
+    private String getHello(int opt) {
+        ServiceReference<HelloService>[] serviceReferences = null;
+        try {
+            serviceReferences = (ServiceReference<HelloService>[]) context.getServiceReferences(HelloService.class.getName(), null);
+            if(serviceReferences != null && opt >=0 && serviceReferences.length > opt){
+                return ((HelloService)context.getService(serviceReferences[opt])).sayHello();
+            }
+            else{
+                System.out.println("No languages found with given option.");
+            }
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(serviceReferences != null){
+                context.ungetService(serviceReferences[opt]);
+            }
+        }
+        return "";
+    }
 }

@@ -34,7 +34,7 @@ public abstract class BaseMetricsTest extends SingletonAbstractShellTest{
         return getProject();
     }
 
-    public Project initializeOSGiBundleWithModuleWithManyLoc() throws Exception {
+    public Project initializeOSGiBundleWithStaleReferences() throws Exception {
         DirectoryResource root = createTempFolder();
         DirectoryResource mod1 = TestUtils.addMavenBundle(root,"module1");
         FileResource<?> aClass = (FileResource<?>) mod1.getOrCreateChildDirectory("src").
