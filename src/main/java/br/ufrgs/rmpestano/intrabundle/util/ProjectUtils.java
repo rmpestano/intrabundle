@@ -317,7 +317,7 @@ public class ProjectUtils implements Serializable {
                 String line;
                 while ((line = file.readLine()) != null) {
                     if (line.contains("ref:")) {
-                        headPath = line.substring(line.indexOf("ref:") + 1).trim();
+                        headPath = line.substring(line.indexOf("ref:") + 4).trim();
                         break;
                     }
                 }
@@ -327,6 +327,7 @@ public class ProjectUtils implements Serializable {
                     while ((line = file.readLine()) != null) {
                         lastCommit = lastCommit + line;
                     }
+                    revisionFound = true;
                 }
             }
 
