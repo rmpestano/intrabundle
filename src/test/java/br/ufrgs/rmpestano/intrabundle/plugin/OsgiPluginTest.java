@@ -11,6 +11,7 @@ import org.junit.Test;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -405,7 +406,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
         initializeOSGiMavenProject();
         resetOutput();
         getShell().execute("osgi projectPoints");
-        assertTrue(getOutput().trim().startsWith("13 of 15 - 86.7%"));
+        assertTrue(getOutput().trim().startsWith("13 of 15 - " +  NumberFormat.getInstance().format(86.7) + "%"));
     }
 
     @Test
@@ -431,7 +432,7 @@ public class OsgiPluginTest extends BaseOSGiTest {
      2 -> 1 -> 2
      */
     @Test
-    public void shouldListModulesInDirectCycles() throws Exception {
+    public void shouldListModulesWithInDirectCycles() throws Exception {
         initializeOSGiProjectWithIndirectCycle();
         resetOutput();
         queueInputLines("y");
