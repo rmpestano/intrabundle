@@ -244,7 +244,7 @@ public class JasperManager implements Serializable {
     private void addMetricsQuality(Map<String, Object> params) {
         MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.CYCLE);
 
-        params.put("cycle", metricUtils.metricQuality(metricPoints));
+        params.put("cycles", metricUtils.metricQuality(metricPoints));
 
         metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
         params.put("staleReferences", metricUtils.metricQuality(metricPoints));

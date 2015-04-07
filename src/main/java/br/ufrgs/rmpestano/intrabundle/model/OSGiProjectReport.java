@@ -23,6 +23,8 @@ public class OSGiProjectReport implements Serializable {
     //manipulation cause we are reusing subreport.jasper to print a list of Strings
     protected Map<String, List<String>> moduleDependenciesCache = new HashMap<String, List<String>>();
 
+    protected Map<String, List<String>> moduleCyclesCache = new HashMap<String, List<String>>();
+
     protected Map<String, List<String>> moduleStaleReferencesCache = new HashMap<String, List<String>>();
 
     protected Long numberOfStaleReferences;
@@ -53,6 +55,20 @@ public class OSGiProjectReport implements Serializable {
         }
 
         return moduleDependenciesCache.get(key);
+    }
+
+
+    public List<String> getModuleCycles(OSGiModule module) {
+        String key = module.toString();
+        if (!moduleCyclesCache.containsKey(key)) {
+            List<String> moduleCycles = new ArrayList<String>();
+            for (ModuleCycle cycle : project.getModuleCyclicDependenciesMap().get(module)) {
+                moduleCycles.add(cycle.toString());
+            }
+            moduleCyclesCache.put(key, moduleCycles);
+        }
+
+        return moduleCyclesCache.get(key);
     }
 
 
