@@ -71,6 +71,21 @@ public class OSGiProjectReport implements Serializable {
         return moduleCyclesCache.get(key);
     }
 
+    /**
+     * count entries with cycle
+     * @return
+     */
+    public int getModulesWithCyclesSize(){
+        int size = 0;
+        for (OSGiModule m : project.getModuleCyclicDependenciesMap().keySet()) {
+            if(!project.getModuleCyclicDependenciesMap().get(m).isEmpty()){
+                size++;
+            }
+        }
+        return size;
+    }
+
+
 
     public List<String> getModuleStaleReferences(OSGiModule module) {
         String key = module.toString();
