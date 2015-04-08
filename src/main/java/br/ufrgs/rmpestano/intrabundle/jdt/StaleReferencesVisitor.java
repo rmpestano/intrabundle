@@ -27,7 +27,7 @@ public class StaleReferencesVisitor extends VoidVisitorAdapter {
         if(name != null){
             if (name.equals("getService")) {
                 numGetServices++;
-            } else if (name.toString().equals("ungetService")) {
+            } else if (name.equals("ungetService")) {
                 numUngetServices++;
             }
         }
@@ -65,7 +65,7 @@ public class StaleReferencesVisitor extends VoidVisitorAdapter {
             if(name != null){
                 if (name.equals("getService")) {
                     numGetServices++;
-                } else if (name.toString().equals("ungetService")) {
+                } else if (name.equals("ungetService")) {
                     numUngetServices++;
                 }
             }
