@@ -108,6 +108,7 @@ public class ProjectUtils implements Serializable {
                 return getProjectSourcePath(root).getChild("META-INF");
             }
         }catch (Exception e){
+            Logger.getLogger(ProjectUtils.class.getSimpleName()).warn("Could not get manifest folder of project:"+root.getFullyQualifiedName());
             //intentional, an exception will be throw for UnknownFileResource and there is no specific exception to catch
         }
 
