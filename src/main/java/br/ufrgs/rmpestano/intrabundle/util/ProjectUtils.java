@@ -15,6 +15,7 @@ import org.jboss.forge.project.Project;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.resources.UnknownFileResource;
 import org.jboss.solder.logging.Logger;
 
 /**
@@ -97,14 +98,19 @@ public class ProjectUtils implements Serializable {
         Resource<?> resourcesPath = getProjectResourcesPath(root);
 
         //META-INF in resource folder
-        if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && !resourcesPath.getChild("META-INF").listResources().isEmpty()) {
-            return resourcesPath.getChild("META-INF");
-        } else if (root.getChild("META-INF").exists() && !root.getChild("META-INF").listResources().isEmpty()) {
-            return root.getChild("META-INF");
-            //META-INF in source folder
-        } else if (getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists() && !getProjectSourcePath(root).getChild("META-INF").listResources().isEmpty()) {
-            return getProjectSourcePath(root).getChild("META-INF");
+        try {
+            if (resourcesPath != null && resourcesPath.getChild("META-INF").exists() && !resourcesPath.getChild("META-INF").listResources().isEmpty()) {
+                return resourcesPath.getChild("META-INF");
+            } else if (root.getChild("META-INF").exists() && !root.getChild("META-INF").listResources().isEmpty()) {
+                return root.getChild("META-INF");
+                //META-INF in source folder
+            } else if (getProjectSourcePath(root).exists() && getProjectSourcePath(root).getChild("META-INF").exists() && !getProjectSourcePath(root).getChild("META-INF").listResources().isEmpty()) {
+                return getProjectSourcePath(root).getChild("META-INF");
+            }
+        }catch (Exception e){
+            //intentional, an exception will be throw for UnknownFileResource and there is no specific exception to catch
         }
+
 
         return null;
     }

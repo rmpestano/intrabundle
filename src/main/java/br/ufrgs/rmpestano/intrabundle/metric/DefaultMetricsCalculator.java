@@ -1,16 +1,19 @@
 package br.ufrgs.rmpestano.intrabundle.metric;
 
+import br.ufrgs.rmpestano.intrabundle.event.MetricsConfigEvent;
 import br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider;
 import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import org.jboss.solder.logging.Logger;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +34,9 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
 
     Map<OSGiProject, List<MetricPoints>> projectBundleQualities = new HashMap<OSGiProject,List<MetricPoints>>();//stores each project bundle quality
 
+    @Inject
+    Map<MetricName, Map<MetricScore, Double>> metricsLimit;
+
     /**
      * zero cycles = STATE_OF_THE_ART
      * zero > bundles with cycle <= 10% = VERY_GOOD
@@ -44,19 +50,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         MetricName name = MetricName.CYCLE;
         List<ModuleCycle> moduleCycles = currentOSGiProject.get().getModuleCyclicDependenciesMap().get(bundle);
         int numberOfCycles =  moduleCycles.size();
-        int numberOfModules = currentOSGiProject.get().getModules().size();
 
-        if (numberOfCycles == 0) {
+        if (numberOfCycles <= metricsLimit.get(MetricName.CYCLE).get(MetricScore.STATE_OF_ART)) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (numberOfCycles <= (numberOfModules * 0.10)) {
+        } else if (numberOfCycles <= metricsLimit.get(MetricName.CYCLE).get(MetricScore.VERY_GOOD )) {
             return new Metric(name, MetricScore.VERY_GOOD);
-        } else if (numberOfCycles <= (numberOfModules * 0.20)) {
+        } else if (numberOfCycles <= metricsLimit.get(MetricName.CYCLE).get(MetricScore.GOOD)) {
             return new Metric(name, MetricScore.GOOD);
-        } else if (numberOfCycles <= (numberOfModules * 0.30)) {
+        } else if (numberOfCycles <= metricsLimit.get(MetricName.CYCLE).get(MetricScore.REGULAR)) {
             return new Metric(name, MetricScore.REGULAR);
         }
-        // more then 30% of bundles has cycles
-        return new Metric(name, MetricScore.ANTI_PATTERN);
+        else if (numberOfCycles >=  metricsLimit.get(MetricName.CYCLE).get(MetricScore.ANTI_PATTERN)) {
+            return new Metric(name, MetricScore.ANTI_PATTERN);
+        }
+        return null;
     }
 
     public Metric getBundleDependencyMetric(OSGiModule osGiModule) {
@@ -67,25 +74,28 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
         int numberOfDependencies = getCurrentOSGiProject().getModulesDependencies().get(osGiModule).size();
         numberOfDependencies += osGiModule.getRequiredBundles().size();
 
-        // not depending on others modules is state of art
-        if (numberOfDependencies == 0) {
+
+        if (numberOfDependencies <= metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.STATE_OF_ART)) {
             return new Metric(name, MetricScore.STATE_OF_ART);
         }
 
-        if (numberOfDependencies <= 3) {
+        if (numberOfDependencies <= metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.VERY_GOOD)) {
             return new Metric(name, MetricScore.VERY_GOOD);
         }
 
-        if (numberOfDependencies <= 5) {
+        if (numberOfDependencies <= metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.GOOD)) {
             return new Metric(name, MetricScore.GOOD);
         }
 
-        if (numberOfDependencies <= 9) {
+        if (numberOfDependencies <= metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.REGULAR)) {
             return new Metric(name, MetricScore.REGULAR);
         }
 
-        // depending on 10 or more bundles is considered anti pattern(high coupled)
-        return new Metric(name, MetricScore.ANTI_PATTERN);
+        if (numberOfDependencies >= metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.ANTI_PATTERN)) {
+            return new Metric(name, MetricScore.ANTI_PATTERN);
+        }
+        //no limmit found
+        return null;
     }
 
     public Metric getPublishesInterfaceMetric(OSGiModule bundle) {
@@ -108,21 +118,20 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
     public Metric hasStaleReferencesMetric(OSGiModule bundle) {
         MetricName name = MetricName.STALE_REFERENCES;
         int nroOfStaleReferences = bundle.getStaleReferences().size();
-        if (nroOfStaleReferences == 0) {
+        if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.STATE_OF_ART))) {
             return new Metric(name, MetricScore.STATE_OF_ART);
-        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.10)) {
-            // 10% of classes has stale references
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.VERY_GOOD))) {
             return new Metric(name, MetricScore.VERY_GOOD);
-        }  else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.20)) {
-            // 20% of classes has stale references
+        }  else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.GOOD))) {
             return new Metric(name, MetricScore.GOOD);
-        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * 0.30)) {
-            // 30% of classes has stale references
+        } else if (nroOfStaleReferences <= (bundle.getNumberOfClasses() * metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.REGULAR))) {
             return new Metric(name, MetricScore.REGULAR);
+        } else if (nroOfStaleReferences >= (bundle.getNumberOfClasses() * metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.ANTI_PATTERN))) {
+            return new Metric(name, MetricScore.ANTI_PATTERN);
         }
 
-        // more than 30% of classes contains staleReferences
-        return new Metric(name, MetricScore.ANTI_PATTERN);
+        //no limmits found
+        return null;
     }
 
     public Metric getDeclaresPermissionMetric(OSGiModule bundle) {
@@ -321,5 +330,9 @@ public class DefaultMetricsCalculator implements MetricsCalculation {
             projectBundleQualities.put(getCurrentOSGiProject(),calculateBundlePoints(getCurrentOSGiProject()));
         }
         return projectBundleQualities.get(getCurrentOSGiProject());
+    }
+
+    public void listenMetricsConfigEvent(@Observes MetricsConfigEvent metricsConfigEvent){
+        this.metricsLimit = metricsConfigEvent.getMetricsLimit();
     }
 }

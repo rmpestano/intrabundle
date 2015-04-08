@@ -5,6 +5,7 @@ import br.ufrgs.rmpestano.intrabundle.metric.MetricsCalculation;
 import br.ufrgs.rmpestano.intrabundle.model.*;
 import br.ufrgs.rmpestano.intrabundle.model.enums.FileType;
 import br.ufrgs.rmpestano.intrabundle.model.enums.MetricName;
+import br.ufrgs.rmpestano.intrabundle.model.enums.MetricScore;
 import br.ufrgs.rmpestano.intrabundle.util.MetricUtils;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -18,6 +19,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 @Singleton
@@ -25,11 +28,14 @@ public class JasperManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String   fileName;
 
-    private String fileName;
-    private String reportName;
-    private List<?> data;
-    private Map params;
+    private String   reportName;
+
+    private List<?>  data;
+
+    private Map      params;
+
     private FileType type;
 
     @Inject
@@ -47,6 +53,8 @@ public class JasperManager implements Serializable {
     @Inject
     MetricUtils metricUtils;
 
+    @Inject
+    Map<MetricName, Map<MetricScore, Double>> metricsLimit;
 
     /**
      * @param filename name of the generated PDF file, if not provided reportName.pdf will be used
@@ -65,7 +73,6 @@ public class JasperManager implements Serializable {
         this.reportName = reportName;
         return this;
     }
-
 
     public JasperManager data(List<?> data) {
         this.data = data;
@@ -245,21 +252,38 @@ public class JasperManager implements Serializable {
         MetricPoints metricPoints = metrics.calculateMetricQuality(MetricName.CYCLE);
 
         params.put("cycles", metricUtils.metricQuality(metricPoints));
+        params.put("cyclesStateOfArt", metricsLimit.get(MetricName.CYCLE).get(MetricScore.STATE_OF_ART));
+        params.put("cyclesVeryGood", metricsLimit.get(MetricName.CYCLE).get(MetricScore.VERY_GOOD));
+        params.put("cyclesGood", metricsLimit.get(MetricName.CYCLE).get(MetricScore.GOOD));
+        params.put("cyclesRegular", metricsLimit.get(MetricName.CYCLE).get(MetricScore.REGULAR));
+        params.put("cyclesAntiPattern", metricsLimit.get(MetricName.CYCLE).get(MetricScore.ANTI_PATTERN));
 
         metricPoints = metrics.calculateMetricQuality(MetricName.STALE_REFERENCES);
         params.put("staleReferences", metricUtils.metricQuality(metricPoints));
+        params.put("staleReferencesStateOfArt", metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.STATE_OF_ART));
+        params.put("staleReferencesVeryGood", metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.VERY_GOOD));
+        params.put("staleReferencesGood", metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.GOOD));
+        params.put("staleReferencesRegular", metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.REGULAR));
+        params.put("staleReferencesAntiPattern", metricsLimit.get(MetricName.STALE_REFERENCES).get(MetricScore.ANTI_PATTERN));
 
         metricPoints = metrics.calculateMetricQuality(MetricName.USES_FRAMEWORK);
         params.put("usesFramework", metricUtils.metricQuality(metricPoints));
 
         metricPoints = metrics.calculateMetricQuality(MetricName.BUNDLE_DEPENDENCIES);
         params.put("bundleDependency", metricUtils.metricQuality(metricPoints));
+        params.put("bundleDependencyStateOfArt", metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.STATE_OF_ART));
+        params.put("bundleDependencyVeryGood", metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.VERY_GOOD));
+        params.put("bundleDependencyGood", metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.GOOD));
+        params.put("bundleDependencyRegular", metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.REGULAR));
+        params.put("bundleDependencyAntiPattern", metricsLimit.get(MetricName.BUNDLE_DEPENDENCIES).get(MetricScore.ANTI_PATTERN));
+
 
         metricPoints = metrics.calculateMetricQuality(MetricName.DECLARES_PERMISSION);
         params.put("declaresPermission", metricUtils.metricQuality(metricPoints));
 
         metricPoints = metrics.calculateMetricQuality(MetricName.PUBLISHES_INTERFACES);
         params.put("publishesInterfaces", metricUtils.metricQuality(metricPoints));
+
 
     }
 }

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="osgi" pageWidth="800" pageHeight="1200" orientation="Landscape" columnWidth="780" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="14ae2f7c-5127-4158-ab1a-148028b026c9">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="459"/>
+	<property name="ireport.y" value="494"/>
 	<property name="net.sf.jasperreports.text.truncate.at.char" value="true"/>
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<style name="table">
@@ -46,6 +46,21 @@
 	<parameter name="usesFramework" class="java.lang.String"/>
 	<parameter name="declaresPermission" class="java.lang.String"/>
 	<parameter name="cycles" class="java.lang.String"/>
+	<parameter name="cyclesStateOfArt" class="java.lang.Double"/>
+	<parameter name="cyclesVeryGood" class="java.lang.Double"/>
+	<parameter name="cyclesGood" class="java.lang.Double"/>
+	<parameter name="cyclesRegular" class="java.lang.Double"/>
+	<parameter name="cyclesAntiPattern" class="java.lang.Double"/>
+	<parameter name="bundleDependencyGood" class="java.lang.Double"/>
+	<parameter name="bundleDependencyAntiPattern" class="java.lang.Double"/>
+	<parameter name="bundleDependencyRegular" class="java.lang.Double"/>
+	<parameter name="bundleDependencyVeryGood" class="java.lang.Double"/>
+	<parameter name="bundleDependencyStateOfArt" class="java.lang.Double"/>
+	<parameter name="staleReferencesGood" class="java.lang.Double"/>
+	<parameter name="staleReferencesAntiPattern" class="java.lang.Double"/>
+	<parameter name="staleReferencesRegular" class="java.lang.Double"/>
+	<parameter name="staleReferencesVeryGood" class="java.lang.Double"/>
+	<parameter name="staleReferencesStateOfArt" class="java.lang.Double"/>
 	<field name="module" class="java.lang.Object"/>
 	<field name="metricPoints" class="java.lang.Object"/>
 	<group name="Group1">
@@ -93,10 +108,10 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="822">
+		<band height="841">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}==1]]></printWhenExpression>
 			<staticText>
-				<reportElement uuid="6a4cdb7a-1920-454c-8e71-35492e79346c" x="10" y="68" width="287" height="20"/>
+				<reportElement uuid="6a4cdb7a-1920-454c-8e71-35492e79346c" x="0" y="68" width="297" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -132,7 +147,7 @@
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject().getModules().size()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="ba4f4cef-7d83-4bf0-8ba7-b055ce037c1d" x="10" y="10" width="287" height="20"/>
+				<reportElement uuid="ba4f4cef-7d83-4bf0-8ba7-b055ce037c1d" x="0" y="10" width="297" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -140,7 +155,7 @@
 				<text><![CDATA[Project Location:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="63655fb3-11fc-4fd5-8389-69546d8b56ec" x="10" y="96" width="287" height="20"/>
+				<reportElement uuid="63655fb3-11fc-4fd5-8389-69546d8b56ec" x="0" y="96" width="297" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -148,7 +163,7 @@
 				<text><![CDATA[Publishes interfaces:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a70c23ff-5dcb-46b1-a5c9-eea4017df6d9" x="10" y="40" width="287" height="20"/>
+				<reportElement uuid="a70c23ff-5dcb-46b1-a5c9-eea4017df6d9" x="0" y="40" width="297" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -163,7 +178,7 @@
 				<textFieldExpression><![CDATA[$P{usesFramework}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="5af79f3f-58a7-43de-b524-b1c99d340ee7" x="10" y="126" width="287" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="5af79f3f-58a7-43de-b524-b1c99d340ee7" x="0" y="126" width="297" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -178,7 +193,7 @@
 				<textFieldExpression><![CDATA[$P{staleReferences}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="7ea44da2-dc5e-4366-bdaa-4356f59634a6" x="10" y="159" width="287" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="7ea44da2-dc5e-4366-bdaa-4356f59634a6" x="0" y="159" width="297" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -186,84 +201,84 @@
 				<text><![CDATA[Stale references:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="aa2a93c8-1a54-49b8-8fd9-fb251ea5ec8d" mode="Opaque" x="4" y="315" width="776" height="24" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="aa2a93c8-1a54-49b8-8fd9-fb251ea5ec8d" mode="Opaque" x="2" y="315" width="778" height="24" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Metrics Formula]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e3bc2d3a-b0a8-4a64-a90d-31e1b60c6d58" x="8" y="625" width="211" height="20"/>
+				<reportElement uuid="e3bc2d3a-b0a8-4a64-a90d-31e1b60c6d58" x="0" y="627" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Cycles:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="36cb9d67-0f1f-490d-aecd-82d2457d88d7" x="8" y="687" width="211" height="20"/>
+				<reportElement uuid="36cb9d67-0f1f-490d-aecd-82d2457d88d7" x="0" y="667" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
-				<text><![CDATA[Bundle depedency:]]></text>
+				<text><![CDATA[Bundle depedencies:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="7ab8a337-5031-47e1-be64-1b84985668da" x="236" y="687" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="7ab8a337-5031-47e1-be64-1b84985668da" x="233" y="667" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["0: STATE_OF_ART, <= 3: VERY_GOOD,\n <=5: GOOD, <= 9: REGULAR, >=10: ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Number of dependencies: " + $P{bundleDependencyStateOfArt} +": STATE_OF_THE_ART; "+$P{bundleDependencyVeryGood} +": VERY_GOOD\n"+$P{bundleDependencyGood} +": GOOD; "+$P{bundleDependencyRegular} +": REGULAR;More then "+$P{bundleDependencyAntiPattern} +": ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="0934116f-6e0e-4c33-ad3a-f3c4ff70c494" x="237" y="625" width="541" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="0934116f-6e0e-4c33-ad3a-f3c4ff70c494" x="233" y="627" width="547" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["0 cycles: STATE_OF_ART, <= 10% of bundles with cycles: VERY_GOOD, <= 20% of bundles with cycles: GOOD,\n <= 30% of bundles with cycles: REGULAR, > 30% of bundles with cycles: ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Number of cycles: " + $P{cyclesStateOfArt} +": STATE_OF_THE_ART; "+$P{cyclesVeryGood} +": VERY_GOOD\n"+$P{cyclesGood}+" : GOOD; "+$P{cyclesRegular} +": REGULAR; More then "+$P{cyclesAntiPattern}+": ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="70548bc7-60db-41c1-9fe2-6a23daae3aa7" x="8" y="728" width="211" height="20"/>
+				<reportElement uuid="70548bc7-60db-41c1-9fe2-6a23daae3aa7" x="0" y="762" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Publishes interfaces:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="590060a0-e8b5-45d3-b136-6839d119adf8" x="238" y="728" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="590060a0-e8b5-45d3-b136-6839d119adf8" x="235" y="763" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="4f38ed09-9477-4adb-819e-7b8e0923effb" x="238" y="760" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="4f38ed09-9477-4adb-819e-7b8e0923effb" x="235" y="792" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="40b454fd-d81e-476e-a0d9-580597174cd3" x="8" y="760" width="211" height="20"/>
+				<reportElement uuid="40b454fd-d81e-476e-a0d9-580597174cd3" x="0" y="792" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Uses framework:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2178af15-a828-4674-aa02-7fd24d875f37" x="8" y="794" width="211" height="20"/>
+				<reportElement uuid="2178af15-a828-4674-aa02-7fd24d875f37" x="0" y="708" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Stale references:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="8fba9e1c-3b25-4d92-bebe-9bccb9326ec0" x="238" y="794" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="8fba9e1c-3b25-4d92-bebe-9bccb9326ec0" x="236" y="708" width="535" height="20" isPrintWhenDetailOverflows="true"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
-				<textFieldExpression><![CDATA["no stale references: STATE_OF_ART\n <= 1/10 of classes has stale references: VERY_GOOD\n <= 1/4 of classes: GOOD\n < 1/2 of classes: REGULAR\n >= 1/2: ANTI_PATTERN"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["<= " + $P{staleReferencesStateOfArt} *100 +"% of classes: STATE_OF_ART;  <="+ $P{staleReferencesVeryGood} *100 +"% of classes: VERY_GOOD\n <= "+ $P{staleReferencesGood} *100 +"% of classes: GOOD; "+ $P{staleReferencesRegular} *100 +"% of classes: REGULAR\n > "+ $P{staleReferencesAntiPattern} *100 +"%: ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="3c212b02-d2b7-4aa2-8a7e-53279d85eafa" x="239" y="446" width="539" height="20"/>
+				<reportElement uuid="3c212b02-d2b7-4aa2-8a7e-53279d85eafa" x="233" y="442" width="539" height="20"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
@@ -274,14 +289,14 @@
 "Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.OSGiProject)((br.ufrgs.rmpestano.intrabundle.model.OSGiProjectReport)$P{project}).getProject()).getMaxPoints() + "(40%): ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="cbebd637-b450-4bcf-aaad-d1e575a315d0" x="6" y="446" width="211" height="20"/>
+				<reportElement uuid="cbebd637-b450-4bcf-aaad-d1e575a315d0" x="0" y="443" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Project Final Score:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="d3719ccb-0537-4594-b7ca-1543f7351dbb" positionType="Float" x="235" y="346" width="543" height="20"/>
+				<reportElement uuid="d3719ccb-0537-4594-b7ca-1543f7351dbb" positionType="Float" x="233" y="346" width="543" height="20"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
@@ -292,7 +307,7 @@
 "ANTI_PATTERN: 1"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="71329835-50c2-40ff-aace-c213cf4d8826" x="8" y="353" width="209" height="20"/>
+				<reportElement uuid="71329835-50c2-40ff-aace-c213cf4d8826" x="0" y="353" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
@@ -306,7 +321,7 @@
 				<textFieldExpression><![CDATA[$P{projectQuality}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="07e24d29-8e11-41ea-bf20-f76387a780d0" x="4" y="253" width="293" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="07e24d29-8e11-41ea-bf20-f76387a780d0" x="0" y="253" width="297" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -321,7 +336,7 @@
 				<textFieldExpression><![CDATA[$P{projectQualityPoints}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="29a0d07d-26eb-470a-a30e-35ad68be2428" x="4" y="283" width="293" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="29a0d07d-26eb-470a-a30e-35ad68be2428" x="0" y="283" width="297" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -329,14 +344,14 @@
 				<text><![CDATA[Project quality points:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="5489dee7-7487-4d24-976f-923b1c760a03" x="7" y="538" width="211" height="20"/>
+				<reportElement uuid="5489dee7-7487-4d24-976f-923b1c760a03" x="0" y="538" width="217" height="20"/>
 				<textElement>
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Bundle Final Score:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="ad8b2e5c-5d73-440a-a935-6dda73df39a3" x="240" y="538" width="539" height="20"/>
+				<reportElement uuid="ad8b2e5c-5d73-440a-a935-6dda73df39a3" x="233" y="538" width="543" height="20"/>
 				<textElement markup="none">
 					<font size="14"/>
 				</textElement>
@@ -347,7 +362,7 @@
 "Points obtained < " + 0.40 *((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints() + "(40%): ANTI_PATTERN"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="2a7da679-f7e0-45d1-b237-330f47b42ee7" x="9" y="219" width="287" height="20" isRemoveLineWhenBlank="true"/>
+				<reportElement uuid="2a7da679-f7e0-45d1-b237-330f47b42ee7" x="0" y="219" width="296" height="20" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -369,19 +384,57 @@
 				<textFieldExpression><![CDATA[$P{cycles}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="70ccef6b-48d5-4cc9-85c5-ce0168ee2303" x="10" y="189" width="287" height="20"/>
+				<reportElement uuid="70ccef6b-48d5-4cc9-85c5-ce0168ee2303" x="0" y="189" width="297" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
 				</textElement>
 				<text><![CDATA[Bundle cycles:]]></text>
 			</staticText>
+			<line>
+				<reportElement uuid="386e36cc-91d8-42d8-8365-6e077fdfb9fb" x="0" y="442" width="779" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="90094b8b-187b-4bda-832e-4eae10ded65e" x="0" y="537" width="778" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="267f4ac5-a2fd-4fe3-9020-104896fdcc4b" x="0" y="626" width="782" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="5c89a880-9580-4e88-a979-d962ae2f419d" x="0" y="666" width="780" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="339b6be5-8389-4f63-8548-e06cdd576559" x="0" y="706" width="780" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="99385fcc-5b20-4277-8e32-d7762592245e" x="0" y="760" width="780" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="66bf1bc5-2992-4c4a-8f92-b738bca9c848" x="0" y="790" width="780" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="99566a55-8d29-47e4-b7c3-c51b4c412335" x="0" y="820" width="780" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3470fa6d-4c1a-481c-a6a9-836496682895" x="237" y="821" width="535" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement markup="none">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["yes: STATE_OF_ART, no: REGULAR"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e96d3a47-8e07-4e24-bd1d-182b7305d115" x="0" y="821" width="217" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Declares permission:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="36">
 			<staticText>
-				<reportElement uuid="09e400ca-7332-4a37-99d6-d37ac9a9f3f5" mode="Opaque" x="9" y="4" width="780" height="29" forecolor="#006699" backcolor="#E6E6E6"/>
+				<reportElement uuid="09e400ca-7332-4a37-99d6-d37ac9a9f3f5" mode="Opaque" x="0" y="4" width="789" height="29" forecolor="#006699" backcolor="#E6E6E6"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
@@ -489,7 +542,7 @@
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("metrics.quality", ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getBundlePoints(), ((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMaxPoints(),((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getCompliance())]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="be70fc83-b475-4c0f-b2c1-5f83741054d8" x="8" y="15" width="211" height="20"/>
+				<reportElement uuid="be70fc83-b475-4c0f-b2c1-5f83741054d8" x="4" y="15" width="215" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="14"/>
 					<paragraph rightIndent="10"/>
@@ -527,7 +580,7 @@
 				<textFieldExpression><![CDATA[((br.ufrgs.rmpestano.intrabundle.model.OSGiModule)$F{module}).getDeclaresPermissions() == true ? ((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("yes"):((br.ufrgs.rmpestano.intrabundle.i18n.MessageProvider)$P{provider}).getMessage("no") + " - " +((br.ufrgs.rmpestano.intrabundle.model.Metric)((br.ufrgs.rmpestano.intrabundle.model.MetricPoints)$F{metricPoints}).getMetric(br.ufrgs.rmpestano.intrabundle.model.enums.MetricName.DECLARES_PERMISSION)).getScore().toString()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="986c70cb-fd23-4e11-af42-a7581fb50bc3" x="4" y="6" width="780" height="3"/>
+				<reportElement uuid="986c70cb-fd23-4e11-af42-a7581fb50bc3" x="2" y="6" width="782" height="3"/>
 			</line>
 		</band>
 	</detail>

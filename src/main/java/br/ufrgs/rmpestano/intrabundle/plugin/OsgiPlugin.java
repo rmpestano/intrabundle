@@ -374,8 +374,8 @@ public class OsgiPlugin implements Plugin {
         jasperManager.reportFromProject(project.get(),Constants.REPORT.GENERAL);
     }
 
-    @Command(help = "Generate a report containing bundle metric information of all bundles of the project")
-    public void metricsReport() {
+    @Command(value = "metricReport", help = "Generate a report containing bundle metric information of all bundles of the project")
+    public void metricReport() {
         jasperManager.reportFromProject(project.get(), Constants.REPORT.METRICS);
     }
 
