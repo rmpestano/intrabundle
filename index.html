@@ -44,8 +44,8 @@
           </ul>
         </div>
       </header>
-	<div style="text-align:center;" >
-        <p>Using Intrabundle</p>
+	<div class="inner" style="text-align:center;" >
+        <h1>Using Intrabundle</h1>
             <ol>
                 <li>
                     Download jboss forge distribution zip <a href="https://repository.jboss.org/nexus/service/local/artifact/maven/redirect?r=releases&g=org.jboss.forge&a=forge-distribution&v=1.4.4.Final&e=zip">HERE</a>.
@@ -60,13 +60,13 @@
                     You are ready to <b>introspect</b> OSGi projects, watch the video below
                 </li>
             </ol>
-
-        <p>Intrabundle Demo Video</p>
-        <iframe src="video/intrabundle-demo.ogv"
-                width="560" height="315" frameborder="0" allowfullscreen></iframe>
      </div>
 
-
+        <div class="inner">
+            <h1>Intrabundle Demo Video</h1>
+            <iframe src="video/intrabundle-demo.ogv"
+                    width="560" height="315" frameborder="0" allowfullscreen></iframe>
+        </div>
 
 
         <hr class="soften">
@@ -81,6 +81,7 @@
                   <th data-field="id">OSGi Project</th>
                   <th data-field="name">General report</th>
                   <th data-field="price">Metrics report</th>
+                  <th>Source code</th>
               </tr>
               </thead>
               <tbody>
@@ -88,32 +89,39 @@
                   <td>BIRT</td>
                   <td> <a href="reports/birt_general.html" target="_blank">birt_general.html</a></td>
                   <td> <a href="reports/birt_metrics.html" target="_blank">birt_metrics.html</a></td>
+                  <td>git://git.eclipse.org/gitroot/www.eclipse.org/birt.git</td>
+
               </tr>
               <tr>
                   <td>Eclipse CTD</td>
                   <td> <a href="reports/org.eclipse.cdt_general.html" target="_blank">org.eclipse.cdt_general.html</a></td>
                   <td> <a href="reports/org.eclipse.cdt_metrics.html" target="_blank">org.eclipse.cdt_metrics.html</a></td>
+                  <td>http://git.eclipse.org/gitroot/cdt/org.eclipse.cdt.git</td>
               </tr>
               <tr>
                   <td>Eclipse Sirius</td>
                   <td> <a href="reports/org.eclipse.sirius_general.html" target="_blank">org.eclipse.sirius_general.html</a></td>
                   <td> <a href="reports/org.eclipse.sirius_metrics.html" target="_blank">org.eclipse.sirius_metrics.html</a></td>
+                  <td>git://git.eclipse.org/gitroot/sirius/org.eclipse.sirius.git</td>
               </tr>
               <tr>
                   <td>Eclipse Acceleo</td>
                   <td> <a href="reports/org.eclipse.acceleo_general.html" target="_blank">org.eclipse.acceleo_general.html</a></td>
                   <td> <a href="reports/org.eclipse.acceleo_metrics.html" target="_blank">org.eclipse.acceleo_metrics.html</a></td>
+                  <td>http://git.eclipse.org/gitroot/acceleo/org.eclipse.acceleo.git</td>
               </tr>
 
               <tr>
                   <td>Eclipse Dali</td>
                   <td> <a href="reports/dali_general.html" target="_blank">dali_general.html</a></td>
                   <td> <a href="reports/dali_metrics.html" target="_blank">dali_metrics.html</a></td>
+                  <td>git://git.eclipse.org/gitroot/dali/webtools.dali.git</td>
               </tr>
               <tr>
-                  <td>Gemini Runtime</td>
-                  <td> <a href="reports/gemini-runtime_general.html" target="_blank">gemini-runtime_general.html</a></td>
-                  <td> <a href="reports/gemini-runtime_metrics.html" target="_blank">gemini-runtime_metrics.html</a></td>
+                  <td>Gemini Web Container</td>
+                  <td> <a href="reports/gemini-runtime_general.html" target="_blank">gemini_general.html</a></td>
+                  <td> <a href="reports/gemini-runtime_metrics.html" target="_blank">gemini_metrics.html</a></td>
+                  <td>https://github.com/eclipse/gemini.web.gemini-web-container.git</td>
               </tr>
               <tr>
                   <td>Equinox runtime bundles</td>
@@ -129,6 +137,7 @@
                   <td>JonAS</td>
                   <td> <a href="reports/jonas_general.html" target="_blank">jonas_general.html</a></td>
                   <td> <a href="reports/jonas_metrics.html" target="_blank">jonas_metrics.html</a></td>
+                  <td>svn checkout svn://svn.forge.objectweb.org/svnroot/jonas/jonas/trunk</td>
               </tr>
               <tr>
                   <td>Karaf</td>
