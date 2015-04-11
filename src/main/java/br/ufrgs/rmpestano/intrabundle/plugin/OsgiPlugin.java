@@ -336,7 +336,7 @@ public class OsgiPlugin implements Plugin {
     private void listModuleCycles(OSGiModule choice, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.cycles", choice) + " =====");
         if (project.get().getModuleCyclicDependenciesMap().get(choice).isEmpty()) {
-            out.println(provider.getMessage("module.noDependency"));
+            out.println(provider.getMessage("module.noCycle"));
         } else {
             for (ModuleCycle m : project.get().getModuleCyclicDependenciesMap().get(choice)) {
                 out.println(m.toString());

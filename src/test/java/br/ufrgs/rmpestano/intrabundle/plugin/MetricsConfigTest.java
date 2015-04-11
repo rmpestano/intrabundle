@@ -1,6 +1,5 @@
 package br.ufrgs.rmpestano.intrabundle.plugin;
 
-import br.ufrgs.rmpestano.intrabundle.util.TestUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
