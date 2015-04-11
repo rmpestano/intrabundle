@@ -254,6 +254,17 @@ public class OsgiPluginTest extends BaseOSGiTest {
     }
 
     @Test
+    public void shouldListRequiredBundlesInModule3() throws Exception {
+        initializeOSGiProject();
+        resetOutput();
+        queueInputLines("n");
+        queueInputLines("3");
+        getShell().execute("osgi requiredBundles");
+        Assert.assertTrue(getOutput().contains(provider.getMessage("module.noRequiredBundles")));
+        assertTrue(currentOsgiProject.get().getModules().get(2).getRequiredBundles().isEmpty());
+    }
+
+    @Test
     public void shouldListStaleReferences() throws Exception {
         initializeOSGiProject();
         resetOutput();

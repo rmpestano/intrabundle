@@ -312,8 +312,8 @@ public class OsgiPlugin implements Plugin {
 
     private void listModuleRequiredBundles(OSGiModule module, PipeOut out) {
         out.println(ShellColor.YELLOW, "===== " + provider.getMessage("module.listRequiredBundles", module) + " =====");
-        if (module.getExportedPackages().isEmpty()) {
-            out.println(provider.getMessage("module.noRequiredBundle"));
+        if (module.getRequiredBundles().isEmpty()) {
+            out.println(provider.getMessage("module.noRequiredBundles"));
         } else {
             for (String s : module.getRequiredBundles()) {
                 out.println(s);

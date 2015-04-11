@@ -79,7 +79,8 @@ public class MetricConfigPlugin implements Plugin {
         MetricName metric = prompt.promptChoiceTyped(provider.getMessage("metrics.config"), configurableMetrics);
         Map<MetricScore, Double> limits = metricsLimit.get(metric);
         for (MetricScore metricScore : limits.keySet()) {
-           Double newValue =  prompt.prompt(provider.getMessage("metrics.config-value",provider.getMessage(metricScore.name(),metricsLimit.get(metric).get(metricScore))), Double.class);
+            Double currentValue  =metricsLimit.get(metric).get(metricScore);
+           Double newValue =  prompt.prompt(provider.getMessage("metrics.config-value",metricScore.name(),currentValue), Double.class, currentValue);
            limits.put(metricScore, newValue);
         }
 
