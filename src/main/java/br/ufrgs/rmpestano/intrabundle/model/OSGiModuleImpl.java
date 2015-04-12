@@ -244,8 +244,15 @@ public class OSGiModuleImpl extends BaseProject implements OSGiModule {
                 e.printStackTrace();
             }
         catch (Exception e){
-            Logger.getLogger(OSGiModuleImpl.class.getSimpleName()).warn("problem visiting source:" + cu != null ? cu.getClass().getName() : "");
+            if(cu != null){
+                Logger.getLogger(OSGiModuleImpl.class.getSimpleName()).warn("problem visiting source:" +  cu.getClass().getName());
+            }
         }
+         catch (Error error){
+             if(cu != null) {
+                 Logger.getLogger(OSGiModuleImpl.class.getSimpleName()).warn("problem visiting source:" +  cu.getClass().getName());
+             }
+         }
         } finally {
             if(source != null){
                 try {
